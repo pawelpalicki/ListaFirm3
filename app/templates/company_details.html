@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="company-details-content">
+    <h2>{{ company.Nazwa_Firmy }}</h2>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5>Informacje podstawowe</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Typ firmy:</strong> {{ company.typ_firmy.Typ_firmy }}</p>
+                    {% if company.Strona_www %}
+                    <p><strong>Strona WWW:</strong> <a href="{{ company.Strona_www }}" target="_blank">{{ company.Strona_www }}</a></p>
+                    {% endif %}
+                    {% if company.Uwagi %}
+                    <p><strong>Uwagi:</strong> {{ company.Uwagi }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5>Adresy</h5>
+                </div>
+                <div class="card-body">
+                    {% if company.adresy.count() > 0 %}
+                    <ul class="list-group">
+                        {% for adres in company.adresy %}
+                        <li class="list-group-item">
+                            <p class="mb-1"><strong>{{ adres.typ_adresu.Typ_adresu }}</strong></p>
+                            <p class="mb-0">{{ adres.Kod }} {{ adres.Miejscowosc }}, {{ adres.Ulica_Miejscowosc }}</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-muted">Brak adresów</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5>Kontakt</h5>
+                </div>
+                <div class="card-body">
+                    {% if company.emails.count() > 0 %}
+                    <h6>E-mail:</h6>
+                    <ul class="list-group mb-3">
+                        {% for email in company.emails %}
+                        <li class="list-group-item">
+                            <strong>{{ email.typ_emaila.Typ_emaila }}:</strong> {{ email.e_mail }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    
+                    {% if company.telefony.count() > 0 %}
+                    <h6>Telefon:</h6>
+                    <ul class="list-group">
+                        {% for telefon in company.telefony %}
+                        <li class="list-group-item">
+                            <strong>{{ telefon.typ_telefonu.Typ_telefonu }}:</strong> {{ telefon.telefon }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    
+                    {% if company.emails.count() == 0 and company.telefony.count() == 0 %}
+                    <p class="text-muted">Brak danych kontaktowych</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5>Specjalności</h5>
+                </div>
+                <div class="card-body">
+                    {% if specialties %}
+                    <ul class="list-group">
+                        {% for spec in specialties %}
+                        <li class="list-group-item">{{ spec.Specjalnosc }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-muted">Brak specjalności</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5>Obszar działania</h5>
+                </div>
+                <div class="card-body">
+                    {% if nationwide %}
+                    <p><strong>Cały kraj</strong></p>
+                    {% endif %}
+                    
+                    {% if wojewodztwa and not nationwide %}
+                    <h6>Wybrane województwa:</h6>
+                    <ul class="list-group mb-3">
+                        {% for woj in wojewodztwa %}
+                        <li class="list-group-item">{{ woj.Wojewodztwo }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    
+                    {% if powiaty %}
+                    <h6>Wybrane powiaty:</h6>
+                    <ul class="list-group">
+                        {% for pow, woj_id in powiaty %}
+                        <li class="list-group-item">{{ pow.Powiat }} ({{ woj_id }})</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    
+                    {% if not nationwide and not wojewodztwa and not powiaty %}
+                    <p class="text-muted">Brak danych o obszarze działania</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5>Osoby kontaktowe</h5>
+                </div>
+                <div class="card-body">
+                    {% if company.osoby.count() > 0 %}
+                    <div class="accordion" id="osobyAccordion">
+                        {% for osoba in company.osoby %}
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading{{ osoba.ID_OSOBY }}">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                    data-bs-target="#collapse{{ osoba.ID_OSOBY }}" aria-expanded="false" 
+                                    aria-controls="collapse{{ osoba.ID_OSOBY }}">
+                                {{ osoba.Imie }} {{ osoba.Nazwisko }}{% if osoba.Stanowisko %} - {{ osoba.Stanowisko }}{% endif %}
+                                </button>
+                            </h2>
+                            <div id="collapse{{ osoba.ID_OSOBY }}" class="accordion-collapse collapse" 
+                                 aria-labelledby="heading{{ osoba.ID_OSOBY }}" data-bs-parent="#osobyAccordion">
+                                <div class="accordion-body">
+                                    {% if osoba.e_mail %}
+                                    <p><strong>E-mail:</strong> {{ osoba.e_mail }}</p>
+                                    {% endif %}
+                                    {% if osoba.telefon %}
+                                    <p><strong>Telefon:</strong> {{ osoba.telefon }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted">Brak osób kontaktowych</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card mb-3">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>Oceny</h5>
+                    <span class="badge bg-primary">Średnia: {{ avg_rating }}</span>
+                </div>
+                <div class="card-body">
+                    {% if company.oceny.count() > 0 %}
+                    <div class="accordion" id="ocenyAccordion">
+                        {% for ocena in company.oceny %}
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOcena{{ ocena.OCENY_ID }}">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                        data-bs-target="#collapseOcena{{ ocena.OCENY_ID }}" aria-expanded="false" 
+                                        aria-controls="collapseOcena{{ ocena.OCENY_ID }}">
+                                    <div class="d-flex justify-content-between w-100">
+                                        <span>{{ ocena.Osoba_oceniajaca }} - {{ ocena.Budowa_Dzial }} ({{ ocena.Rok_wspolpracy }})</span>
+                                        <span class="badge bg-{{ 'success' if ocena.Ocena >= 4 else 'warning' if ocena.Ocena >= 3 else 'danger' }}">
+                                            {{ ocena.Ocena }}/5
+                                        </span>
+                                    </div>
+                                </button>
+                            </h2>
+                            <div id="collapseOcena{{ ocena.OCENY_ID }}" class="accordion-collapse collapse" 
+                                 aria-labelledby="headingOcena{{ ocena.OCENY_ID }}" data-bs-parent="#ocenyAccordion">
+                                <div class="accordion-body">
+                                    {{ ocena.Komentarz }}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted">Brak ocen</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-3">
+        <a href="#" class="btn btn-warning">Edytuj firmę</a>
+        <a href="{{ url_for('main.index') }}" class="btn btn-secondary">Powrót</a>
+    </div>
+</div>
+{% endblock %}

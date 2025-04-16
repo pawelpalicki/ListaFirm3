@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="company-form-content">
+    <h2>Nowa firma</h2>
+    <form method="POST" action="{{ url_for('main.new_company') }}">
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+            {{ form.nazwa_firmy.label(class="form-label") }}
+            {{ form.nazwa_firmy(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.typ_firmy.label(class="form-label") }}
+            {{ form.typ_firmy(class="form-select") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.strona_www.label(class="form-label") }}
+            {{ form.strona_www(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.uwagi.label(class="form-label") }}
+            {{ form.uwagi(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.adresy.label(class="form-label") }}
+            <div id="adresy-container">
+                {% for adres in form.adresy %}
+                <div class="adres-form">
+                    {{ adres.hidden_tag() }}
+                    <div class="mb-2">
+                        {{ adres.typ_adresu.label(class="form-label") }}
+                        {{ adres.typ_adresu(class="form-select") }}
+                    </div>
+                    <div class="mb-2">
+                        {{ adres.kod.label(class="form-label") }}
+                        {{ adres.kod(class="form-control") }}
+                    </div>
+                    <div class="mb-2">
+                        {{ adres.miejscowosc.label(class="form-label") }}
+                        {{ adres.miejscowosc(class="form-control") }}
+                    </div>
+                    <div class="mb-2">
+                        {{ adres.ulica_miejscowosc.label(class="form-label") }}
+                        {{ adres.ulica_miejscowosc(class="form-control") }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <button type="button" id="dodaj-adres" class="btn btn-secondary mt-2">Dodaj adres</button>
+        </div>
+
+        <div class="mb-3">
+            {{ form.emaile.label(class="form-label") }}
+            <div id="emaile-container">
+                {% for email in form.emaile %}
+                <div class="email-form">
+                    {{ email.hidden_tag() }}
+                    <div class="mb-2">
+                        {{ email.typ_emaila.label(class="form-label") }}
+                        {{ email.typ_emaila(class="form-select") }}
+                    </div>
+                    <div class="mb-2">
+                        {{ email.email.label(class="form-label") }}
+                        {{ email.email(class="form-control") }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <button type="button" id="dodaj-email" class="btn btn-secondary mt-2">Dodaj e-mail</button>
+        </div>
+
+        <div class="mb-3">
+            {{ form.telefony.label(class="form-label") }}
+            <div id="telefony-container">
+                {% for telefon in form.telefony %}
+                <div class="telefon-form">
+                    {{ telefon.hidden_tag() }}
+                    <div class="mb-2">
+                        {{ telefon.typ_telefonu.label(class="form-label") }}
+                        {{ telefon.typ_telefonu(class="form-select") }}
+                    </div>
+                    <div class="mb-2">
+                        {{ telefon.telefon.label(class="form-label") }}
+                        {{ telefon.telefon(class="form-control") }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <button type="button" id="dodaj-telefon" class="btn btn-secondary mt-2">Dodaj telefon</button>
+        </div>
+
+        <div class="mb-3">
+            {{ form.osoby.label(class="form-label") }}
+            <div id="osoby-container">
+                {% for osoba in form.osoby %}
+                <div class="osoba-form">
+                    {{ osoba.hidden_tag() }}
+                    <div class="mb-2">
+                        {{ osoba.imie.label(class="form-label") }}
+                        {{ osoba.imie(class="form-control") }}
+                    </div>
+                    <div class="mb-2">
+                        {{ osoba.nazwisko.label(class="form-label") }}
+                        {{ osoba.nazwisko(class="form-control") }}
+                    </div>
+                    <div class="mb-2">
+                        {{ osoba.stanowisko.label(class="form-label") }}
+                        {{ osoba.stanowisko(class="form-control") }}
+                    </div>
+                    <div class="mb-2">
+                        {{ osoba.email.label(class="form-label") }}
+                        {{ osoba.email(class="form-control") }}
+                    </div>
+                    <div class="mb-2">
+                        {{ osoba.telefon.label(class="form-label") }}
+                        {{ osoba.telefon(class="form-control") }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <button type="button" id="dodaj-osobe" class="btn btn-secondary mt-2">Dodaj osobę</button>
+        </div>
+
+        <div class="mb-3">
+            {{ form.oceny.label(class="form-label") }}
+            <div id="oceny-container">
+                {% for ocena in form.oceny %}
+                <div class="ocena-form">
+                    {{ ocena.hidden_tag() }}
+                    <div class="mb-2">
+                        {{ ocena.osoba_oceniajaca.label(class="form-label") }}
+                        {{ ocena.osoba_oceniajaca(class="form-control") }}
+                    </div>
+                    <div class="mb-2">
+                        {{ ocena.budowa_dzial.label(class="form-label") }}
+                        {{ ocena.budowa_dzial(class="form-control") }}
+                    </div>
+                    <div class="mb-2">
+                        {{ ocena.rok_wspolpracy.label(class="form-label") }}
+                        {{ ocena.rok_wspolpracy(class="form-control") }}
+                    </div>
+                    <div class="mb-2">
+                        {{ ocena.ocena.label(class="form-label") }}
+                        {{ ocena.ocena(class="form-control") }}
+                    </div>
+                    <div class="mb-2">
+                        {{ ocena.komentarz.label(class="form-label") }}
+                        {{ ocena.komentarz(class="form-control") }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <button type="button" id="dodaj-ocene" class="btn btn-secondary mt-2">Dodaj ocenę</button>
+        </div>
+
+        <div class="mb-3">
+            {{ form.kraj.label(class="form-label") }}
+            {{ form.kraj(class="form-select") }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Województwa</label>
+            <select id="wojewodztwa-select" class="form-select" multiple>
+                {% for woj in wojewodztwa %}
+                <option value="{{ woj.ID_WOJEWODZTWA }}">{{ woj.Wojewodztwo }}</option>
+                {% endfor %}
+            </select>
+            <button type="button" id="dodaj-wojewodztwo" class="btn btn-secondary mt-2">Dodaj województwo</button>
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label">Powiaty</label>
+            <select id="powiaty-select" class="form-select" multiple>
+                <option value="">Wybierz powiat</option>
+            </select>
+            <button type="button" id="dodaj-powiat" class="btn btn-secondary mt-2">Dodaj powiat</button>
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label">Wybrane województwa i powiaty</label>
+            <div id="wybrane-obszary">
+                </div>
+        </div>
+        
+        <input type="hidden" name="wojewodztwa" id="wojewodztwa-input">
+        <input type="hidden" name="powiaty" id="powiaty-input">
+
+        <div class="mb-3">
+            {{ form.specjalnosci.label(class="form-label") }}
+            {{ form.specjalnosci(class="form-select", multiple=true) }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Dodaj firmę</button>
+        <a href="{{ url_for('main.index') }}" class="btn btn-secondary">Powrót</a>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/company_form.js') }}"></script>
+{% endblock %}

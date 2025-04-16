@@ -1,0 +1,34 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.company-row {
+    cursor: pointer;
+}
+
+.company-row:hover {
+    background-color: #f1f8ff;
+}
+
+.company-details td {
+    padding: 1rem;
+    background-color: #f8f9fa;
+}
+:root {
+    --navbar-height: 50px; /* Wysokość navbar */
+}
+
+.col-md-4 {
+    position: sticky;
+    top: 70px; /* Dynamiczne odwołanie do wysokości navbar */
+    align-self: flex-start;
+    z-index: 10;
+}
+
+.navbar {
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    z-index: 10;
+    height: var(--navbar-height); /* Ustaw wysokość navbar */
+}
