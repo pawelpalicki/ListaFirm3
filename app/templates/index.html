@@ -2,10 +2,11 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-lg-4 left-column">
+    <!-- Lewa kolumna - widoczna tylko na dużych ekranach -->
+    <div class="col-lg-4 left-column d-none d-lg-block">
         <div class="card mb-4">
             <div class="card-header">
-                <h5>Filtrowanie</h5>
+                <h5 class="card-title">Filtrowanie</h5>
             </div>
             <div class="card-body">
                 <form id="filter-form" method="get">
@@ -59,7 +60,7 @@
                     
                     <div class="mb-3">
                         <label for="company_types" class="form-label">Typ firmy</label>
-                        <select  class="form-select" id="company_types" name="company_types" >
+                        <select class="form-select" id="company_types" name="company_types">
                             <option value="">Wybierz typ firmy</option>
                             {% for type in all_company_types %}
                             <option value="{{ type.ID_FIRMY_TYP }}" 
@@ -70,80 +71,39 @@
                         </select>
                     </div>
                     
-                    <button type="submit" class="btn btn-primary">Filtruj</button>
-                    <a href="{{ url_for('main.index') }}" class="btn btn-secondary">Resetuj</a>
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-funnel-fill"></i>
+                            <span>Filtruj</span>
+                        </button>
+                        <a href="{{ url_for('main.index') }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                            <span>Resetuj</span>
+                        </a>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
     
+    <!-- Prawa kolumna -->
     <div class="col-lg-8 right-column">
         <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5>Lista firm</h5>
-                 <div id="filter-menu-container" class="d-inline-block d-lg-none">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="filter-menu-button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Filtruj
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="filter-menu-button">
-                        <form id="filter-form-mobile" method="get" class="px-4 py-3">
-                            <div class="mb-3">
-                                <label for="search-mobile" class="form-label">Wyszukiwanie</label>
-                                <input type="text" class="form-control" id="search-mobile" name="search" value="{{ request.args.get('search', '') }}" placeholder="Wpisz tekst...">
-                            </div>
-                            <div class="mb-3">
-                                <label for="specialties-mobile" class="form-label">Specjalności</label>
-                                <select multiple class="form-select" id="specialties-mobile" name="specialties" size="6">
-                                    {% for specialty in all_specialties %}
-                                        <option value="{{ specialty.ID_SPECJALNOSCI }}" {% if specialty.ID_SPECJALNOSCI|string in request.args.getlist('specialties') %}selected{% endif %}>
-                                            {{ specialty.Specjalnosc }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="wojewodztwo-mobile" class="form-label">Województwo</label>
-                                 <select class="form-select" id="wojewodztwo-mobile" name="wojewodztwo">
-                                    <option value="">Wybierz województwo</option>
-                                    {% for woj in all_wojewodztwa %}
-                                        <option value="{{ woj.ID_WOJEWODZTWA }}" {% if woj.ID_WOJEWODZTWA == request.args.get('wojewodztwo') %}selected{% endif %}>
-                                            {{ woj.Wojewodztwo }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="powiat-mobile" class="form-label">Powiat</label>
-                                <select class="form-select" id="powiat-mobile" name="powiat">
-                                     <option value="">Wybierz powiat</option>
-                                        {% if request.args.get('wojewodztwo') %}
-                                            {% for pow in all_powiaty %}
-                                                {% if pow.ID_WOJEWODZTWA == request.args.get('wojewodztwo') %}
-                                                    <option value="{{ pow.ID_POWIATY }}" {% if pow.ID_POWIATY|string == request.args.get('powiat') %}selected{% endif %}>
-                                                        {{ pow.Powiat }}
-                                                    </option>
-                                                {% endif %}
-                                            {% endfor %}
-                                        {% endif %}
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="company_types_mobile" class="form-label">Typ firmy</label>
-                                <select class="form-select" id="company_types_mobile" name="company_types">
-                                    <option value="">Wybierz typ firmy</option>
-                                    {% for type in all_company_types %}
-                                         <option value="{{ type.ID_FIRMY_TYP }}" {% if type.ID_FIRMY_TYP in request.args.getlist('company_types') %}selected{% endif %}>
-                                            {{ type.Typ_firmy }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-sm">Filtruj</button>
-                            <a href="{{ url_for('main.index') }}" class="btn btn-secondary btn-sm">Resetuj</a>
-                        </form>
+            <div class="card-header d-flex align-items-center">
+                <div class="card-header-content d-flex justify-content-between w-100">
+                    <h5 class="card-title">Lista firm</h5>
+                    <div class="card-actions d-flex gap-2">
+                        <!-- Przycisk filtrowania widoczny tylko na małych ekranach -->
+                        <button id="mobile-filter-toggle" class="btn btn-secondary btn-sm d-lg-none">
+                            <i class="bi bi-funnel"></i>
+                            Filtruj
+                        </button>
+                        <a href="{{ url_for('main.new_company') }}" class="btn btn-success btn-sm">
+                            <i class="bi bi-plus-circle"></i>
+                            Dodaj firmę
+                        </a>
                     </div>
                 </div>
-                <a href="{{ url_for('main.new_company') }}" class="btn btn-success btn-sm d-none d-lg-inline-block">Dodaj nową firmę</a>
             </div>
             <div class="card-body">
                 {% if companies %}
@@ -153,14 +113,14 @@
                             <tr>
                                 <th>L.P.</th>
                                 <th>Nazwa firmy</th>
-                               </tr>
+                            </tr>
                         </thead>
                         <tbody>
                             {% for company in companies %}
                             <tr class="company-row" data-company-id="{{ company.ID_FIRMY }}">
                                 <td>{{ company.ID_FIRMY }}</td>
                                 <td>{{ company.Nazwa_Firmy }}</td>
-                               </tr>
+                            </tr>
                             <tr id="details-{{ company.ID_FIRMY }}" class="company-details d-none">
                                 <td colspan="3">
                                     <div class="loading-spinner text-center my-3">
@@ -183,11 +143,105 @@
         </div>
     </div>
 </div>
+
+<!-- Mobile filter overlay -->
+<div id="mobile-filter-overlay" class="d-lg-none">
+    <div class="mobile-filter-content">
+        <div class="mobile-filter-header d-flex justify-content-between align-items-center mb-3">
+            <h5>Filtrowanie</h5>
+            <button id="close-mobile-filter" class="btn-close"></button>
+        </div>
+        <form id="filter-form-mobile" method="get">
+            <div class="mb-3">
+                <label for="search-mobile" class="form-label">Wyszukiwanie</label>
+                <input type="text" class="form-control" id="search-mobile" name="search"
+                       value="{{ request.args.get('search', '') }}" placeholder="Wpisz tekst...">
+            </div>
+            
+            <div class="mb-3">
+                <label for="specialties-mobile" class="form-label">Specjalności</label>
+                <select multiple class="form-select" id="specialties-mobile" name="specialties" size="6">
+                    {% for specialty in all_specialties %}
+                    <option value="{{ specialty.ID_SPECJALNOSCI }}" 
+                        {% if specialty.ID_SPECJALNOSCI|string in request.args.getlist('specialties') %}selected{% endif %}>
+                        {{ specialty.Specjalnosc }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label for="wojewodztwo-mobile" class="form-label">Województwo</label>
+                <select class="form-select" id="wojewodztwo-mobile" name="wojewodztwo">
+                    <option value="">Wybierz województwo</option>
+                    {% for woj in all_wojewodztwa %}
+                    <option value="{{ woj.ID_WOJEWODZTWA }}" 
+                        {% if woj.ID_WOJEWODZTWA == request.args.get('wojewodztwo') %}selected{% endif %}>
+                        {{ woj.Wojewodztwo }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label for="powiat-mobile" class="form-label">Powiat</label>
+                <select class="form-select" id="powiat-mobile" name="powiat">
+                    <option value="">Wybierz powiat</option>
+                    {% if request.args.get('wojewodztwo') %}
+                        {% for pow in all_powiaty %}
+                            {% if pow.ID_WOJEWODZTWA == request.args.get('wojewodztwo') %}
+                            <option value="{{ pow.ID_POWIATY }}" 
+                                {% if pow.ID_POWIATY|string == request.args.get('powiat') %}selected{% endif %}>
+                                {{ pow.Powiat }}
+                            </option>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label for="company_types_mobile" class="form-label">Typ firmy</label>
+                <select class="form-select" id="company_types_mobile" name="company_types">
+                    <option value="">Wybierz typ firmy</option>
+                    {% for type in all_company_types %}
+                    <option value="{{ type.ID_FIRMY_TYP }}" 
+                        {% if type.ID_FIRMY_TYP in request.args.getlist('company_types') %}selected{% endif %}>
+                        {{ type.Typ_firmy }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-funnel-fill"></i>
+                    Filtruj
+                </button>
+                <a href="{{ url_for('main.index') }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                    Resetuj
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
 <script>
     $(document).ready(function() {
+        // Toggle mobile filter overlay
+        $('#mobile-filter-toggle').click(function() {
+            $('#mobile-filter-overlay').fadeIn(200);
+            $('body').css('overflow', 'hidden');
+        });
+        
+        $('#close-mobile-filter').click(function() {
+            $('#mobile-filter-overlay').fadeOut(200);
+            $('body').css('overflow', 'auto');
+        });
+        
         // Handle wojewodztwo change to update powiaty list
         $('#wojewodztwo, #wojewodztwo-mobile').change(function() {
             const wojewodztwoId = $(this).val();
@@ -235,29 +289,6 @@
                 const optionText = $(this).text().toLowerCase();
                 $(this).toggle(optionText.indexOf(searchText) > -1);
             });
-        });
-
-        // Mobile filter form submission
-        $('#filter-menu-container .dropdown-menu form').on('submit', function(e) {
-            e.preventDefault(); // Prevent the default form submission
-
-            const formId = $(this).attr('id');
-            const searchVal = $(`#search${formId.endsWith('-mobile') ? '-mobile' : ''}`).val();
-            const wojewodztwoVal = $(`#wojewodztwo${formId.endsWith('-mobile') ? '-mobile' : ''}`).val();
-            const powiatVal = $(`#powiat${formId.endsWith('-mobile') ? '-mobile' : ''}`).val();
-            const specialtiesVals = $(`#specialties${formId.endsWith('-mobile') ? '-mobile' : ''}`).val() || [];
-            const companyTypesVals = $(`#company_types${formId.endsWith('-mobile') ? '-mobile' : ''}`).val() || [];
-
-
-            // Create URL parameters string.
-            let url = `?search=${encodeURIComponent(searchVal)}`;
-            if (wojewodztwoVal) url += `&wojewodztwo=${encodeURIComponent(wojewodztwoVal)}`;
-            if (powiatVal) url += `&powiat=${encodeURIComponent(powiatVal)}`;
-            specialtiesVals.forEach(val => url += `&specialties=${encodeURIComponent(val)}`);
-             companyTypesVals.forEach(val => url += `&company_types=${encodeURIComponent(val)}`);
-
-            // Redirect
-            window.location.href = url;
         });
     });
 </script>

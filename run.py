@@ -1,6 +1,4 @@
 import app
-print(app.__file__)
-
 from app import create_app, db
 
 flask_app = create_app()

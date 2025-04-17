@@ -1,9 +1,147 @@
+/* ===== GLOBALNE STYLE ===== */
 body {
     background-color: #f8f9fa;
+    position: relative;
 }
 
+:root {
+    --navbar-height: 50px;
+    --card-header-height: 55px; /* Zgodnie z wymaganiami */
+    --btn-primary-color: #0d6efd;
+    --btn-secondary-color: #6c757d;
+    --btn-success-color: #198754;
+    --card-border-color: rgba(0, 0, 0, 0.08);
+}
+
+/* ===== NAWIGACJA ===== */
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    height: var(--navbar-height);
+}
+
+/* ===== KOLUMNY ===== */
+.left-column {
+    position: sticky;
+    top: 70px;
+    align-self: flex-start;
+    z-index: 10;
+    height: calc(100vh - 70px);
+    overflow-y: auto;
+}
+
+.right-column {
+    transition: width 0.3s ease;
+}
+
+/* ===== KARTY ===== */
+.card {
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--card-border-color);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.card-header {
+    min-height: var(--card-header-height);
+    display: flex;
+    align-items: center;
+    padding: 0 2rem;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid var(--card-border-color);
+}
+
+/* Specyficzne style dla lewej kolumny */
+.left-column .card-header {
+    min-height: var(--card-header-height);
+    height: auto;
+    /*padding: 1rem !important; /* Mniejsze paddingi */
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Style dla prawej kolumny */
+.right-column .card-header {
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+/* Zawartość nagłówka */
+.card-header-content {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Tytuł karty */
+.card-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+/* ===== PRZYCISKI - SPÓJNE STYLE ===== */
+.card-header .btn,
+.mobile-filter-content .btn {
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    border-radius: 0.375rem;
+    transition: all 0.2s ease;
+    padding: 0.375rem 0.75rem;
+}
+
+/* Przyciski w nagłówku prawej kolumny */
+.right-column .card-header .btn {
+    min-width: 120px;
+}
+
+/* Przyciski w formularzu filtrowania (lewa kolumna i mobile) */
+.left-column .card-body .btn,
+.mobile-filter-content .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+    justify-content: center;
+}
+
+/* Grupa przycisków */
+.btn-group-vertical {
+    width: 100%;
+}
+
+/* Ikony */
+.btn .bi {
+    font-size: 1rem;
+    margin-right: 0.25rem;
+}
+
+/* Responsywność przycisków */
+@media (max-width: 575.98px) {
+    .card-header .btn {
+        width: 100%;
+        max-width: none;
+        margin-bottom: 0.5rem;
+    }
+
+    .right-column .card-header .d-flex {
+        flex-direction: column;
+        width: 100%;
+        gap: 0.5rem;
+    }
+}
+
+/* ===== ELEMENTY FIRM ===== */
 .company-row {
     cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
 .company-row:hover {
@@ -14,21 +152,66 @@ body {
     padding: 1rem;
     background-color: #f8f9fa;
 }
-:root {
-    --navbar-height: 50px; /* Wysokość navbar */
-}
 
-.col-md-4 {
-    position: sticky;
-    top: 70px; /* Dynamiczne odwołanie do wysokości navbar */
-    align-self: flex-start;
-    z-index: 10;
-}
-
-.navbar {
-    position: sticky;
+/* ===== FILTRY MOBILE ===== */
+#mobile-filter-overlay {
+    display: none;
+    position: fixed;
     top: 0;
-    align-self: flex-start;
-    z-index: 10;
-    height: var(--navbar-height); /* Ustaw wysokość navbar */
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1000;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.mobile-filter-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.mobile-filter-header {
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+/* ===== IKONY ===== */
+.bi {
+    font-size: 1rem;
+    line-height: 1;
+    vertical-align: middle;
+}
+
+/* ===== RESPONSYWNOŚĆ ===== */
+@media (max-width: 991.98px) {
+    .card-header {
+        padding: 0 1.5rem;
+    }
+
+    .left-column .card-header {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .card-header {
+        min-height: auto;
+        padding: 1rem;
+    }
+
+    .card-title {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .right-column .card-header-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }
