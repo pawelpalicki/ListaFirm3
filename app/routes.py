@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from sqlalchemy import or_, func
 from app.models import *
 from app import db
-import unidecode
+from unidecode import unidecode
 from app.forms import CompanyForm # Upewnij się, że CompanyForm jest importowany
 from sqlalchemy.exc import SQLAlchemyError # Ważne: Importujemy SQLAlchemyError
 
@@ -15,22 +15,25 @@ def index():
     # Handle search filter
     search = request.args.get('search', '')
     if search:
-        normalized_search = unidecode.unidecode(search.lower())
-        query = query.join(Adresy, Firmy.ID_FIRMY == Adresy.ID_FIRMY, isouter=True)\
-                    .join(Email, Firmy.ID_FIRMY == Email.ID_FIRMY, isouter=True)\
-                    .join(Telefon, Firmy.ID_FIRMY == Telefon.ID_FIRMY, isouter=True)\
-                    .join(Osoby, Firmy.ID_FIRMY == Osoby.ID_FIRMY, isouter=True)\
-                    .filter(
-                        or_(
-                            func.lower(func.unaccent(Firmy.Nazwa_Firmy)).contains(normalized_search),
-                            func.lower(func.unaccent(Adresy.Miejscowosc)).contains(normalized_search),
-                            func.lower(func.unaccent(Adresy.Ulica_Miejscowosc)).contains(normalized_search),
-                            func.lower(func.unaccent(Email.e_mail)).contains(normalized_search),
-                            func.lower(func.unaccent(Telefon.telefon)).contains(normalized_search),
-                            func.lower(func.unaccent(Osoby.Imie)).contains(normalized_search),
-                            func.lower(func.unaccent(Osoby.Nazwisko)).contains(normalized_search)
-                        )
-                    )
+        # Normalizacja wyszukiwanego tekstu
+        normalized_search = f"%{unidecode(search).lower()}%"
+
+        # Utwórz warunki filtrowania bez użycia unaccent
+        filters = or_(
+            func.lower(Firmy.Nazwa_Firmy).like(normalized_search),
+            func.lower(Adresy.Miejscowosc).like(normalized_search),
+            func.lower(Adresy.Ulica_Miejscowosc).like(normalized_search),
+            func.lower(Email.e_mail).like(normalized_search),
+            func.lower(Telefon.telefon).like(normalized_search),
+            func.lower(Osoby.Imie).like(normalized_search),
+            func.lower(Osoby.Nazwisko).like(normalized_search)
+        )
+
+        query = query.join(Adresy, isouter=True)\
+                    .join(Email, isouter=True)\
+                    .join(Telefon, isouter=True)\
+                    .join(Osoby, isouter=True)\
+                    .filter(filters)
     
     # Handle specialty filter
     specialties = request.args.getlist('specialties')
