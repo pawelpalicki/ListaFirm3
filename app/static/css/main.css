@@ -1,0 +1,13 @@
+/* ===== GLOBALNE STYLE ===== */
+body {
+    background-color: #f8f9fa;
+    position: relative;
+}
+
+:root {
+    --btn-primary-color: #0d6efd;
+    --btn-secondary-color: #6c757d;
+    --btn-success-color: #198754;
+    --card-border-color: rgba(0, 0, 0, 0.08);
+}
+
