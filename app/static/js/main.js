@@ -1,24 +1,32 @@
 // Enable search filtering in multi-selects
 function setupSearchableDropdowns() {
+    // Helper do normalizacji tekstu
+    const normalizeText = (text) => {
+        return text
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase();
+    };
+
     const multiSelects = document.querySelectorAll('select[multiple]');
-    
+
     multiSelects.forEach(select => {
         // Create a search input
         const searchInput = document.createElement('input');
         searchInput.type = 'text';
         searchInput.className = 'form-control mb-2';
         searchInput.placeholder = 'Szukaj...';
-        
+
         // Insert the search input before the select
         select.parentNode.insertBefore(searchInput, select);
-        
+
         // Add event listener for searching
         searchInput.addEventListener('input', function() {
-            const searchValue = this.value.toLowerCase();
-            
+            const searchValue = normalizeText(this.value);
+
             Array.from(select.options).forEach(option => {
-                const text = option.textContent.toLowerCase();
-                option.style.display = text.includes(searchValue) ? '' : 'none';
+                const optionText = normalizeText(option.textContent);
+                option.style.display = optionText.includes(searchValue) ? '' : 'none';
             });
         });
     });

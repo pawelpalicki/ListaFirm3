@@ -279,15 +279,6 @@
                 detailsRow.addClass('d-none');
             }
         });
-        
-        // Enable search in multi-select dropdowns
-        $('#specialties, #company_types, #specialties-mobile, #company_types_mobile').on('keyup', function() {
-            const searchText = $(this).val().toLowerCase();
-            $(this).find('option').each(function() {
-                const optionText = $(this).text().toLowerCase();
-                $(this).toggle(optionText.indexOf(searchText) > -1);
-            });
-        });
     });
 </script>
 {% endblock %}
