@@ -28,3 +28,44 @@ function setupSearchableDropdowns() {
 document.addEventListener('DOMContentLoaded', function() {
     setupSearchableDropdowns();
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+  const navbar = document.querySelector('.navbar');
+
+  // Obsługa otwierania menu
+  document.querySelector('.navbar-toggler').addEventListener('click', function() {
+    navbar.classList.toggle('mobile-menu-open');
+  });
+
+  // Zamknij menu przy kliknięciu na overlay
+  document.querySelector('.navbar-collapse').addEventListener('click', function(e) {
+    if(e.target.classList.contains('nav-link')) {
+      navbar.classList.remove('mobile-menu-open');
+    }
+  });
+});
+
+function toggleMobileFilter(show) {
+  const overlay = document.getElementById('mobile-filter-overlay');
+  if(show) {
+    overlay.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    document.querySelector('.navbar').style.zIndex = '1500'; // Obniżamy navbar
+  } else {
+    overlay.style.display = 'none';
+    document.body.style.overflow = '';
+    document.querySelector('.navbar').style.zIndex = '';
+  }
+}
+
+// W event listenerze dla przycisku otwierającego filtr
+document.querySelector('.filter-toggle-btn').addEventListener('click', () => {
+  toggleMobileFilter(true);
+});
+
+// W event listenerze dla zamykania overlay
+document.querySelector('#mobile-filter-overlay').addEventListener('click', (e) => {
+  if(e.target === document.querySelector('#mobile-filter-overlay')) {
+    toggleMobileFilter(false);
+  }
+});

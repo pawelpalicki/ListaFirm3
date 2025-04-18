@@ -94,9 +94,8 @@
                     <h5 class="card-title">Lista firm</h5>
                     <div class="card-actions d-flex gap-2">
                         <!-- Przycisk filtrowania widoczny tylko na małych ekranach -->
-                        <button id="mobile-filter-toggle" class="btn btn-secondary btn-sm d-lg-none">
-                            <i class="bi bi-funnel"></i>
-                            Filtruj
+                        <button class="btn btn-primary d-lg-none" onclick="toggleMobileFilter(true)">
+                          <i class="bi bi-funnel"></i> Filtry
                         </button>
                         <a href="{{ url_for('main.new_company') }}" class="btn btn-success btn-sm">
                             <i class="bi bi-plus-circle"></i>
