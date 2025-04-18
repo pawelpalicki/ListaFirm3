@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from sqlalchemy import or_, func
-from app.models import *
+from app.models import Firmy, FirmyTyp, FirmySpecjalnosci, FirmyObszarDzialania, Specjalnosci, Wojewodztwa, Powiaty, Adresy, Email, Telefon, Osoby
 from app import db
 from unidecode import unidecode
 from app.forms import CompanyForm # Upewnij się, że CompanyForm jest importowany
