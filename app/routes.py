@@ -11,30 +11,119 @@ main = Blueprint('main', __name__)
 @main.route('/')
 def index():
     query = Firmy.query
-    
+
     # Handle search filter
     search = request.args.get('search', '')
     if search:
-        # Normalizacja wyszukiwanego tekstu
-        normalized_search = f"%{unidecode(search).lower()}%"
+        # Normalizacja tekstu wyszukiwania - usuwanie znaków specjalnych
+        normalized_search = ''.join(c for c in search if c.isalnum() or c.isspace())
 
-        # Utwórz warunki filtrowania bez użycia unaccent
-        filters = or_(
-            func.lower(Firmy.Nazwa_Firmy).like(normalized_search),
-            func.lower(Adresy.Miejscowosc).like(normalized_search),
-            func.lower(Adresy.Ulica_Miejscowosc).like(normalized_search),
-            func.lower(Email.e_mail).like(normalized_search),
-            func.lower(Telefon.telefon).like(normalized_search),
-            func.lower(Osoby.Imie).like(normalized_search),
-            func.lower(Osoby.Nazwisko).like(normalized_search)
-        )
+        # Lista do przechowywania ID firm, które pasują do kryteriów wyszukiwania
+        matching_company_ids = set()
 
-        query = query.join(Adresy, isouter=True)\
-                    .join(Email, isouter=True)\
-                    .join(Telefon, isouter=True)\
-                    .join(Osoby, isouter=True)\
-                    .filter(filters)
-    
+        # Funkcja normalizująca tekst
+        def normalize_text(text):
+            if text is None:
+                return ""
+            return ''.join(c for c in str(text) if c.isalnum() or c.isspace())
+
+        # Wyszukiwanie w tabeli FIRMY
+        firmy_results = Firmy.query.all()
+        for firma in firmy_results:
+            if (normalized_search in normalize_text(firma.Nazwa_Firmy).lower() or
+                normalized_search in normalize_text(firma.Strona_www).lower() or
+                normalized_search in normalize_text(firma.Uwagi).lower()):
+                matching_company_ids.add(firma.ID_FIRMY)
+
+        # Wyszukiwanie w tabeli ADRESY
+        adres_results = Adresy.query.all()
+        for adres in adres_results:
+            if (normalized_search in normalize_text(adres.Kod).lower() or
+                normalized_search in normalize_text(adres.Miejscowosc).lower() or
+                normalized_search in normalize_text(adres.Ulica_Miejscowosc).lower()):
+                if adres.ID_FIRMY:
+                    matching_company_ids.add(adres.ID_FIRMY)
+
+        # Wyszukiwanie w tabeli EMAIL
+        email_results = Email.query.all()
+        for email in email_results:
+            if normalized_search in normalize_text(email.e_mail).lower():
+                if email.ID_FIRMY:
+                    matching_company_ids.add(email.ID_FIRMY)
+
+        # Wyszukiwanie w tabeli TELEFON
+        telefon_results = Telefon.query.all()
+        for telefon in telefon_results:
+            if normalized_search in normalize_text(telefon.telefon).lower():
+                if telefon.ID_FIRMY:
+                    matching_company_ids.add(telefon.ID_FIRMY)
+
+        # Wyszukiwanie w tabeli OSOBY
+        osoby_results = Osoby.query.all()
+        for osoba in osoby_results:
+            if (normalized_search in normalize_text(osoba.Imie).lower() or
+                normalized_search in normalize_text(osoba.Nazwisko).lower() or
+                normalized_search in normalize_text(osoba.Stanowisko).lower() or
+                normalized_search in normalize_text(osoba.e_mail).lower() or
+                normalized_search in normalize_text(osoba.telefon).lower()):
+                if osoba.ID_FIRMY:
+                    matching_company_ids.add(osoba.ID_FIRMY)
+
+        # Wyszukiwanie w tabeli OCENY
+        oceny_results = Oceny.query.all()
+        for ocena in oceny_results:
+            if (normalized_search in normalize_text(ocena.Osoba_oceniajaca).lower() or
+                normalized_search in normalize_text(ocena.Budowa_Dzial).lower() or
+                normalized_search in normalize_text(ocena.Komentarz).lower()):
+                if ocena.ID_FIRMY:
+                    matching_company_ids.add(ocena.ID_FIRMY)
+
+        # Wyszukiwanie w tabeli SPECJALNOSCI (przez relację)
+        specjalnosci_results = Specjalnosci.query.all()
+        for spec in specjalnosci_results:
+            if normalized_search in normalize_text(spec.Specjalnosc).lower():
+                firmy_spec = FirmySpecjalnosci.query.filter_by(ID_SPECJALNOSCI=spec.ID_SPECJALNOSCI).all()
+                for fs in firmy_spec:
+                    matching_company_ids.add(fs.ID_FIRMY)
+
+        # Wyszukiwanie po typie firmy
+        firmy_typ_results = FirmyTyp.query.all()
+        for typ in firmy_typ_results:
+            if normalized_search in normalize_text(typ.Typ_firmy).lower():
+                firmy_by_typ = Firmy.query.filter_by(ID_FIRMY_TYP=typ.ID_FIRMY_TYP).all()
+                for firma in firmy_by_typ:
+                    matching_company_ids.add(firma.ID_FIRMY)
+
+        # Wyszukiwanie po obszarze działania (województwa, powiaty, kraj)
+        wojewodztwa_results = Wojewodztwa.query.all()
+        for woj in wojewodztwa_results:
+            if normalized_search in normalize_text(woj.Wojewodztwo).lower():
+                firmy_woj = FirmyObszarDzialania.query.filter_by(ID_WOJEWODZTWA=woj.ID_WOJEWODZTWA).all()
+                for fw in firmy_woj:
+                    matching_company_ids.add(fw.ID_FIRMY)
+
+        powiaty_results = Powiaty.query.all()
+        for pow in powiaty_results:
+            if normalized_search in normalize_text(pow.Powiat).lower():
+                firmy_pow = FirmyObszarDzialania.query.filter_by(ID_POWIATY=pow.ID_POWIATY).all()
+                for fp in firmy_pow:
+                    matching_company_ids.add(fp.ID_FIRMY)
+
+        kraje_results = Kraj.query.all()
+        for kraj in kraje_results:
+            if normalized_search in normalize_text(kraj.Kraj).lower():
+                firmy_kraj = FirmyObszarDzialania.query.filter_by(ID_KRAJ=kraj.ID_KRAJ).all()
+                for fk in firmy_kraj:
+                    matching_company_ids.add(fk.ID_FIRMY)
+
+        # Filtrowanie głównego zapytania, aby zawierało tylko firmy pasujące do wyszukiwania
+        if matching_company_ids:
+            query = query.filter(Firmy.ID_FIRMY.in_(matching_company_ids))
+        else:
+            # Jeśli nie znaleziono dopasowań, zwróć pustą listę
+            query = query.filter(False)
+
+
     # Handle specialty filter
     specialties = request.args.getlist('specialties')
     if specialties:
