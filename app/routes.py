@@ -123,7 +123,6 @@ def index():
             # Jeśli nie znaleziono dopasowań, zwróć pustą listę
             query = query.filter(False)
 
-
     # Handle specialty filter
     specialties = request.args.getlist('specialties')
     if specialties:

@@ -16,7 +16,18 @@ body {
 .left-column {
   position: sticky;
   top: 70px;
-  height: fit-content;
+  max-height: calc(100vh - 100px); 
+}
+
+.left-column .card {
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.left-column .card-body {
+  overflow-y: auto;
+  flex: 1;
 }
 
 /* ===== KARTY ===== */
@@ -48,12 +59,27 @@ body {
     min-width: 120px;
 }
 
-/* Przyciski w formularzu filtrowania (lewa kolumna i mobile) */
-.left-column .card-body .btn,
+/* Przyciski w formularzu filtrowania  mobile */
 .mobile-filter-content .btn {
     width: 100%;
     margin-bottom: 0.5rem;
     justify-content: center;
+}
+
+/* Przyciski w formularzu filtrowania (lewa kolumna) */
+.left-column .card-body .btn {
+        width: 48%; /* Zmniejszono szerokość, żeby zmieściły się obok siebie */
+        margin-bottom: 0.5rem;
+        justify-content: center;
+        display: inline-block; /* Sprawiają, że elementy ustawiają się inline */
+    }
+
+/* Styl dla kontenera przycisków */
+.d-grid.gap-2.mt-4 {
+    display: flex !important; /* Nadpisuje d-grid */
+    flex-wrap: wrap;
+    justify-content: space-between; /* Równomierne rozłożenie na szerokości */
+    gap: 8px; /* Odstęp między przyciskami */
 }
 
 /* Grupa przycisków */
