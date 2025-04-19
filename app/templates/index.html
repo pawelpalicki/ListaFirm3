@@ -18,7 +18,7 @@
                     
                     <div class="mb-3">
                         <label for="specialties" class="form-label">Specjalności</label>
-                        <select multiple class="form-select" id="specialties" name="specialties" size="10">
+                        <select multiple class="form-select" id="specialties" name="specialties" size="10" >
                             {% for specialty in all_specialties %}
                             <option value="{{ specialty.ID_SPECJALNOSCI }}" 
                                 {% if specialty.ID_SPECJALNOSCI|string in request.args.getlist('specialties') %}selected{% endif %}>

@@ -108,6 +108,42 @@ body {
     }
 }
 
+/* ===== MULTISELECT ===== */
+
+/* Style dla niestandardowego multiselect */
+.custom-multi-select {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.custom-multi-select .checkbox-container {
+    background-color: #fff;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 1rem;
+}
+
+.custom-multi-select .form-check {
+    padding-left: 25px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.custom-multi-select .form-check:hover {
+    background-color: #f8f9fa;
+}
+
+.custom-multi-select .form-check-input {
+    margin-right: 8px;
+    vertical-align: top;
+}
+
+.custom-multi-select .form-check-label {
+    display: inline;
+    margin-left: 4px;
+    word-break: break-word;
+}
+
 /* ===== ELEMENTY FIRM ===== */
 .company-row {
     cursor: pointer;
