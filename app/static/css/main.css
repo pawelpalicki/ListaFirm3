@@ -163,7 +163,7 @@ body {
 #mobile-filter-overlay {
   display: none;
   position: fixed;
-  top: var(--navbar-height) !important;
+  top: 10px;
   left: 0;
   right: 0;
   bottom: 0;

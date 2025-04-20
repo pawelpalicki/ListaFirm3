@@ -18,9 +18,9 @@
                     
                     <div class="mb-3">
                         <label for="specialties" class="form-label">Specjalności</label>
-                        <select multiple class="form-select" id="specialties" name="specialties" size="10" >
+                        <select multiple class="form-select" id="specialties" name="specialties" size="6">
                             {% for specialty in all_specialties %}
-                            <option value="{{ specialty.ID_SPECJALNOSCI }}" 
+                            <option value="{{ specialty.ID_SPECJALNOSCI }}"
                                 {% if specialty.ID_SPECJALNOSCI|string in request.args.getlist('specialties') %}selected{% endif %}>
                                 {{ specialty.Specjalnosc }}
                             </option>
@@ -156,11 +156,10 @@
                        value="{{ request.args.get('search', '') }}" placeholder="Wpisz tekst...">
             </div>
             
-            <div class="mb-3">
-                <label for="specialties-mobile" class="form-label">Specjalności</label>
+            <div class="mb-3"> <label for="specialties-mobile" class="form-label">Specjalności</label>
                 <select multiple class="form-select" id="specialties-mobile" name="specialties" size="6">
                     {% for specialty in all_specialties %}
-                    <option value="{{ specialty.ID_SPECJALNOSCI }}" 
+                    <option value="{{ specialty.ID_SPECJALNOSCI }}"
                         {% if specialty.ID_SPECJALNOSCI|string in request.args.getlist('specialties') %}selected{% endif %}>
                         {{ specialty.Specjalnosc }}
                     </option>
