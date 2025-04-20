@@ -31,6 +31,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }],
             threshold: 0.6
         },
+        placeholder: true,
+        placeholderValue: "Wybierz specjalność",
         searchPlaceholderValue: 'Szukaj specjalności...',
         // Możesz dodać inne opcje specyficzne dla mobile, jeśli potrzebujesz
     });
