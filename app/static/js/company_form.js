@@ -1,4 +1,7 @@
 $(document).ready(function() {
+    // Inicjalizacja Select2 dla odpowiednich pól
+    initializeSelect2();
+
     $('#dodaj-adres').click(function() {
         var adresyContainer = $('#adresy-container');
         var index = adresyContainer.children('.adres-form').length;
@@ -40,63 +43,97 @@ $(document).ready(function() {
             </div>
         `);
     });
-    //Analogicznie dla telefonów, osób i ocen
-    // Aktualizacja listy powiatów po zmianie województwa
-    $('#wojewodztwa-select').change(function() {
-        const wojewodztwoId = $(this).val();
-        if (wojewodztwoId) {
-            $.getJSON(`/api/powiaty/${wojewodztwoId}`, function(data) {
-                const powiatSelect = $('#powiaty-select');
-                powiatSelect.empty();
-                powiatSelect.append('<option value="">Wybierz powiat</option>');
+
+    // Modyfikacja obsługi województw - użycie Select2 zamiast zwykłego selecta
+    // Ponieważ Select2 ma inne zachowanie niż standardowe pola, modyfikujemy funkcje
+
+    // Obsługa zmian w Select2 województwa
+    $('#wojewodztwa').on('change', function() {
+        loadPowiaty();
+    });
+
+    // Obsługa zmian w Select2 powiatów - jeśli potrzebna
+    $('#powiaty').on('change', function() {
+        // Ewentualny kod obsługi zmiany powiatów
+    });
+
+    // Funkcja do ładowania powiatów na podstawie wybranych województw
+    function loadPowiaty() {
+        const selectedWojewodztwa = $('#wojewodztwa').val();
+
+        if (selectedWojewodztwa && selectedWojewodztwa.length > 0) {
+            // Pobieramy powiaty dla wszystkich wybranych województw
+            // Możesz dostosować to do swojego API, jeśli obsługuje wiele województw naraz
+            const firstWojewodztwo = selectedWojewodztwa[0];
+
+            $.getJSON(`/api/powiaty/${firstWojewodztwo}`, function(data) {
+                const powiatySelect = $('#powiaty');
+
+                // Zachowujemy aktualnie wybrane powiaty
+                const currentSelection = powiatySelect.val() || [];
+
+                // Resetujemy opcje
+                powiatySelect.empty();
+
+                // Dodajemy nowe opcje
                 $.each(data, function(i, item) {
-                    powiatSelect.append($('<option>').attr('value', item.id).text(item.name));
+                    powiatySelect.append($('<option>').attr('value', item.id).text(item.name));
                 });
+
+                // Aktualizujemy Select2
+                powiatySelect.val(currentSelection).trigger('change');
             });
-        } else {
-            $('#powiaty-select').empty().append('<option value="">Wybierz powiat</option>');
         }
-    });
+    }
 
-    // Dodawanie województwa do kontenera
-    $('#dodaj-wojewodztwo').click(function() {
-        $('#wojewodztwa-select option:selected').each(function() {
-            const wojewodztwoId = $(this).val();
-            const wojewodztwoName = $(this).text();
-            $('#wybrane-obszary').append(`<span class="badge bg-primary m-1" data-id="${wojewodztwoId}">${wojewodztwoName} <button type="button" class="btn-close" aria-label="Usuń"></button></span>`);
+    // Funkcja inicjalizująca Select2 dla wszystkich odpowiednich pól
+    function initializeSelect2() {
+        // Inicjalizacja dla głównych pól wyboru
+        $('#specjalnosci').select2({
+            width: '100%',
+            theme: 'classic',
+            placeholder: "Wybierz specjalności...",
+            allowClear: true
         });
-        aktualizujUkrytePola();
-    });
 
-    // Dodawanie powiatu do kontenera
-    $('#dodaj-powiat').click(function() {
-        $('#powiaty-select option:selected').each(function() {
-            const powiatId = $(this).val();
-            const powiatName = $(this).text();
-            $('#wybrane-obszary').append(`<span class="badge bg-success m-1" data-id="${powiatId}">${powiatName} <button type="button" class="btn-close" aria-label="Usuń"></button></span>`);
+        $('#wojewodztwa').select2({
+            width: '100%',
+            theme: 'classic',
+            placeholder: "Wybierz województwa...",
+            allowClear: true
         });
-        aktualizujUkrytePola();
-    });
 
-    // Usuwanie wybranego obszaru
-    $(document).on('click', '.btn-close', function() {
-        $(this).parent().remove();
-        aktualizujUkrytePola();
-    });
+        $('#powiaty').select2({
+            width: '100%',
+            theme: 'classic',
+            placeholder: "Wybierz powiaty...",
+            allowClear: true
+        });
 
-    // Aktualizacja ukrytych pól z wybranymi ID
-    function aktualizujUkrytePola() {
-        const wojewodztwaIds = [];
-        const powiatyIds = [];
-        $('#wybrane-obszary span').each(function() {
-            const id = $(this).data('id');
-            if ($(this).hasClass('bg-primary')) {
-                wojewodztwaIds.push(id);
-            } else if ($(this).hasClass('bg-success')) {
-                powiatyIds.push(id);
+        // Inicjalizacja dla innych pól SelectField, które mogą wymagać Select2
+        $('.select2-field').select2({
+            width: '100%',
+            theme: 'classic'
+        });
+
+        // Zapisujemy referencje do oryginalnych funkcji Select2
+        const originalSelect2 = $.fn.select2;
+
+        // Rozszerzamy metodę .append() jQuery, aby automatycznie inicjalizować Select2 dla nowo dodanych pól
+        const originalAppend = $.fn.append;
+        $.fn.append = function() {
+            const result = originalAppend.apply(this, arguments);
+            if (this.find('select').length > 0) {
+                this.find('select').each(function() {
+                    if (!$(this).data('select2')) {
+                        $(this).select2({
+                            width: '100%',
+                            theme: 'classic'
+                        });
+                    }
+                });
             }
-        });
-        $('#wojewodztwa-input').val(wojewodztwaIds.join(','));
-        $('#powiaty-input').val(powiatyIds.join(','));
+            return result;
+        };
     }
 });
