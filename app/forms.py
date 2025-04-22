@@ -39,7 +39,7 @@ class RatingForm(FlaskForm):
     komentarz = TextAreaField('Komentarz')
 
 class CompanyForm(FlaskForm):
-    nazwa_firmy = StringField('Nazwa firmy', validators=[DataRequired()])
+    nazwa_firmy = TextAreaField('Nazwa firmy', validators=[DataRequired()])
     typ_firmy = SelectField('Typ firmy')
     strona_www = StringField('Strona WWW')
     uwagi = TextAreaField('Uwagi')
