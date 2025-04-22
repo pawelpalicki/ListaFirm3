@@ -108,40 +108,138 @@ body {
     }
 }
 
-/* ===== MULTISELECT ===== */
+/* ===== MULTISELECT SELECT2 CUSTOM===== */
 
-/* Style dla niestandardowego multiselect */
-.custom-multi-select {
-    width: 100%;
-    margin-bottom: 1rem;
+.select2-selection--multiple {
+    border-color: #e0e0e0 !important;
 }
 
-.custom-multi-select .checkbox-container {
-    background-color: #fff;
-    width: 100%;
-    box-sizing: border-box;
+/* .select2-search__field__placeholder{
+    padding-left: 0.5rem;
+    font-size: 50px;
+} */
+
+.select2-selection--custom {
+    /* Dostosuj wygląd inputa Select2 */
+    /* background-color: #000; */
+    /* border: 1px solid #007bff;
+    border-radius: 3rem; */
+    padding: 0.25rem 0.5rem;
+    font-size: 14px;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    line-height: 1.5;
+    /* height: auto; */
+    /* min-height: 1.5rem; */
+}
+
+.select2-selection--custom:focus,
+.select2-container--open .select2-selection--custom { /* Dodaj ten selektor */
+    border-color: #116aff;
+    box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+    outline: 0;
+    min-height: 1.5rem;
+}
+
+.select2-selection__rendered {
+    /* Dostosuj wygląd tekstu wybranej opcji / placeholder */
+    color: #f8f9fa;
+    margin-top: 0rem;
+    min-height: 10rem;
+}
+.select2-selection__placeholder{
+    margin-top: 0cap;
+    color: #6c757d;
+    font-size: 25px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: 400;
+}
+
+.select2-search--inline__placeholder{
+    margin-top: 0cap;
+    color: #6c757d;
+    font-size: 16px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: 400;
+}
+
+.select2-container--default .select2-search--inline .select2-search__field::placeholder {
+    font-size: 16px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: 400;
+}
+
+.select2-selection__arrow {
+    /* Dostosuj wygląd strzałki rozwijania */
+    height: 2.5rem;
+    width: 2.5rem;
+    right: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.select2-dropdown--custom {
+    /* Dostosuj wygląd rozwijanej listy */
+    border: 1px solid rgba(0, 0, 0, 0.175);
+    border-color: rgba(0, 0, 0, 0.175);
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
+    z-index: 1000;
+}
+
+.select2-results__option {
+    /* Dostosuj wygląd pojedynczej opcji w liście */
+    padding: 0.25rem 0.5rem;
+    font-size: 1rem;
+    color: #212529;
+}
+
+.select2-results__option:hover,
+.select2-results__option--highlighted {
+    /* Dostosuj wygląd opcji po najechaniu myszą lub zaznaczeniu */
+    background-color: #e9ecef;
+    color: #212529;
+    cursor: pointer;
+}
+
+.select2-results__option[aria-selected="true"] {
+    /* Dostosuj wygląd wybranej opcji */
+    background-color: #007bff;
+    color: #fff;
+}
+.select2-search__field{
     border-radius: 1rem;
+    border: 1px solid ;
+    border-color: #f00;
+    padding: 0.25rem 0.5rem;
+    color: #212529;
+    min-height: 1.5rem;
+    font-size: 16px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+.select2-search__field:focus{
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+    outline: 0;
 }
 
-.custom-multi-select .form-check {
-    padding-left: 25px;
-    margin-bottom: 4px;
-    border-bottom: 1px solid #f0f0f0;
+.select2-selection__choice{
+    background-color: #007bff;
+    color: #212529;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.5rem;
+    margin-right: 0.25rem;
+    margin-left: 2rem;
 }
-
-.custom-multi-select .form-check:hover {
-    background-color: #f8f9fa;
+.select2-selection__choice__remove{
+    color: #fff;
+    margin-left: 0.25rem;
+    cursor: pointer;
 }
-
-.custom-multi-select .form-check-input {
-    margin-right: 8px;
-    vertical-align: top;
-}
-
-.custom-multi-select .form-check-label {
-    display: inline;
-    margin-left: 4px;
-    word-break: break-word;
+.select2-selection__choice__remove:hover{
+    color: #fff;
+    opacity: 0.7;
 }
 
 /* ===== ELEMENTY FIRM ===== */
