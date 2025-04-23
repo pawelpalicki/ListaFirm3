@@ -111,10 +111,10 @@ $(document).ready(function() {
         });
 
         // Inicjalizacja dla innych pól SelectField, które mogą wymagać Select2
-        $('.select2-field').select2({
-            width: '100%',
-            theme: 'classic'
-        });
+        // $('.select2-field').select2({
+        //     width: '100%',
+        //     theme: 'bootstrap5'
+        // });
 
         // Zapisujemy referencje do oryginalnych funkcji Select2
         const originalSelect2 = $.fn.select2;
@@ -128,7 +128,7 @@ $(document).ready(function() {
                     if (!$(this).data('select2')) {
                         $(this).select2({
                             width: '100%',
-                            theme: 'classic'
+                            theme: 'default'
                         });
                     }
                 });

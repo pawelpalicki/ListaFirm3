@@ -1,25 +1,46 @@
 $(document).ready(function() {
-    // Funkcja normalizująca tekst
-    const normalizeText = (text) => {
-        return text
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .toLowerCase();
-    };
+
+    // // Funkcja normalizująca tekst
+    // const normalizeText = (text) => {
+    //     return text
+    //         .normalize('NFD')
+    //         .replace(/[\u0300-\u036f]/g, '')
+    //         .toLowerCase();
+    // };
+
+    // // Dodaj obsługę wyszukiwania niewrażliwego na polskie znaki i wielkość liter dla Select2
+    // $.fn.select2.amd.require(['select2/compat/matcher'], function(matcher) {
+    //     $('#specialties, #specialties-mobile').select2({
+    //         matcher: function(params, data) {
+    //             if ($.trim(params.term) === '') {
+    //                 return data;
+    //             }
+    //             if (typeof data.text === 'undefined') {
+    //                 return null;
+    //             }
+    //             var normalizedSearchTerm = normalizeText(params.term);
+    //             var normalizedDataText = normalizeText(data.text);
+    //             if (normalizedDataText.indexOf(normalizedSearchTerm) > -1) {
+    //                 return data;
+    //             }
+    //             return null;
+    //         }
+    //     });
+    // });
 
     // Inicjalizacja Select2 dla desktopowej wersji
     $('#specialties').select2({
         placeholder: "Wybierz specjalność - wpisz by filtrować",
         allowClear: true,
         language: {
-            noResults: function () {
+            noResults: function() {
                 return "Nie znaleziono wyników";
             },
-            searching: function () {
+            searching: function() {
                 return "Szukam...";
             }
         },
-        dropdownCssClass: "select2-dropdown--custom",  // Dodano własne klasy CSS
+        dropdownCssClass: "select2-dropdown--custom",
         selectionCssClass: "select2-selection--custom",
         dropdownParent: $('body')
     });
@@ -29,38 +50,17 @@ $(document).ready(function() {
         placeholder: "Wybierz specjalność - wpisz by filtrować",
         allowClear: true,
         language: {
-            noResults: function () {
+            noResults: function() {
                 return "Nie znaleziono wyników";
             },
-            searching: function () {
+            searching: function() {
                 return "Szukam...";
             }
         },
-        dropdownCssClass: "select2-dropdown--custom",  // Dodano własne klasy CSS
+        dropdownCssClass: "select2-dropdown--custom",
         selectionCssClass: "select2-selection--custom",
         dropdownParent: $('#mobile-filter-overlay')
     });
-
-    // Dodaj obsługę wyszukiwania niewrażliwego na polskie znaki i wielkość liter dla Select2
-    $.fn.select2.amd.require(['select2/compat/matcher'], function(matcher) {
-        $('#specialties, #specialties-mobile').select2({
-            matcher: function(params, data) {
-                if ($.trim(params.term) === '') {
-                    return data;
-                }
-                if (typeof data.text === 'undefined') {
-                    return null;
-                }
-                var normalizedSearchTerm = normalizeText(params.term);
-                var normalizedDataText = normalizeText(data.text);
-                if (normalizedDataText.indexOf(normalizedSearchTerm) > -1) {
-                    return data;
-                }
-                return null;
-            }
-        });
-    });
-
 
     // Obsługa nawigacji mobilnej
     const navbar = document.querySelector('.navbar');
@@ -99,26 +99,42 @@ $(document).ready(function() {
         });
     }
 
-
-    // Handle wojewodztwo change to update powiaty list
-    $('#wojewodztwo, #wojewodztwo-mobile').change(function() {
-        const wojewodztwoId = $(this).val();
-        const powiatSelect = $(this).attr('id').includes('mobile') ? $('#powiat-mobile') : $('#powiat');
+    // Funkcja aktualizacji powiatów
+    function updatePowiaty(wojewodztwoId, isMobile) {
+        const powiatSelect = isMobile ? $('#powiat-mobile') : $('#powiat');
 
         if (wojewodztwoId) {
             $.getJSON(`/api/powiaty/${wojewodztwoId}`, function(data) {
+                const currentPowiat = powiatSelect.val();
                 powiatSelect.empty();
                 powiatSelect.append('<option value="">Wybierz powiat</option>');
                 $.each(data, function(i, item) {
                     powiatSelect.append($('<option>').attr('value', item.id).text(item.name));
                 });
+                if (currentPowiat) powiatSelect.val(currentPowiat);
             });
         } else {
-            powiatSelect.empty().append('<option value="">Wybierz powiat</option>');
+            powiatSelect.empty().append('<option value="">Wybierz najpierw województwo</option>');
         }
+    }
+
+    // Obsługa zmian województwa
+    $('#wojewodztwo, #wojewodztwo-mobile').change(function() {
+        updatePowiaty($(this).val(), $(this).attr('id').includes('mobile'));
     });
 
-    // Handle company row click to show details - przeniesiono z index.html
+    // Inicjalizacja powiatów
+    const initPowiaty = (selector, isMobile) => {
+        const wojSelect = $(selector);
+        if (wojSelect.val()) {
+            updatePowiaty(wojSelect.val(), isMobile);
+        }
+    };
+
+    initPowiaty('#wojewodztwo', false);
+    initPowiaty('#wojewodztwo-mobile', true);
+
+    // Handle company row click to show details
     $('.company-row').click(function() {
         const companyId = $(this).data('company-id');
         const detailsRow = $(`#details-${companyId}`);

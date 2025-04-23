@@ -1,14 +1,14 @@
 /* ===== GLOBALNE STYLE ===== */
-body {
-    background-color: #f8f9fa;
-    position: relative;
-}
-
 :root {
     --btn-primary-color: #0d6efd;
     --btn-secondary-color: #6c757d;
     --btn-success-color: #198754;
     --card-border-color: rgba(0, 0, 0, 0.08);
+}
+
+body {
+    background-color: #f8f9fa;
+    position: relative;
 }
 
 /* ===== KOLUMNY ===== */
@@ -310,10 +310,6 @@ body {
     border-bottom: 1px solid #dee2e6;
     padding-bottom: 10px;
     margin-bottom: 15px;
-}
-
-#close-mobile-filter {
-    margin-left: auto; /* To zapewnia wyrównanie do prawej w flexboxie, choć tu już d-flex z justify-content-between to robi */
 }
 
 /* ===== IKONY ===== */
