@@ -35,7 +35,6 @@ $(document).ready(function() {
                 <div class="mb-2">
                     <label class="form-label">Typ e-maila</label>
                     <select class="form-select" name="emaile-${index}-typ_emaila"></select>
-                </div>
                 <div class="mb-2">
                     <label class="form-label">E-mail</label>
                     <input type="email" class="form-control" name="emaile-${index}-email">

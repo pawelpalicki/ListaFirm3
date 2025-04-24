@@ -3,13 +3,23 @@
     --btn-primary-color: #0d6efd;
     --btn-secondary-color: #6c757d;
     --btn-success-color: #198754;
-    --card-border-color: rgba(0, 0, 0, 0.08);
+    --card-border-color: rgba(0, 0, 0, 0.1);
 }
 
 body {
     background-color: #f8f9fa;
     position: relative;
 }
+
+
+/* ===== NAVBAR ===== */
+
+.nav-link {
+    color: ofwhite;
+    font-weight: 500;
+    text-align: right;
+}
+
 
 /* ===== KOLUMNY ===== */
 
@@ -30,10 +40,11 @@ body {
   flex: 1;
 }
 
+
 /* ===== KARTY ===== */
 .card {
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     margin-bottom: 1.5rem;
     border: 1px solid var(--card-border-color);
     overflow: hidden;
@@ -42,7 +53,7 @@ body {
 
 /* Zagnieżdżone karty w formularzu firmy */
 .card .card {
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* ===== PRZYCISKI - SPÓJNE STYLE ===== */
@@ -101,9 +112,9 @@ body {
 }
 
 /* Grupa przycisków */
-.btn-group-vertical {
+/* .btn-group-vertical {
     width: 100%;
-}
+} */
 
 /* Ikony */
 .btn .bi {
@@ -152,6 +163,7 @@ body {
     border-color: #e0e0e0 !important;
 }
 
+
 .select2-selection--custom {
     padding: 0.25rem 0.5rem;
     font-size: 14px;
@@ -160,8 +172,9 @@ body {
 }
 
 .select2-selection--custom:focus,
+.select2-selection--multiple:focus,
 .select2-container--open .select2-selection--custom { /* Dodaj ten selektor */
-    border-color: #116aff;
+    border-color: #80bdff;
     box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
     outline: 0;
     min-height: 1.5rem;
@@ -208,7 +221,7 @@ body {
 
 .select2-dropdown--custom {
     /* Dostosuj wygląd rozwijanej listy */
-    border: 1px solid rgba(0, 0, 0, 0.175);
+    border: 1px solid ;
     border-color: rgba(0, 0, 0, 0.175);
     border-radius: 0.5rem;
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
@@ -235,10 +248,11 @@ body {
     background-color: #007bff;
     color: #fff;
 }
+
 .select2-search__field{
     border-radius: 1rem;
     border: 1px solid ;
-    border-color: #f00;
+    border-color: #80bdff;
     padding: 0.25rem 0.5rem;
     color: #212529;
     min-height: 1.5rem;
@@ -252,7 +266,6 @@ body {
 }
 
 .select2-selection__choice{
-    background-color: #007bff;
     color: #212529;
     border-radius: 0.5rem;
     padding: 0.5rem 0.5rem;
@@ -261,7 +274,6 @@ body {
 }
 .select2-selection__choice__remove{
     color: #fff;
-    margin-left: 0.25rem;
     cursor: pointer;
 }
 .select2-selection__choice__remove:hover{
