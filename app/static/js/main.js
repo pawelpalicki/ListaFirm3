@@ -1,66 +1,5 @@
 $(document).ready(function() {
-
-    // // Funkcja normalizująca tekst
-    // const normalizeText = (text) => {
-    //     return text
-    //         .normalize('NFD')
-    //         .replace(/[\u0300-\u036f]/g, '')
-    //         .toLowerCase();
-    // };
-
-    // // Dodaj obsługę wyszukiwania niewrażliwego na polskie znaki i wielkość liter dla Select2
-    // $.fn.select2.amd.require(['select2/compat/matcher'], function(matcher) {
-    //     $('#specialties, #specialties-mobile').select2({
-    //         matcher: function(params, data) {
-    //             if ($.trim(params.term) === '') {
-    //                 return data;
-    //             }
-    //             if (typeof data.text === 'undefined') {
-    //                 return null;
-    //             }
-    //             var normalizedSearchTerm = normalizeText(params.term);
-    //             var normalizedDataText = normalizeText(data.text);
-    //             if (normalizedDataText.indexOf(normalizedSearchTerm) > -1) {
-    //                 return data;
-    //             }
-    //             return null;
-    //         }
-    //     });
-    // });
-
-    // Inicjalizacja Select2 dla desktopowej wersji
-    $('#specialties').select2({
-        placeholder: "Wybierz specjalność - wpisz by filtrować",
-        allowClear: true,
-        language: {
-            noResults: function() {
-                return "Nie znaleziono wyników";
-            },
-            searching: function() {
-                return "Szukam...";
-            }
-        },
-        dropdownCssClass: "select2-dropdown--custom",
-        selectionCssClass: "select2-selection--custom",
-        dropdownParent: $('body')
-    });
-
-    // Inicjalizacja Select2 dla mobilnej wersji
-    $('#specialties-mobile').select2({
-        placeholder: "Wybierz specjalność - wpisz by filtrować",
-        allowClear: true,
-        language: {
-            noResults: function() {
-                return "Nie znaleziono wyników";
-            },
-            searching: function() {
-                return "Szukam...";
-            }
-        },
-        dropdownCssClass: "select2-dropdown--custom",
-        selectionCssClass: "select2-selection--custom",
-        dropdownParent: $('#mobile-filter-overlay')
-    });
+    // Inicjalizacja Select2 jest teraz obsługiwana przez select2_config.js
 
     // Obsługa nawigacji mobilnej
     const navbar = document.querySelector('.navbar');
@@ -112,9 +51,13 @@ $(document).ready(function() {
                     powiatSelect.append($('<option>').attr('value', item.id).text(item.name));
                 });
                 if (currentPowiat) powiatSelect.val(currentPowiat);
+
+                // Odśwież Select2 po aktualizacji opcji
+                powiatSelect.trigger('change');
             });
         } else {
             powiatSelect.empty().append('<option value="">Wybierz najpierw województwo</option>');
+            powiatSelect.trigger('change');
         }
     }
 
