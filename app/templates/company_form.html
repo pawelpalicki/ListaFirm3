@@ -26,7 +26,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <!-- Lewa kolumna - podstawowe informacje -->
-                                <div class="col-md-4">
+                                <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-12 mb-3">
                                             {{ form.nazwa_firmy.label(class="form-label") }}
@@ -50,7 +50,7 @@
                                 </div>
 
                                 <!-- Prawa kolumna - dane kontaktowe -->
-                                <div class="col-md-8">
+                                <div class="col-md-12">
                                     <!-- Adresy -->
                                     <h6 class="border-top pt-3">Adresy</h6>
                                     <div id="adresy-container">
@@ -79,10 +79,10 @@
                                             </div>
                                         </div>
                                         {% endfor %}
-                                    </div>
-                                    <button type="button" id="dodaj-adres" class="btn btn-secondary mb-4">
+                                        <button type="button" id="dodaj-adres" class="btn btn-secondary mb-4">
                                         <i class="bi bi-plus-circle"></i> Dodaj adres
-                                    </button>
+                                         </button>
+                                    </div>
 
                                     <!-- Telefony i e-maile -->
                                     <div class="row border-top pt-3">
@@ -104,10 +104,10 @@
                                                     </div>
                                                 </div>
                                                 {% endfor %}
-                                            </div>
-                                            <button type="button" id="dodaj-telefon" class="btn btn-secondary">
+                                                <button type="button" id="dodaj-telefon" class="btn btn-secondary">
                                                 <i class="bi bi-plus-circle"></i> Dodaj telefon
-                                            </button>
+                                                </button>
+                                            </div>
                                         </div>
 
                                         <div class="col-md-6">
@@ -128,10 +128,10 @@
                                                     </div>
                                                 </div>
                                                 {% endfor %}
-                                            </div>
-                                            <button type="button" id="dodaj-email" class="btn btn-secondary">
+                                                <button type="button" id="dodaj-email" class="btn btn-secondary">
                                                 <i class="bi bi-plus-circle"></i> Dodaj e-mail
-                                            </button>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -209,10 +209,10 @@
                                     </div>
                                 </div>
                                 {% endfor %}
-                            </div>
-                            <button type="button" id="dodaj-osobe" class="btn btn-secondary">
+                                 <button type="button" id="dodaj-osobe" class="btn btn-secondary">
                                 <i class="bi bi-plus-circle"></i> Dodaj osobę
-                            </button>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -252,10 +252,10 @@
                                     </div>
                                 </div>
                                 {% endfor %}
-                            </div>
-                            <button type="button" id="dodaj-ocene" class="btn btn-secondary">
+                                <button type="button" id="dodaj-ocene" class="btn btn-secondary">
                                 <i class="bi bi-plus-circle"></i> Dodaj ocenę
-                            </button>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
