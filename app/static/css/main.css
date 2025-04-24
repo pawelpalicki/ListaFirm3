@@ -335,36 +335,30 @@ body {
 .company-form-content {
     margin-bottom: 2rem;
 }
-
 /* Sekcje formularza */
 .company-form-content .card-header {
     padding: 0.75rem 1rem;
 }
-
 .company-form-content .card-header h5 {
     margin: 0;
     font-size: 1.1rem;
     font-weight: 600;
 }
-
 /* Style pól formularza */
 .form-label {
     font-weight: 500;
     font-size: 0.9rem;
     margin-bottom: 0.25rem;
 }
-
 /* Pola formularza - adresy, telefony, emaile, osoby */
 .adres-form, .telefon-form, .email-form, .osoba-form, .ocena-form {
     background-color: #f9f9f9;
     border-radius: 8px;
     transition: all 0.2s ease;
 }
-
 .adres-form:hover, .telefon-form:hover, .email-form:hover, .osoba-form:hover, .ocena-form:hover {
     background-color: #f5f5f5;
 }
-
 /* Nagłówki sekcji */
 h6 {
     font-size: 1rem;
@@ -372,19 +366,115 @@ h6 {
     margin-bottom: 1rem;
     color: #333;
 }
-
 /* Przyciski dodawania elementów */
 #dodaj-adres, #dodaj-telefon, #dodaj-email, #dodaj-osobe, #dodaj-ocene {
     margin-bottom: 1rem;
 }
 
-/* Responsywność formularza */
+/* ===== STYLE RESPONSYWNYCH TABEL ===== */
+/* Kontener tabeli - używamy już istniejącej klasy table-responsive */
+.responsive-table-container {
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Style dla standardowych tabel (widok desktopowy) */
+.responsive-table th, 
+.responsive-table td {
+    white-space: nowrap;
+    padding: 0.5rem 0.75rem;
+}
+
+/* Style dla kart mobilnych - zgodne z istniejącym wyglądem formularza */
+.mobile-cards-container {
+    margin: 1rem 0 1.5rem;
+}
+
+.mobile-card {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    transition: all 0.2s ease;
+}
+
+.mobile-card:hover {
+    background-color: #f5f5f5;
+}
+
+.mobile-card .card-body {
+    padding: 0.75rem 1rem;
+}
+
+.mobile-card strong {
+    display: inline-block;
+    min-width: 110px;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* Przyciski akcji */
+.action-btn {
+    padding: 0.25rem 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: all 0.2s;
+}
+
+.action-btn i {
+    font-size: 0.9rem;
+}
+
+/* Responsywność formularza i tabel */
+@media (max-width: 992px) {
+    /* Ukrywamy tekst w przyciskach akcji, pokazujemy tylko ikony */
+    .action-btn .btn-text {
+        display: none;
+    }
+
+    .action-btn {
+        padding: 0.25rem 0.5rem;
+    }
+}
+
 @media (max-width: 767.98px) {
     .company-form-content .card-body {
         padding: 1rem;
     }
-
     .form-label {
         margin-top: 0.5rem;
+    }
+
+    /* Alternatywne style dla tabeli w widoku mobilnym (jeśli nie używamy przełączania na karty) */
+    .responsive-table td::before {
+        content: attr(data-label);
+        font-weight: 500;
+        font-size: 0.9rem;
+        display: inline-block;
+        min-width: 110px;
+    }
+
+    .responsive-table td {
+        display: flex;
+        align-items: center;
+        border: none;
+        padding: 0.4rem 0.5rem;
+    }
+
+    .responsive-table th {
+        display: none;
+    }
+
+    .responsive-table tr {
+        display: block;
+        border-bottom: 1px solid #dee2e6;
+        margin-bottom: 0.5rem;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        padding: 0.5rem 0;
+    }
+
+    .responsive-table tbody {
+        display: block;
     }
 }
