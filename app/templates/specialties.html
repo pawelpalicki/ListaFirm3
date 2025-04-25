@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title">{{ title }}</h5>
+                <a href="{{ url_for('main.new_specialty') }}" class="btn btn-success btn-sm">
+                    <i class="bi bi-plus-circle"></i> Dodaj nową specjalność
+                </a>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nazwa</th>
+                            <th>Akcje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                        <tr>
+                            <td>{{ item.ID_SPECJALNOSCI }}</td>
+                            <td>{{ item.Specjalnosc }}</td>
+                            <td>
+                                <a href="{{ url_for('main.edit_specialty', id=item.ID_SPECJALNOSCI) }}" class="btn btn-sm btn-primary">Edytuj</a>
+                                <form action="{{ url_for('main.delete_specialty', id=item.ID_SPECJALNOSCI) }}" method="POST" style="display: inline;">
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Czy na pewno chcesz usunąć tę specjalność?');">Usuń</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

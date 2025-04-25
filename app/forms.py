@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, SelectField, SelectMultipleField, IntegerField, FormField, FieldList
+from wtforms import StringField, TextAreaField, SelectField, SelectMultipleField, IntegerField, FormField, FieldList, SubmitField
 from wtforms.validators import DataRequired, Email, Optional, NumberRange
 from wtforms.widgets import ListWidget, CheckboxInput, Select
 
@@ -117,3 +117,24 @@ class SimpleRatingForm(FlaskForm):
         from app.models import Firmy
         # Load companies for dropdown
         self.firma.choices = [(f.ID_FIRMY, f.Nazwa_Firmy) for f in Firmy.query.all()]
+
+# Forms for adding/editing the four tables
+class SpecialtyForm(FlaskForm):
+    name = StringField('Nazwa Specjalności', validators=[DataRequired()])
+    submit = SubmitField('Zapisz')
+
+class AddressTypeForm(FlaskForm):
+    name = StringField('Nazwa Typu Adresu', validators=[DataRequired()])
+    submit = SubmitField('Zapisz')
+
+class EmailTypeForm(FlaskForm):
+    name = StringField('Nazwa Typu E-maila', validators=[DataRequired()])
+    submit = SubmitField('Zapisz')
+
+class PhoneTypeForm(FlaskForm):
+    name = StringField('Nazwa Typu Telefonu', validators=[DataRequired()])
+    submit = SubmitField('Zapisz')
+
+class CompanyTypeForm(FlaskForm):
+    name = StringField('Nazwa Typu Firmy', validators=[DataRequired()])
+    submit = SubmitField('Zapisz')

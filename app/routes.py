@@ -700,3 +700,337 @@ def edit_company(company_id):
                 return render_template('company_edit_form.html', form=form, title='Edycja firmy') # Dodano context
         else:
             return render_template('company_edit_form.html', form=form, title='Edycja firmy') # Dodano context
+
+
+
+@main.route('/specialties')
+def list_specialties():
+    specialties = Specjalnosci.query.all()
+    return render_template('specialties.html', items=specialties, title='Specjalności')
+
+@main.route('/specialties/new', methods=['GET', 'POST'])
+def new_specialty():
+    from app.forms import SpecialtyForm # Local import
+    form = SpecialtyForm()
+    if form.validate_on_submit():
+        try:
+            # Sprawdzamy, czy specjalność już istnieje (case-insensitive)
+            existing_spec = Specjalnosci.query.filter(func.lower(Specjalnosci.Specjalnosc) == func.lower(form.name.data)).first()
+            if existing_spec:
+                flash('Specjalność o tej nazwie już istnieje.', 'warning')
+            else:
+                max_id = db.session.query(func.max(Specjalnosci.ID_SPECJALNOSCI)).scalar() or 0
+                new_spec = Specjalnosci(ID_SPECJALNOSCI=max_id + 1, Specjalnosc=form.name.data)
+                db.session.add(new_spec)
+                db.session.commit()
+                flash('Specjalność została dodana pomyślnie!', 'success')
+                return redirect(url_for('main.list_specialties'))
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            flash(f'Wystąpił błąd podczas dodawania specjalności: {e}', 'danger')
+    return render_template('simple_form.html', form=form, title='Dodaj Specjalność', back_url=url_for('main.list_specialties'))
+
+@main.route('/specialties/<int:id>/edit', methods=['GET', 'POST'])
+def edit_specialty(id):
+    from app.forms import SpecialtyForm # Local import
+    specialty = Specjalnosci.query.get_or_404(id)
+    form = SpecialtyForm(obj=specialty)
+    if request.method == 'GET':
+        # Explicitly set the form data for the 'name' field from the model attribute 'Specjalnosc'
+        form.name.data = specialty.Specjalnosc
+        return render_template('simple_form.html', form=form, title='Edytuj Specjalność', back_url=url_for('main.list_specialties'))
+    else: # POST request
+        if form.validate_on_submit():
+            try:
+                # Sprawdzamy, czy inna specjalność o tej nazwie już istnieje (case-insensitive)
+                existing_spec = Specjalnosci.query.filter(func.lower(Specjalnosci.Specjalnosc) == func.lower(form.name.data), Specjalnosci.ID_SPECJALNOSCI != id).first()
+                if existing_spec:
+                    flash('Specjalność o tej nazwie już istnieje.', 'warning')
+                else:
+                    specialty.Specjalnosc = form.name.data
+                    db.session.commit()
+                    flash('Specjalność została zaktualizowana pomyślnie!', 'success')
+                    return redirect(url_for('main.list_specialties'))
+            except SQLAlchemyError as e:
+                db.session.rollback()
+                flash(f'Wystąpił błąd podczas aktualizacji specjalności: {e}', 'danger')
+        return render_template('simple_form.html', form=form, title='Edytuj Specjalność', back_url=url_for('main.list_specialties'))
+
+@main.route('/specialties/<int:id>/delete', methods=['POST'])
+def delete_specialty(id):
+    specialty = Specjalnosci.query.get_or_404(id)
+    try:
+        db.session.delete(specialty)
+        db.session.commit()
+        flash('Specjalność została usunięta pomyślnie!', 'success')
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        flash(f'Wystąpił błąd podczas usuwania specjalności: {e}', 'danger')
+    return redirect(url_for('main.list_specialties'))
+
+
+@main.route('/address_types')
+def list_address_types():
+    address_types = AdresyTyp.query.all()
+    return render_template('address_types.html', items=address_types, title='Typy Adresów')
+
+@main.route('/address_types/new', methods=['GET', 'POST'])
+def new_address_type():
+    from app.forms import AddressTypeForm # Local import
+    form = AddressTypeForm()
+    if form.validate_on_submit():
+        try:
+            # Sprawdzamy, czy typ adresu już istnieje (case-insensitive)
+            existing_type = AdresyTyp.query.filter(func.lower(AdresyTyp.Typ_adresu) == func.lower(form.name.data)).first()
+            if existing_type:
+                flash('Typ adresu o tej nazwie już istnieje.', 'warning')
+            else:
+                max_id = db.session.query(func.max(AdresyTyp.ID_ADRESY_TYP)).scalar() or 0
+                new_type = AdresyTyp(ID_ADRESY_TYP=max_id + 1, Typ_adresu=form.name.data)
+                db.session.add(new_type)
+                db.session.commit()
+                flash('Typ adresu został dodany pomyślnie!', 'success')
+                return redirect(url_for('main.list_address_types'))
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            flash(f'Wystąpił błąd podczas dodawania typu adresu: {e}', 'danger')
+    return render_template('simple_form.html', form=form, title='Dodaj Typ Adresu', back_url=url_for('main.list_address_types'))
+
+
+@main.route('/address_types/<int:id>/edit', methods=['GET', 'POST'])
+def edit_address_type(id):
+    from app.forms import AddressTypeForm # Local import
+    address_type = AdresyTyp.query.get_or_404(id)
+    form = AddressTypeForm(obj=address_type)
+    if request.method == 'GET':
+         # Explicitly set the form data for the 'name' field from the model attribute 'Typ_adresu'
+        form.name.data = address_type.Typ_adresu
+        return render_template('simple_form.html', form=form, title='Edytuj Typ Adresu', back_url=url_for('main.list_address_types'))
+    else: # POST request
+        if form.validate_on_submit():
+            try:
+                # Sprawdzamy, czy inny typ adresu o tej nazwie już istnieje (case-insensitive)
+                existing_type = AdresyTyp.query.filter(func.lower(AdresyTyp.Typ_adresu) == func.lower(form.name.data), AdresyTyp.ID_ADRESY_TYP != id).first()
+                if existing_type:
+                    flash('Typ adresu o tej nazwie już istnieje.', 'warning')
+                else:
+                    address_type.Typ_adresu = form.name.data
+                    db.session.commit()
+                    flash('Typ adresu został zaktualizowany pomyślnie!', 'success')
+                    return redirect(url_for('main.list_address_types'))
+            except SQLAlchemyError as e:
+                db.session.rollback()
+                flash(f'Wystąpił błąd podczas aktualizacji typu adresu: {e}', 'danger')
+        return render_template('simple_form.html', form=form, title='Edytuj Typ Adresu', back_url=url_for('main.list_address_types'))
+
+@main.route('/address_types/<int:id>/delete', methods=['POST'])
+def delete_address_type(id):
+    address_type = AdresyTyp.query.get_or_404(id)
+    try:
+        db.session.delete(address_type)
+        db.session.commit()
+        flash('Typ adresu został usunięty pomyślnie!', 'success')
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        flash(f'Wystąpił błąd podczas usuwania typu adresu: {e}', 'danger')
+    return redirect(url_for('main.list_address_types'))
+
+
+@main.route('/email_types')
+def list_email_types():
+    email_types = EmailTyp.query.all()
+    return render_template('email_types.html', items=email_types, title='Typy E-maili')
+
+@main.route('/email_types/new', methods=['GET', 'POST'])
+def new_email_type():
+    from app.forms import EmailTypeForm # Local import
+    form = EmailTypeForm()
+    if form.validate_on_submit():
+        try:
+            # Sprawdzamy, czy typ emaila już istnieje (case-insensitive)
+            existing_type = EmailTyp.query.filter(func.lower(EmailTyp.Typ_emaila) == func.lower(form.name.data)).first()
+            if existing_type:
+                flash('Typ emaila o tej nazwie już istnieje.', 'warning')
+            else:
+                max_id = db.session.query(func.max(EmailTyp.ID_EMAIL_TYP)).scalar() or 0
+                new_type = EmailTyp(ID_EMAIL_TYP=max_id + 1, Typ_emaila=form.name.data)
+                db.session.add(new_type)
+                db.session.commit()
+                flash('Typ emaila został dodany pomyślnie!', 'success')
+                return redirect(url_for('main.list_email_types'))
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            flash(f'Wystąpił błąd podczas dodawania typu emaila: {e}', 'danger')
+    return render_template('simple_form.html', form=form, title='Dodaj Typ E-maila', back_url=url_for('main.list_email_types'))
+
+@main.route('/email_types/<int:id>/edit', methods=['GET', 'POST'])
+def edit_email_type(id):
+    from app.forms import EmailTypeForm # Local import
+    email_type = EmailTyp.query.get_or_404(id)
+    form = EmailTypeForm(obj=email_type)
+    if request.method == 'GET':
+        # Explicitly set the form data for the 'name' field from the model attribute 'Typ_emaila'
+        form.name.data = email_type.Typ_emaila
+        return render_template('simple_form.html', form=form, title='Edytuj Typ E-maila', back_url=url_for('main.list_email_types'))
+    else: # POST request
+        if form.validate_on_submit():
+            try:
+                # Sprawdzamy, czy inny typ emaila o tej nazwie już istnieje (case-insensitive)
+                existing_type = EmailTyp.query.filter(func.lower(EmailTyp.Typ_emaila) == func.lower(form.name.data), EmailTyp.ID_EMAIL_TYP != id).first()
+                if existing_type:
+                    flash('Typ emaila o tej nazwie już istnieje.', 'warning')
+                else:
+                    email_type.Typ_emaila = form.name.data
+                    db.session.commit()
+                    flash('Typ emaila został zaktualizowany pomyślnie!', 'success')
+                    return redirect(url_for('main.list_email_types'))
+            except SQLAlchemyError as e:
+                db.session.rollback()
+                flash(f'Wystąpił błąd podczas aktualizacji typu emaila: {e}', 'danger')
+        return render_template('simple_form.html', form=form, title='Edytuj Typ E-maila', back_url=url_for('main.list_email_types'))
+
+@main.route('/email_types/<int:id>/delete', methods=['POST'])
+def delete_email_type(id):
+    email_type = EmailTyp.query.get_or_404(id)
+    try:
+        db.session.delete(email_type)
+        db.session.commit()
+        flash('Typ emaila został usunięty pomyślnie!', 'success')
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        flash(f'Wystąpił błąd podczas usuwania typu emaila: {e}', 'danger')
+    return redirect(url_for('main.list_email_types'))
+
+
+@main.route('/phone_types')
+def list_phone_types():
+    phone_types = TelefonTyp.query.all()
+    return render_template('phone_types.html', items=phone_types, title='Typy Telefonów')
+
+@main.route('/phone_types/new', methods=['GET', 'POST'])
+def new_phone_type():
+    from app.forms import PhoneTypeForm # Local import
+    form = PhoneTypeForm()
+    if form.validate_on_submit():
+        try:
+            # Sprawdzamy, czy typ telefonu już istnieje (case-insensitive)
+            existing_type = TelefonTyp.query.filter(func.lower(TelefonTyp.Typ_telefonu) == func.lower(form.name.data)).first()
+            if existing_type:
+                flash('Typ telefonu o tej nazwie już istnieje.', 'warning')
+            else:
+                max_id = db.session.query(func.max(TelefonTyp.ID_TELEFON_TYP)).scalar() or 0
+                new_type = TelefonTyp(ID_TELEFON_TYP=max_id + 1, Typ_telefonu=form.name.data)
+                db.session.add(new_type)
+                db.session.commit()
+                flash('Typ telefonu został dodany pomyślnie!', 'success')
+                return redirect(url_for('main.list_phone_types'))
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            flash(f'Wystąpił błąd podczas dodawania typu telefonu: {e}', 'danger')
+    return render_template('simple_form.html', form=form, title='Dodaj Typ Telefonu', back_url=url_for('main.list_phone_types'))
+
+@main.route('/phone_types/<int:id>/edit', methods=['GET', 'POST'])
+def edit_phone_type(id):
+    from app.forms import PhoneTypeForm # Local import
+    phone_type = TelefonTyp.query.get_or_404(id)
+    form = PhoneTypeForm(obj=phone_type)
+    if request.method == 'GET':
+        # Explicitly set the form data for the 'name' field from the model attribute 'Typ_telefonu'
+        form.name.data = phone_type.Typ_telefonu
+        return render_template('simple_form.html', form=form, title='Edytuj Typ Telefonu', back_url=url_for('main.list_phone_types'))
+    else: # POST request
+        if form.validate_on_submit():
+            try:
+                # Sprawdzamy, czy inny typ telefonu o tej nazwie już istnieje (case-insensitive)
+                existing_type = TelefonTyp.query.filter(func.lower(TelefonTyp.Typ_telefonu) == func.lower(form.name.data), TelefonTyp.ID_TELEFON_TYP != id).first()
+                if existing_type:
+                    flash('Typ telefonu o tej nazwie już istnieje.', 'warning')
+                else:
+                    phone_type.Typ_telefonu = form.name.data
+                    db.session.commit()
+                    flash('Typ telefonu został zaktualizowany pomyślnie!', 'success')
+                    return redirect(url_for('main.list_phone_types'))
+            except SQLAlchemyError as e:
+                db.session.rollback()
+                flash(f'Wystąpił błąd podczas aktualizacji typu telefonu: {e}', 'danger')
+        return render_template('simple_form.html', form=form, title='Edytuj Typ Telefonu', back_url=url_for('main.list_phone_types'))
+
+@main.route('/phone_types/<int:id>/delete', methods=['POST'])
+def delete_phone_type(id):
+    phone_type = TelefonTyp.query.get_or_404(id)
+    try:
+        db.session.delete(phone_type)
+        db.session.commit()
+        flash('Typ telefonu został usunięty pomyślnie!', 'success')
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        flash(f'Wystąpił błąd podczas usuwania typu telefonu: {e}', 'danger')
+    return redirect(url_for('main.list_phone_types'))
+
+# Routes for Company Types
+@main.route('/company_types')
+def list_company_types():
+    company_types = FirmyTyp.query.all()
+    return render_template('company_types.html', items=company_types, title='Typy Firm')
+
+@main.route('/company_types/new', methods=['GET', 'POST'])
+def new_company_type():
+    from app.forms import CompanyTypeForm # Local import
+    form = CompanyTypeForm()
+    if form.validate_on_submit():
+        try:
+            # Check if company type already exists (case-insensitive)
+            existing_type = FirmyTyp.query.filter(func.lower(FirmyTyp.Typ_firmy) == func.lower(form.name.data)).first()
+            if existing_type:
+                flash('Typ firmy o tej nazwie już istnieje.', 'warning')
+            else:
+                # Generate a unique ID for FirmyTyp (using UUID snippet from previous try)
+                import uuid
+                new_id = str(uuid.uuid4())[:8].upper() # Skrócony UUID jako identyfikator
+                new_type = FirmyTyp(ID_FIRMY_TYP=new_id, Typ_firmy=form.name.data)
+                db.session.add(new_type)
+                db.session.commit()
+                flash('Typ firmy został dodany pomyślnie!', 'success')
+                return redirect(url_for('main.list_company_types'))
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            flash(f'Wystąpił błąd podczas dodawania typu firmy: {e}', 'danger')
+    return render_template('simple_form.html', form=form, title='Dodaj Typ Firmy', back_url=url_for('main.list_company_types'))
+
+@main.route('/company_types/<string:id>/edit', methods=['GET', 'POST'])
+def edit_company_type(id):
+    from app.forms import CompanyTypeForm # Local import
+    company_type = FirmyTyp.query.get_or_404(id)
+    form = CompanyTypeForm(obj=company_type)
+    if request.method == 'GET':
+         # Explicitly set the form data for the 'name' field from the model attribute 'Typ_firmy'
+        form.name.data = company_type.Typ_firmy
+        return render_template('simple_form.html', form=form, title='Edytuj Typ Firmy', back_url=url_for('main.list_company_types'))
+    else: # POST request
+        if form.validate_on_submit():
+            try:
+                # Check if another company type with this name already exists (case-insensitive)
+                existing_type = FirmyTyp.query.filter(func.lower(FirmyTyp.Typ_firmy) == func.lower(form.name.data), FirmyTyp.ID_FIRMY_TYP != id).first()
+                if existing_type:
+                     flash('Typ firmy o tej nazwie już istnieje.', 'warning')
+                else:
+                    company_type.Typ_firmy = form.name.data
+                    db.session.commit()
+                    flash('Typ firmy został zaktualizowany pomyślnie!', 'success')
+                    return redirect(url_for('main.list_company_types'))
+            except SQLAlchemyError as e:
+                db.session.rollback()
+                flash(f'Wystąpił błąd podczas aktualizacji typu firmy: {e}', 'danger')
+        return render_template('simple_form.html', form=form, title='Edytuj Typ Firmy', back_url=url_for('main.list_company_types'))
+
+@main.route('/company_types/<string:id>/delete', methods=['POST'])
+def delete_company_type(id):
+    company_type = FirmyTyp.query.get_or_404(id)
+    try:
+        db.session.delete(company_type)
+        db.session.commit()
+        flash('Typ firmy został usunięty pomyślnie!', 'success')
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        flash(f'Wystąpił błąd podczas usuwania typu firmy: {e}', 'danger')
+    return redirect(url_for('main.list_company_types'))

@@ -35,11 +35,11 @@
                                 Inne formularze 
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="#">Dodaj Specjalność</a></li>
-                                <li><a class="dropdown-item" href="#">Dodaj typ firmy</a></li>
-                                <li><a class="dropdown-item" href="#">Dodaj typ adresu</a></li>
-                                <li><a class="dropdown-item" href="#">Dodaj typ telefonu</a></li>
-                                <li><a class="dropdown-item" href="#">Dodaj typ e-maila</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('main.list_specialties') }}">Specjalności</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('main.list_company_types') }}">Typy firm</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('main.list_address_types') }}">Typy adresów</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('main.list_phone_types') }}">Typy telefonów</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('main.list_email_types') }}">Typy e-maili</a></li>
                                 <!-- <li><hr class="dropdown-divider"></li> -->
                             </ul>
                         </li>
