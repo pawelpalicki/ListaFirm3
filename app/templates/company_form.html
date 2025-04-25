@@ -32,9 +32,14 @@
                                             {{ form.nazwa_firmy.label(class="form-label") }}
                                             {{ form.nazwa_firmy(class="form-control") }}
                                         </div>
-                                        <div class="col-md-12 mb-3">
-                                            {{ form.typ_firmy.label(class="form-label") }}
-                                            {{ form.typ_firmy(class="form-select") }}
+                                        <div class="mb-3">
+                                            <label for="typ_firmy" class="form-label">{{ form.typ_firmy.label }}</label>
+                                            <div class="input-group">
+                                                {{ form.typ_firmy(class="form-select") }}
+                                                <button type="button" class="btn btn-outline-secondary add-new-option" data-type="firma_typ">
+                                                    <i class="bi bi-plus-circle"></i> Dodaj
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -58,9 +63,14 @@
                                         <div class="adres-form mb-3 p-3 border rounded">
                                             {{ adres.hidden_tag() }}
                                             <div class="row">
-                                                <div class="col-md-4 mb-2">
-                                                    {{ adres.typ_adresu.label(class="form-label") }}
-                                                    {{ adres.typ_adresu(class="form-select") }}
+                                                <div class="mb-3">
+                                                    <label for="adresy-0-typ_adresu" class="form-label">{{ form.adresy[0].typ_adresu.label }}</label>
+                                                    <div class="input-group">
+                                                        {{ form.adresy[0].typ_adresu(class="form-select") }}
+                                                        <button type="button" class="btn btn-outline-secondary add-new-option" data-type="adres_typ">
+                                                            <i class="bi bi-plus-circle"></i> Dodaj
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -93,9 +103,14 @@
                                                 <div class="telefon-form mb-3 p-3 border rounded">
                                                     {{ telefon.hidden_tag() }}
                                                     <div class="row">
-                                                        <div class="col-md-12 mb-2">
-                                                            {{ telefon.typ_telefonu.label(class="form-label") }}
-                                                            {{ telefon.typ_telefonu(class="form-select") }}
+                                                        <div class="mb-3">
+                                                            <label for="telefony-0-typ_telefonu" class="form-label">{{ form.telefony[0].typ_telefonu.label }}</label>
+                                                            <div class="input-group">
+                                                                {{ form.telefony[0].typ_telefonu(class="form-select") }}
+                                                                <button type="button" class="btn btn-outline-secondary add-new-option" data-type="telefon_typ">
+                                                                    <i class="bi bi-plus-circle"></i> Dodaj
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                         <div class="col-md-12 mb-2">
                                                             {{ telefon.telefon.label(class="form-label") }}
@@ -117,9 +132,14 @@
                                                 <div class="email-form mb-3 p-3 border rounded">
                                                     {{ email.hidden_tag() }}
                                                     <div class="row">
-                                                        <div class="col-md-12 mb-2">
-                                                            {{ email.typ_emaila.label(class="form-label") }}
-                                                            {{ email.typ_emaila(class="form-select") }}
+                                                        <div class="mb-3">
+                                                            <label for="emaile-0-typ_emaila" class="form-label">{{ form.emaile[0].typ_emaila.label }}</label>
+                                                            <div class="input-group">
+                                                                {{ form.emaile[0].typ_emaila(class="form-select") }}
+                                                                <button type="button" class="btn btn-outline-secondary add-new-option" data-type="email_typ">
+                                                                    <i class="bi bi-plus-circle"></i> Dodaj
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                         <div class="col-md-12 mb-2">
                                                             {{ email.email.label(class="form-label") }}
@@ -146,8 +166,13 @@
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
-                                {{ form.specjalnosci.label(class="form-label") }}
-                                {{ form.specjalnosci(id="specjalnosci", class="form-select") }}
+                                <label for="specjalnosci" class="form-label">{{ form.specjalnosci.label }}</label>
+                                <div class="input-group">
+                                    {{ form.specjalnosci(class="form-select") }}
+                                    <button type="button" class="btn btn-outline-secondary add-new-option" data-type="specjalnosc">
+                                        <i class="bi bi-plus-circle"></i> Dodaj
+                                    </button>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
@@ -268,6 +293,29 @@
                             <i class="bi bi-arrow-left"></i> Powrót
                         </a>
                     </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Overlay do dodawania nowych typów -->
+<div id="overlay-form-container" class="position-fixed top-0 start-0 w-100 h-100 d-none" style="background-color: rgba(0,0,0,0.5); z-index: 1050;">
+    <div class="container h-100 d-flex align-items-center justify-content-center">
+        <div class="card col-md-6">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 id="overlay-title" class="mb-0">Dodaj nowy typ</h5>
+                <button type="button" class="btn-close" id="close-overlay"></button>
+            </div>
+            <div class="card-body">
+                <form id="overlay-form">
+                    <div class="mb-3">
+                        <label for="overlay-input" class="form-label" id="overlay-label">Nazwa</label>
+                        <input type="text" class="form-control" id="overlay-input" required>
+                    </div>
+                    <input type="hidden" id="overlay-type">
+                    <input type="hidden" id="overlay-id">
+                    <button type="submit" class="btn btn-primary">Dodaj</button>
                 </form>
             </div>
         </div>

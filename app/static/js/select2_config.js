@@ -110,12 +110,45 @@ const Select2Config = {
             this.initMultiSelect('#powiaty', "Wybierz powiaty...");
         }
 
-        // Inicjalizacja dla typowych selectów formularza
-        $('.form-select:not([data-select2-id])').each(function() {
-            Select2Config.initSelect(this);
-        });
+        // // Inicjalizacja dla typowych selectów formularza
+        // $('.form-select:not([data-select2-id])').each(function() {
+        //     Select2Config.initSelect(this);
+        // });
     },
-
+    
+    // Select2Config.reinitializeAfterNewOption = function(selector, newOptionValue, newOptionId) {
+    //     const $select = $(selector);
+    
+    //     // Store current selections
+    //     const currentSelections = $select.val() || [];
+    
+    //     // Add the new option to the underlying select
+    //     $select.append(new Option(newOptionValue, newOptionId, false, false));
+    
+    //     // Properly clean up the existing Select2 instance
+    //     if ($select.data('select2')) {
+    //         $select.select2('destroy');
+    //     }
+    
+    //     // Determine the placeholder based on the selector ID
+    //     let placeholder = "Wybierz...";
+    //     if (selector === '#specjalnosci' || selector.endsWith(' #specjalnosci')) {
+    //         placeholder = "Wybierz specjalności...";
+    //     } else if (selector === '#wojewodztwa' || selector.endsWith(' #wojewodztwa')) {
+    //         placeholder = "Wybierz województwa...";
+    //     } else if (selector === '#powiaty' || selector.endsWith(' #powiaty')) {
+    //         placeholder = "Wybierz powiaty...";
+    //     }
+    
+    //     // Re-initialize with the same method as used in initializeAll
+    //     this.initMultiSelect(selector, placeholder);
+    
+    //     // Restore previous selections
+    //     $select.val(currentSelections).trigger('change');
+    
+    //     return $select;
+    // },
+    
     // Inicjalizacja dla dynamicznie dodawanych elementów
     // initializeDynamicElement: function(container) {
     //     $(container).find('select:not([data-select2-id])').each(function() {
@@ -124,7 +157,25 @@ const Select2Config = {
     // }
 };
 
+
 // Inicjalizacja po załadowaniu dokumentu
 $(document).ready(function() {
     Select2Config.initializeAll();
+
+    // Check if we have stored selections to restore
+    const storedSelections = localStorage.getItem('temp_specjalnosci_selections');
+    if (storedSelections && $('#specjalnosci').length) {
+        try {
+            const selections = JSON.parse(storedSelections);
+            $('#specjalnosci').val(selections).trigger('change');
+
+            // Clean up storage
+            localStorage.removeItem('temp_specjalnosci_selections');
+
+            // Show success message after reload
+            alert('Dodano pomyślnie!');
+        } catch (e) {
+            console.error('Error restoring selections:', e);
+        }
+    }
 });

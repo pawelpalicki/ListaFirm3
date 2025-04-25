@@ -1,3 +1,4 @@
+import logging
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
@@ -14,3 +15,4 @@ def create_app(config_class=Config):
     app.register_blueprint(main)
     
     return app
+

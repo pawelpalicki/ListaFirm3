@@ -440,4 +440,370 @@ $(document).ready(function() {
         collectTableData('osoby-container-table', 'osoby');
         collectTableData('oceny-container-table', 'oceny');
     });
+
+    // Obsługa wyświetlania formularza overlay
+    $('.add-new-option').click(function() {
+        const type = $(this).data('type');
+        const selectElement = $(this).closest('.input-group').find('select');
+
+        const selectId = selectElement.attr('id');
+
+        // --- Dodane logowanie i sprawdzenie ---
+        console.log("Kliknięto 'Dodaj' dla typu:", type);
+        console.log("Przycisk:", this);
+        console.log("Znaleziony element select:", selectElement);
+        console.log("Pobrane ID selecta:", selectId);
+
+        if (!selectId) {
+            console.error("Nie udało się znaleźć ID dla elementu select powiązanego z tym przyciskiem 'Dodaj'. Sprawdź selektor jQuery i strukturę HTML.");
+            alert("Wystąpił błąd: Nie można zidentyfikować pola docelowego. Sprawdź konsolę deweloperską (F12).");
+            return; // Przerwij działanie, jeśli ID nie zostało znalezione
+        }
+        // --- Koniec dodanego logowania i sprawdzenia ---
+        
+        // Ustawianie właściwości formularza w zależności od typu
+        switch(type) {
+            case 'adres_typ':
+                $('#overlay-title').text('Dodaj nowy typ adresu');
+                $('#overlay-label').text('Nazwa typu adresu');
+                break;
+            case 'email_typ':
+                $('#overlay-title').text('Dodaj nowy typ emaila');
+                $('#overlay-label').text('Nazwa typu emaila');
+                break;
+            case 'telefon_typ':
+                $('#overlay-title').text('Dodaj nowy typ telefonu');
+                $('#overlay-label').text('Nazwa typu telefonu');
+                break;
+            case 'firma_typ':
+                $('#overlay-title').text('Dodaj nowy typ firmy');
+                $('#overlay-label').text('Nazwa typu firmy');
+                break;
+            case 'specjalnosc':
+                $('#overlay-title').text('Dodaj nową specjalność');
+                $('#overlay-label').text('Nazwa specjalności');
+                break;
+        }
+
+        // Zapisanie typu i ID selecta dla późniejszego użycia
+        $('#overlay-type').val(type);
+        $('#overlay-id').val(selectId); // Ustaw ID tylko jeśli zostało znalezione
+
+        // Czyszczenie formularza i pokazanie overlay
+        $('#overlay-input').val('');
+        $('#overlay-form-container').removeClass('d-none');
+    });
+
+    // Obsługa zamykania formularza overlay
+    $('#close-overlay').click(function() {
+        $('#overlay-form-container').addClass('d-none');
+    });
+
+    // Obsługa wysyłania formularza overlay
+    $('#overlay-form').submit(function(e) {
+        e.preventDefault();
+
+        const type = $('#overlay-type').val();
+        const value = $('#overlay-input').val();
+        const selectId = $('#overlay-id').val();
+
+        if (!value.trim()) {
+            alert('Proszę wprowadzić wartość');
+            return;
+        }
+
+        // Określenie endpoint API na podstawie typu
+        let apiEndpoint;
+        switch(type) {
+            case 'adres_typ':
+                apiEndpoint = '/api/adres_typ';
+                break;
+            case 'email_typ':
+                apiEndpoint = '/api/email_typ';
+                break;
+            case 'telefon_typ':
+                apiEndpoint = '/api/telefon_typ';
+                break;
+            case 'firma_typ':
+                apiEndpoint = '/api/firma_typ';
+                break;
+            case 'specjalnosc':
+                apiEndpoint = '/api/specjalnosc';
+                break;
+        }
+
+        // Wysłanie nowej wartości do API
+        $.ajax({
+            url: apiEndpoint,
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ name: value }),
+            success: function(response) {
+                // Zamknięcie formularza overlay
+                $('#overlay-form-container').addClass('d-none');
+
+                if (type === 'specjalnosc') {
+                    const $select = $('#' + selectId); // np. $('#specjalnosci')
+                    const newOptionValue = response.id.toString(); // ID nowej opcji jako string
+                    const newOptionText = value; // Tekst nowej opcji
+
+                    // --- Krok 1: Dodaj nową opcję do bazowego elementu <select> ---
+                    // Sprawdź, czy opcja o tej wartości już nie istnieje
+                    if ($select.find("option[value='" + newOptionValue + "']").length === 0) {
+                        // Utwórz nową opcję (bez ustawiania selected tutaj)
+                        var newOption = new Option(newOptionText, newOptionValue, false, false);
+                        // Dodaj ją do <select>
+                        $select.append(newOption);
+                        console.log("HTML <option> dodany do <select>:", newOptionValue, newOptionText);
+                    } else {
+                        console.log("Opcja o wartości", newOptionValue, "już istnieje w <select>.");
+                    }
+
+                    // --- Krok 2: Pobierz aktualną listę zaznaczonych ID ---
+                    // Używamy .val(), które dla Select2 multi-select powinno zwrócić tablicę stringów
+                    let currentSelections = $select.val() || [];
+                     // Upewnijmy się, że na pewno pracujemy na tablicy
+                     if (!Array.isArray(currentSelections)) {
+                         currentSelections = currentSelections ? [currentSelections] : [];
+                     }
+                    console.log("Obecne zaznaczenia (przed dodaniem nowej):", currentSelections);
+
+                    // --- Krok 3: Dodaj ID nowej opcji do listy zaznaczeń ---
+                    // Dodaj tylko, jeśli jeszcze nie ma (na wypadek wielokrotnego kliknięcia itp.)
+                    if (!currentSelections.includes(newOptionValue)) {
+                        currentSelections.push(newOptionValue);
+                        console.log("ID nowej opcji dodane do listy zaznaczeń.");
+                    } else {
+                         console.log("ID nowej opcji już było na liście zaznaczeń.");
+                    }
+
+                    // --- Krok 4: Ustaw nową listę zaznaczeń w Select2 i poinformuj o zmianie ---
+                    console.log("Ustawianie zaznaczeń w Select2 na:", currentSelections);
+                    // Ustawiamy wartość i wywołujemy zdarzenie, aby Select2 odświeżył UI
+                    $select.val(currentSelections).trigger('change.select2');
+                    console.log("Wywołano trigger 'change.select2'.");
+
+                    // --- Opcjonalny Krok 5: Weryfikacja po chwili ---
+                    // Sprawdźmy po krótkim opóźnieniu, czy wartość została poprawnie ustawiona
+                    setTimeout(() => {
+                         const finalSelections = $select.val();
+                         console.log("Zaznaczenia w Select2 po 100ms:", finalSelections);
+                         // Porównajmy, czy zawiera nową opcję
+                         if (finalSelections && finalSelections.includes(newOptionValue)) {
+                            console.log("Weryfikacja: Nowa opcja JEST zaznaczona.");
+                         } else {
+                            console.warn("Weryfikacja: Nowa opcja NIE JEST zaznaczona.");
+                         }
+                    }, 100);
+
+
+                    // Powiadomienie użytkownika
+                    alert('Dodano pomyślnie! Nowa specjalność została dodana do listy i zaznaczona.');
+
+                } else {
+                     // Standardowa obsługa dla innych typów (bez zmian)
+                     const $select = $('#' + selectId);
+                     $select.append(new Option(value, response.id, true, true));
+                     if ($select.hasClass('select2-hidden-accessible')) {
+                        $select.trigger('change');
+                     }
+                     alert('Dodano pomyślnie!');
+                }
+            },
+            error: function(xhr) {
+                // Wyświetl bardziej szczegółowy błąd, jeśli jest dostępny
+                let errorMessage = 'Wystąpił błąd.';
+                try {
+                    // Spróbuj sparsować odpowiedź JSON z serwera
+                    const responseJson = JSON.parse(xhr.responseText);
+                    // Jeśli zawiera pole 'error', użyj go
+                    if (responseJson && responseJson.error) {
+                        errorMessage = 'Wystąpił błąd: ' + responseJson.error;
+                    }
+                } catch (e) {
+                    // Ignoruj błąd parsowania, jeśli odpowiedź nie jest JSONem lub jest pusta
+                    console.error("Error parsing error response:", e);
+                    // Można dodać ogólny komunikat z kodem statusu, np.:
+                    // errorMessage = `Wystąpił błąd serwera (status: ${xhr.status})`;
+                }
+                alert(errorMessage);
+            }
+        });
+    });
+    
+    // Dodatkowo dodajemy obsługę klawisza Escape do zamykania overlay
+    $(document).on('keydown', function(e) {
+        if (e.key === 'Escape' && !$('#overlay-form-container').hasClass('d-none')) {
+            $('#overlay-form-container').addClass('d-none');
+        }
+    });
+
+    // Funkcja do dodawania przycisku "Dodaj" dla nowo utworzonego formularza
+    function addAddButtonToNewForm(container) {
+        // Sprawdzamy, jakiego typu jest kontener i dodajemy odpowiedni przycisk
+        if (container.id === 'adresy-container') {
+            // Znajdujemy ostatni select typu adresu
+            const lastSelect = container.querySelector('select[name$="typ_adresu"]:last-of-type');
+            if (lastSelect && !lastSelect.nextElementSibling?.classList.contains('add-new-option')) {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'btn btn-outline-secondary add-new-option';
+                button.dataset.type = 'adres_typ';
+                button.innerHTML = '<i class="bi bi-plus-circle"></i> Dodaj';
+
+                // Tworzymy div dla input-group, jeśli nie istnieje
+                const parent = lastSelect.parentElement;
+                if (!parent.classList.contains('input-group')) {
+                    const inputGroup = document.createElement('div');
+                    inputGroup.className = 'input-group';
+                    parent.insertBefore(inputGroup, lastSelect);
+                    inputGroup.appendChild(lastSelect);
+                    inputGroup.appendChild(button);
+                } else {
+                    parent.appendChild(button);
+                }
+
+                // Dodajemy event listener
+                button.addEventListener('click', function() {
+                    const type = this.dataset.type;
+                    const selectElement = this.previousElementSibling;
+
+                    $('#overlay-title').text('Dodaj nowy typ adresu');
+                    $('#overlay-label').text('Nazwa typu adresu');
+                    $('#overlay-type').val(type);
+                    $('#overlay-id').val(selectElement.id);
+                    $('#overlay-input').val('');
+                    $('#overlay-form-container').removeClass('d-none');
+                });
+            }
+        } else if (container.id === 'emaile-container') {
+            // Analogiczna logika dla emaili
+            const lastSelect = container.querySelector('select[name$="typ_emaila"]:last-of-type');
+            if (lastSelect && !lastSelect.nextElementSibling?.classList.contains('add-new-option')) {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'btn btn-outline-secondary add-new-option';
+                button.dataset.type = 'email_typ';
+                button.innerHTML = '<i class="bi bi-plus-circle"></i> Dodaj';
+
+                const parent = lastSelect.parentElement;
+                if (!parent.classList.contains('input-group')) {
+                    const inputGroup = document.createElement('div');
+                    inputGroup.className = 'input-group';
+                    parent.insertBefore(inputGroup, lastSelect);
+                    inputGroup.appendChild(lastSelect);
+                    inputGroup.appendChild(button);
+                } else {
+                    parent.appendChild(button);
+                }
+
+                button.addEventListener('click', function() {
+                    const type = this.dataset.type;
+                    const selectElement = this.previousElementSibling;
+
+                    $('#overlay-title').text('Dodaj nowy typ emaila');
+                    $('#overlay-label').text('Nazwa typu emaila');
+                    $('#overlay-type').val(type);
+                    $('#overlay-id').val(selectElement.id);
+                    $('#overlay-input').val('');
+                    $('#overlay-form-container').removeClass('d-none');
+                });
+            }
+        } else if (container.id === 'telefony-container') {
+            // Analogiczna logika dla telefonów
+            const lastSelect = container.querySelector('select[name$="typ_telefonu"]:last-of-type');
+            if (lastSelect && !lastSelect.nextElementSibling?.classList.contains('add-new-option')) {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'btn btn-outline-secondary add-new-option';
+                button.dataset.type = 'telefon_typ';
+                button.innerHTML = '<i class="bi bi-plus-circle"></i> Dodaj';
+
+                const parent = lastSelect.parentElement;
+                if (!parent.classList.contains('input-group')) {
+                    const inputGroup = document.createElement('div');
+                    inputGroup.className = 'input-group';
+                    parent.insertBefore(inputGroup, lastSelect);
+                    inputGroup.appendChild(lastSelect);
+                    inputGroup.appendChild(button);
+                } else {
+                    parent.appendChild(button);
+                }
+
+                button.addEventListener('click', function() {
+                    const type = this.dataset.type;
+                    const selectElement = this.previousElementSibling;
+
+                    $('#overlay-title').text('Dodaj nowy typ telefonu');
+                    $('#overlay-label').text('Nazwa typu telefonu');
+                    $('#overlay-type').val(type);
+                    $('#overlay-id').val(selectElement.id);
+                    $('#overlay-input').val('');
+                    $('#overlay-form-container').removeClass('d-none');
+                });
+            }
+        }
+    }
+
+    // Funkcja do wywoływania po dodaniu nowego formularza
+    function setupDynamicFormWithAddButton() {
+        addAddButtonToNewForm(document.getElementById('adresy-container'));
+        addAddButtonToNewForm(document.getElementById('emaile-container'));
+        addAddButtonToNewForm(document.getElementById('telefony-container'));
+    }
+
+    // Wywoływane po załadowaniu strony i przy każdym dodaniu nowego formularza
+    $(document).ready(function() {
+        setupDynamicFormWithAddButton();
+
+        // Interceptujemy domyślne funkcje dodawania formularzy
+        const originalAddFormFunctions = {
+            'dodaj-adres': window.dodajAdres || null,
+            'dodaj-email': window.dodajEmail || null,
+            'dodaj-telefon': window.dodajTelefon || null
+        };
+
+        // Jeśli funkcje istnieją, nadpisujemy je
+        if (originalAddFormFunctions['dodaj-adres']) {
+            window.dodajAdres = function() {
+                originalAddFormFunctions['dodaj-adres']();
+                addAddButtonToNewForm(document.getElementById('adresy-container'));
+            };
+        }
+
+        if (originalAddFormFunctions['dodaj-email']) {
+            window.dodajEmail = function() {
+                originalAddFormFunctions['dodaj-email']();
+                addAddButtonToNewForm(document.getElementById('emaile-container'));
+            };
+        }
+
+        if (originalAddFormFunctions['dodaj-telefon']) {
+            window.dodajTelefon = function() {
+                originalAddFormFunctions['dodaj-telefon']();
+                addAddButtonToNewForm(document.getElementById('telefony-container'));
+            };
+        }
+
+        // Alternatywnie, nasłuchujemy na kliknięcia przycisków dodawania formularzy
+        $('#dodaj-adres').click(function() {
+            // Dajemy trochę czasu na utworzenie formularza
+            setTimeout(() => {
+                addAddButtonToNewForm(document.getElementById('adresy-container'));
+            }, 100);
+        });
+
+        $('#dodaj-email').click(function() {
+            setTimeout(() => {
+                addAddButtonToNewForm(document.getElementById('emaile-container'));
+            }, 100);
+        });
+
+        $('#dodaj-telefon').click(function() {
+            setTimeout(() => {
+                addAddButtonToNewForm(document.getElementById('telefony-container'));
+            }, 100);
+        });
+    });
+    
 });

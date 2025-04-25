@@ -280,6 +280,12 @@ body {
     color: #fff;
     opacity: 0.7;
 }
+/* Styl dla Select2 wewnątrz Bootstrapowego input-group */
+.input-group .select2-container {
+    flex-grow: 1; /* Pozwala Select2 zająć pozostałą przestrzeń */
+    width: auto !important;
+    /* flex-basis: 0  */
+}
 
 /* ===== ELEMENTY FIRM ===== */
 .company-row {

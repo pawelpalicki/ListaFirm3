@@ -239,6 +239,126 @@ def get_powiaty(wojewodztwo_id):
     powiaty = Powiaty.query.filter_by(ID_WOJEWODZTWA=wojewodztwo_id).all()
     return jsonify([{'id': p.ID_POWIATY, 'name': p.Powiat} for p in powiaty])
 
+
+
+
+@main.route('/api/adres_typ', methods=['POST'])
+def add_adres_typ():
+    data = request.json
+    if not data or 'name' not in data:
+        return jsonify({'error': 'Brak wymaganych danych'}), 400
+
+    try:
+        # Sprawdzamy, czy typ już istnieje
+        existing = AdresyTyp.query.filter_by(Typ_adresu=data['name']).first()
+        if existing:
+            return jsonify({'error': 'Ten typ adresu już istnieje', 'id': existing.ID_ADRESY_TYP}), 400
+
+        # Dodajemy nowy typ adresu
+        max_id = db.session.query(db.func.max(AdresyTyp.ID_ADRESY_TYP)).scalar() or 0
+        new_typ = AdresyTyp(ID_ADRESY_TYP=max_id + 1, Typ_adresu=data['name'])
+        db.session.add(new_typ)
+        db.session.commit()
+
+        return jsonify({'id': new_typ.ID_ADRESY_TYP, 'name': new_typ.Typ_adresu}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+@main.route('/api/email_typ', methods=['POST'])
+def add_email_typ():
+    data = request.json
+    if not data or 'name' not in data:
+        return jsonify({'error': 'Brak wymaganych danych'}), 400
+
+    try:
+        # Sprawdzamy, czy typ już istnieje
+        existing = EmailTyp.query.filter_by(Typ_emaila=data['name']).first()
+        if existing:
+            return jsonify({'error': 'Ten typ emaila już istnieje', 'id': existing.ID_EMAIL_TYP}), 400
+
+        # Dodajemy nowy typ emaila
+        max_id = db.session.query(db.func.max(EmailTyp.ID_EMAIL_TYP)).scalar() or 0
+        new_typ = EmailTyp(ID_EMAIL_TYP=max_id + 1, Typ_emaila=data['name'])
+        db.session.add(new_typ)
+        db.session.commit()
+
+        return jsonify({'id': new_typ.ID_EMAIL_TYP, 'name': new_typ.Typ_emaila}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+@main.route('/api/telefon_typ', methods=['POST'])
+def add_telefon_typ():
+    data = request.json
+    if not data or 'name' not in data:
+        return jsonify({'error': 'Brak wymaganych danych'}), 400
+
+    try:
+        # Sprawdzamy, czy typ już istnieje
+        existing = TelefonTyp.query.filter_by(Typ_telefonu=data['name']).first()
+        if existing:
+            return jsonify({'error': 'Ten typ telefonu już istnieje', 'id': existing.ID_TELEFON_TYP}), 400
+
+        # Dodajemy nowy typ telefonu
+        max_id = db.session.query(db.func.max(TelefonTyp.ID_TELEFON_TYP)).scalar() or 0
+        new_typ = TelefonTyp(ID_TELEFON_TYP=max_id + 1, Typ_telefonu=data['name'])
+        db.session.add(new_typ)
+        db.session.commit()
+
+        return jsonify({'id': new_typ.ID_TELEFON_TYP, 'name': new_typ.Typ_telefonu}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+@main.route('/api/firma_typ', methods=['POST'])
+def add_firma_typ():
+    data = request.json
+    if not data or 'name' not in data:
+        return jsonify({'error': 'Brak wymaganych danych'}), 400
+
+    try:
+        # Sprawdzamy, czy typ już istnieje
+        existing = FirmyTyp.query.filter_by(Typ_firmy=data['name']).first()
+        if existing:
+            return jsonify({'error': 'Ten typ firmy już istnieje', 'id': existing.ID_FIRMY_TYP}), 400
+
+        # Dodajemy nowy typ firmy
+        # Dla ID_FIRMY_TYP możemy stworzyć nowy identyfikator tekstowy
+        import uuid
+        new_id = str(uuid.uuid4())[:8].upper()  # Skrócony UUID jako identyfikator
+        new_typ = FirmyTyp(ID_FIRMY_TYP=new_id, Typ_firmy=data['name'])
+        db.session.add(new_typ)
+        db.session.commit()
+
+        return jsonify({'id': new_typ.ID_FIRMY_TYP, 'name': new_typ.Typ_firmy}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+@main.route('/api/specjalnosc', methods=['POST'])
+def add_specjalnosc():
+    data = request.json
+    if not data or 'name' not in data:
+        return jsonify({'error': 'Brak wymaganych danych'}), 400
+
+    try:
+        # Sprawdzamy, czy specjalność już istnieje
+        existing = Specjalnosci.query.filter_by(Specjalnosc=data['name']).first()
+        if existing:
+            return jsonify({'error': 'Ta specjalność już istnieje', 'id': existing.ID_SPECJALNOSCI}), 400
+
+        # Dodajemy nową specjalność
+        max_id = db.session.query(db.func.max(Specjalnosci.ID_SPECJALNOSCI)).scalar() or 0
+        new_spec = Specjalnosci(ID_SPECJALNOSCI=max_id + 1, Specjalnosc=data['name'])
+        db.session.add(new_spec)
+        db.session.commit()
+
+        return jsonify({'id': new_spec.ID_SPECJALNOSCI, 'name': new_spec.Specjalnosc}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
 @main.route('/company/new', methods=['GET', 'POST'])
 def new_company():
     from app.forms import CompanyForm

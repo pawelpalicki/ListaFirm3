@@ -18,7 +18,7 @@ class AddressForm(FlaskForm):
 
 class EmailForm(FlaskForm):
     typ_emaila = SelectField('Typ emaila', coerce=int)
-    email = StringField('Email', validators=[DataRequired(), Email()])
+    email = StringField('Email', validators=[DataRequired(),])
 
 class PhoneForm(FlaskForm):
     typ_telefonu = SelectField('Typ telefonu', coerce=int)
@@ -28,7 +28,7 @@ class PersonForm(FlaskForm):
     imie = StringField('Imię', validators=[DataRequired()])
     nazwisko = StringField('Nazwisko', validators=[DataRequired()])
     stanowisko = StringField('Stanowisko')
-    email = StringField('Email', validators=[Optional(), Email()])
+    email = StringField('Email', validators=[Optional(), ])
     telefon = StringField('Telefon')
 
 class RatingForm(FlaskForm):
@@ -94,7 +94,7 @@ class SimplePersonForm(FlaskForm):
     imie = StringField('Imię', validators=[DataRequired()])
     nazwisko = StringField('Nazwisko', validators=[DataRequired()])
     stanowisko = StringField('Stanowisko')
-    email = StringField('Email', validators=[Optional(), Email()])
+    email = StringField('Email', validators=[Optional(),])
     telefon = StringField('Telefon')
     firma = SelectField('Firma', coerce=int, validators=[DataRequired()])
 
