@@ -516,6 +516,7 @@ def edit_company(company_id):
         emaile = Email.query.filter_by(ID_FIRMY=company_id).all()
         while len(form.emaile) < len(emaile):
             form.emaile.append_entry()
+            form.emaile[-1].typ_emaila.choices = form.email_type_choices
         for i, email in enumerate(emaile):
             form.emaile[i].typ_emaila.data = email.ID_EMAIL_TYP
             form.emaile[i].email.data = email.e_mail
