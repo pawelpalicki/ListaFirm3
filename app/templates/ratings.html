@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title">{{ title }}</h5>
+                 <a href="{{ url_for('main.new_rating') }}" class="btn btn-success btn-sm">
+                    <i class="bi bi-plus-circle"></i> Dodaj nową ocenę współpracy
+                </a>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Osoba oceniająca</th>
+                            <th>Budowa/Dział</th>
+                            <th>Rok współpracy</th>
+                            <th>Ocena (1-5)</th>
+                            <th>Komentarz</th>
+                            <th>Firma</th>
+                            <th>Akcje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                        <tr>
+                            <td>{{ item.OCENY_ID }}</td> {# Corrected from item.ID_OCENY #}
+                            <td>{{ item.Osoba_oceniajaca }}</td>
+                            <td>{{ item.Budowa_Dzial }}</td>
+                            <td>{{ item.Rok_wspolpracy }}</td>
+                            <td>{{ item.Ocena }}</td>
+                            <td>{{ item.Komentarz }}</td>
+                            <td>{% if item.firma %}{{ item.firma.Nazwa_Firmy }}{% else %}Brak firmy{% endif %}</td>
+                            <td>
+                                <a href="{{ url_for('main.edit_rating', id=item.OCENY_ID) }}" class="btn btn-sm btn-primary">Edytuj</a> {# Corrected from id=item.ID_OCENY #}
+                                <form action="{{ url_for('main.delete_rating', id=item.OCENY_ID) }}" method="POST" style="display: inline;"> {# Corrected from id=item.ID_OCENY #}
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Czy na pewno chcesz usunąć tę ocenę?');">Usuń</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

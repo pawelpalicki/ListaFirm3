@@ -6,7 +6,7 @@
         <div class="card">
             <div class="card-header d-flex align-items-center">
                 <div class="card-header-content d-flex justify-content-between w-100">
-                    <h5 class="card-title">Nowa firma</h5>
+                    <h5 class="card-title">{{ title }}</h5>
                     <div class="card-actions">
                         <a href="{{ url_for('main.index') }}" class="btn btn-secondary btn-sm">
                             <i class="bi bi-arrow-left"></i> Powrót
@@ -15,151 +15,231 @@
                 </div>
             </div>
             <div class="card-body">
-                <form method="POST" action="{{ url_for('main.new_company') }}">
+                <form method="POST" action="">
                     {{ form.hidden_tag() }}
 
-                    <!-- Sekcja podstawowych informacji z danymi kontaktowymi -->
                     <div class="card mb-4">
                         <div class="card-header bg-dark text-white">
-                            <h5 class="mb-0">Podstawowe informacje i dane kontaktowe</h5>
+                            <h5 class="mb-0">Podstawowe informacje</h5>
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <!-- Lewa kolumna - podstawowe informacje -->
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <div class="col-md-12 mb-3">
-                                            {{ form.nazwa_firmy.label(class="form-label") }}
-                                            {{ form.nazwa_firmy(class="form-control") }}
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="typ_firmy" class="form-label">{{ form.typ_firmy.label }}</label>
-                                            <div class="input-group">
-                                                {{ form.typ_firmy(class="form-select") }}
-                                                <button type="button" class="btn btn-outline-secondary add-new-option" data-type="firma_typ">
-                                                    <i class="bi bi-plus-circle"></i> Dodaj
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12 mb-3">
-                                            {{ form.strona_www.label(class="form-label") }}
-                                            {{ form.strona_www(class="form-control") }}
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        {{ form.uwagi.label(class="form-label") }}
-                                        {{ form.uwagi(class="form-control", rows="3") }}
-                                    </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form.nazwa_firmy.label(class="form-label") }}
+                                    {{ form.nazwa_firmy(class="form-control") }}
+                                    {% if form.nazwa_firmy.errors %}
+                                        <ul class="text-danger">
+                                            {% for error in form.nazwa_firmy.errors %}
+                                                <li>{{ error }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
                                 </div>
-
-                                <!-- Prawa kolumna - dane kontaktowe -->
-                                <div class="col-md-12">
-                                    <!-- Adresy -->
-                                    <h6 class="border-top pt-3">Adresy</h6>
-                                    <div id="adresy-container">
-                                        {% for adres in form.adresy %}
-                                        <div class="adres-form mb-3 p-3 border rounded">
-                                            {{ adres.hidden_tag() }}
-                                            <div class="row">
-                                                <div class="mb-3">
-                                                    <label for="adresy-0-typ_adresu" class="form-label">{{ form.adresy[0].typ_adresu.label }}</label>
-                                                    <div class="input-group">
-                                                        {{ form.adresy[0].typ_adresu(class="form-select") }}
-                                                        <button type="button" class="btn btn-outline-secondary add-new-option" data-type="adres_typ">
-                                                            <i class="bi bi-plus-circle"></i> Dodaj
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-2 mb-2">
-                                                    {{ adres.kod.label(class="form-label") }}
-                                                    {{ adres.kod(class="form-control") }}
-                                                </div>
-                                                <div class="col-md-4 mb-2">
-                                                    {{ adres.miejscowosc.label(class="form-label") }}
-                                                    {{ adres.miejscowosc(class="form-control") }}
-                                                </div>
-                                                <div class="col-md-6 mb-2">
-                                                    {{ adres.ulica_miejscowosc.label(class="form-label") }}
-                                                    {{ adres.ulica_miejscowosc(class="form-control") }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        {% endfor %}
-                                        <button type="button" id="dodaj-adres" class="btn btn-secondary mb-4">
-                                        <i class="bi bi-plus-circle"></i> Dodaj adres
-                                         </button>
+                                <div class="mb-3">
+                                    <label for="typ_firmy" class="form-label">{{ form.typ_firmy.label }}</label>
+                                    <div class="input-group">
+                                        {{ form.typ_firmy(class="form-select") }}
+                                        <button type="button" class="btn btn-outline-secondary add-new-option" data-type="firma_typ" data-select-id="typ_firmy">
+                                            <i class="bi bi-plus-circle"></i> Dodaj
+                                        </button>
                                     </div>
-
-                                    <!-- Telefony i e-maile -->
-                                    <div class="row border-top pt-3">
-                                        <div class="col-md-6">
-                                            <h6>Telefony</h6>
-                                            <div id="telefony-container">
-                                                {% for telefon in form.telefony %}
-                                                <div class="telefon-form mb-3 p-3 border rounded">
-                                                    {{ telefon.hidden_tag() }}
-                                                    <div class="row">
-                                                        <div class="mb-3">
-                                                            <label for="telefony-0-typ_telefonu" class="form-label">{{ form.telefony[0].typ_telefonu.label }}</label>
-                                                            <div class="input-group">
-                                                                {{ form.telefony[0].typ_telefonu(class="form-select") }}
-                                                                <button type="button" class="btn btn-outline-secondary add-new-option" data-type="telefon_typ">
-                                                                    <i class="bi bi-plus-circle"></i> Dodaj
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-12 mb-2">
-                                                            {{ telefon.telefon.label(class="form-label") }}
-                                                            {{ telefon.telefon(class="form-control") }}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                {% endfor %}
-                                                <button type="button" id="dodaj-telefon" class="btn btn-secondary">
-                                                <i class="bi bi-plus-circle"></i> Dodaj telefon
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <h6>E-maile</h6>
-                                            <div id="emaile-container">
-                                                {% for email in form.emaile %}
-                                                <div class="email-form mb-3 p-3 border rounded">
-                                                    {{ email.hidden_tag() }}
-                                                    <div class="row">
-                                                        <div class="mb-3">
-                                                            <label for="emaile-0-typ_emaila" class="form-label">{{ form.emaile[0].typ_emaila.label }}</label>
-                                                            <div class="input-group">
-                                                                {{ form.emaile[0].typ_emaila(class="form-select") }}
-                                                                <button type="button" class="btn btn-outline-secondary add-new-option" data-type="email_typ">
-                                                                    <i class="bi bi-plus-circle"></i> Dodaj
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-12 mb-2">
-                                                            {{ email.email.label(class="form-label") }}
-                                                            {{ email.email(class="form-control") }}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                {% endfor %}
-                                                <button type="button" id="dodaj-email" class="btn btn-secondary">
-                                                <i class="bi bi-plus-circle"></i> Dodaj e-mail
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    {% if form.typ_firmy.errors %}
+                                        <ul class="text-danger">
+                                            {% for error in form.typ_firmy.errors %}
+                                                <li>{{ error }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form.strona_www.label(class="form-label") }}
+                                    {{ form.strona_www(class="form-control") }}
+                                    {% if form.strona_www.errors %}
+                                        <ul class="text-danger">
+                                            {% for error in form.strona_www.errors %}
+                                                <li>{{ error }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                </div>
+                                <div class="mb-3">
+                                    {{ form.uwagi.label(class="form-label") }}
+                                    {{ form.uwagi(class="form-control", rows="3") }}
+                                    {% if form.uwagi.errors %}
+                                        <ul class="text-danger">
+                                            {% for error in form.uwagi.errors %}
+                                                <li>{{ error }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Sekcja obszarów działania i specjalności -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-dark text-white">
+                            <h5 class="mb-0">Dane kontaktowe</h5>
+                        </div>
+                        <div class="card-body">
+                            <h6>Adresy</h6>
+                            <div id="adresy-container">
+                                {% for adres_form in form.adresy %}
+                                <div class="entry-form adres-form mb-3 p-3 border rounded">
+                                    {{ adres_form.hidden_tag() }}
+                                    <div class="row">
+                                        <div class="col-12 mb-2">
+                                            <label class="form-label" for="{{ adres_form.typ_adresu.id }}">{{ adres_form.typ_adresu.label }}</label>
+                                            <div class="input-group">
+                                                {{ adres_form.typ_adresu(class="form-select") }}
+                                                <button type="button" class="btn btn-outline-secondary add-new-option" data-type="adres_typ" data-select-id="{{ adres_form.typ_adresu.id }}">
+                                                    <i class="bi bi-plus-circle"></i> Dodaj
+                                                </button>
+                                            </div>
+                                            {% if adres_form.typ_adresu.errors %}
+                                                <ul class="text-danger">
+                                                    {% for error in adres_form.typ_adresu.errors %}
+                                                        <li>{{ error }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2 mb-2">
+                                            {{ adres_form.kod.label(class="form-label") }}
+                                            {{ adres_form.kod(class="form-control") }}
+                                            {% if adres_form.kod.errors %}
+                                                <ul class="text-danger">
+                                                    {% for error in adres_form.kod.errors %}
+                                                        <li>{{ error }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-4 mb-2">
+                                            {{ adres_form.miejscowosc.label(class="form-label") }}
+                                            {{ adres_form.miejscowosc(class="form-control") }}
+                                            {% if adres_form.miejscowosc.errors %}
+                                                <ul class="text-danger">
+                                                    {% for error in adres_form.miejscowosc.errors %}
+                                                        <li>{{ error }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            {{ adres_form.ulica_miejscowosc.label(class="form-label") }}
+                                            {{ adres_form.ulica_miejscowosc(class="form-control") }}
+                                            {% if adres_form.ulica_miejscowosc.errors %}
+                                                <ul class="text-danger">
+                                                    {% for error in adres_form.ulica_miejscowosc.errors %}
+                                                        <li>{{ error }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-danger remove-entry mt-2">Usuń adres</button>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <button type="button" class="btn btn-secondary add-entry mb-4" data-container="adresy-container" data-template-id="adres-template">
+                                <i class="bi bi-plus-circle"></i> Dodaj adres
+                            </button>
+
+                            <div class="row border-top pt-3">
+                                <div class="col-md-6">
+                                    <h6>Telefony</h6>
+                                    <div id="telefony-container">
+                                        {% for telefon_form in form.telefony %}
+                                        <div class="entry-form telefon-form mb-3 p-3 border rounded">
+                                            {{ telefon_form.hidden_tag() }}
+                                            <div class="row">
+                                                <div class="col-12 mb-2">
+                                                    <label class="form-label" for="{{ telefon_form.typ_telefonu.id }}">{{ telefon_form.typ_telefonu.label }}</label>
+                                                    <div class="input-group">
+                                                        {{ telefon_form.typ_telefonu(class="form-select") }}
+                                                        <button type="button" class="btn btn-outline-secondary add-new-option" data-type="telefon_typ" data-select-id="{{ telefon_form.typ_telefonu.id }}">
+                                                            <i class="bi bi-plus-circle"></i> Dodaj
+                                                        </button>
+                                                    </div>
+                                                    {% if telefon_form.typ_telefonu.errors %}
+                                                        <ul class="text-danger">
+                                                            {% for error in telefon_form.typ_telefonu.errors %}
+                                                                <li>{{ error }}</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-12 mb-2">
+                                                    {{ telefon_form.telefon.label(class="form-label") }}
+                                                    {{ telefon_form.telefon(class="form-control") }}
+                                                    {% if telefon_form.telefon.errors %}
+                                                        <ul class="text-danger">
+                                                            {% for error in telefon_form.telefon.errors %}
+                                                                <li>{{ error }}</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn btn-sm btn-danger remove-entry mt-2">Usuń telefon</button>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    <button type="button" class="btn btn-secondary add-entry" data-container="telefony-container" data-template-id="telefon-template">
+                                        <i class="bi bi-plus-circle"></i> Dodaj telefon
+                                    </button>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <h6>E-maile</h6>
+                                    <div id="emaile-container">
+                                        {% for email_form in form.emaile %}
+                                        <div class="entry-form email-form mb-3 p-3 border rounded">
+                                            {{ email_form.hidden_tag() }}
+                                            <div class="row">
+                                                <div class="col-12 mb-2">
+                                                    <label class="form-label" for="{{ email_form.typ_emaila.id }}">{{ email_form.typ_emaila.label }}</label>
+                                                    <div class="input-group">
+                                                        {{ email_form.typ_emaila(class="form-select") }}
+                                                        <button type="button" class="btn btn-outline-secondary add-new-option" data-type="email_typ" data-select-id="{{ email_form.typ_emaila.id }}">
+                                                            <i class="bi bi-plus-circle"></i> Dodaj
+                                                        </button>
+                                                    </div>
+                                                    {% if email_form.typ_emaila.errors %}
+                                                        <ul class="text-danger">
+                                                            {% for error in email_form.typ_emaila.errors %}
+                                                                <li>{{ error }}</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-12 mb-2">
+                                                    {{ email_form.email.label(class="form-label") }}
+                                                    {{ email_form.email(class="form-control") }}
+                                                    {% if email_form.email.errors %}
+                                                        <ul class="text-danger">
+                                                            {% for error in email_form.email.errors %}
+                                                                <li>{{ error }}</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn btn-sm btn-danger remove-entry mt-2">Usuń e-mail</button>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    <button type="button" class="btn btn-secondary add-entry" data-container="emaile-container" data-template-id="email-template">
+                                        <i class="bi bi-plus-circle"></i> Dodaj e-mail
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="card mb-4">
                         <div class="card-header bg-dark text-white">
                             <h5 class="mb-0">Specjalności i obszar działania</h5>
@@ -168,123 +248,217 @@
                             <div class="mb-3">
                                 <label for="specjalnosci" class="form-label">{{ form.specjalnosci.label }}</label>
                                 <div class="input-group">
-                                    {{ form.specjalnosci(class="form-select") }}
-                                    <button type="button" class="btn btn-outline-secondary add-new-option" data-type="specjalnosc">
+                                    {{ form.specjalnosci(id="specjalnosci", class="form-select") }}
+                                    <button type="button" class="btn btn-outline-secondary add-new-option" data-type="specjalnosc" data-select-id="specjalnosci">
                                         <i class="bi bi-plus-circle"></i> Dodaj
                                     </button>
                                 </div>
+                                {% if form.specjalnosci.errors %}
+                                    <ul class="text-danger">
+                                        {% for error in form.specjalnosci.errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     {{ form.kraj.label(class="form-label") }}
-                                    {{ form.kraj(class="form-select") }}
+                                    {{ form.kraj(id="kraj", class="form-select") }}
+                                    {% if form.kraj.errors %}
+                                        <ul class="text-danger">
+                                            {% for error in form.kraj.errors %}
+                                                <li>{{ error }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row" id="area-selection">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Województwa</label>
                                     {{ form.wojewodztwa(id="wojewodztwa", class="form-select") }}
+                                    {% if form.wojewodztwa.errors %}
+                                        <ul class="text-danger">
+                                            {% for error in form.wojewodztwa.errors %}
+                                                <li>{{ error }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Powiaty</label>
                                     {{ form.powiaty(id="powiaty", class="form-select") }}
+                                    {% if form.powiaty.errors %}
+                                        <ul class="text-danger">
+                                            {% for error in form.powiaty.errors %}
+                                                <li>{{ error }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
                                 </div>
                             </div>
-
-                            <input type="hidden" name="wojewodztwa" id="wojewodztwa-input">
-                            <input type="hidden" name="powiaty" id="powiaty-input">
                         </div>
                     </div>
 
-                    <!-- Sekcja osób kontaktowych -->
                     <div class="card mb-4">
                         <div class="card-header bg-dark text-white">
                             <h5 class="mb-0">Osoby kontaktowe</h5>
                         </div>
                         <div class="card-body">
                             <div id="osoby-container">
-                                {% for osoba in form.osoby %}
-                                <div class="osoba-form mb-4 p-3 border rounded">
-                                    {{ osoba.hidden_tag() }}
+                                {% for osoba_form in form.osoby %}
+                                <div class="entry-form osoba-form mb-4 p-3 border rounded">
+                                    {{ osoba_form.hidden_tag() }}
                                     <div class="row">
                                         <div class="col-md-6 mb-2">
-                                            {{ osoba.imie.label(class="form-label") }}
-                                            {{ osoba.imie(class="form-control") }}
+                                            {{ osoba_form.imie.label(class="form-label") }}
+                                            {{ osoba_form.imie(class="form-control") }}
+                                            {% if osoba_form.imie.errors %}
+                                                <ul class="text-danger">
+                                                    {% for error in osoba_form.imie.errors %}
+                                                        <li>{{ error }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
                                         </div>
                                         <div class="col-md-6 mb-2">
-                                            {{ osoba.nazwisko.label(class="form-label") }}
-                                            {{ osoba.nazwisko(class="form-control") }}
+                                            {{ osoba_form.nazwisko.label(class="form-label") }}
+                                            {{ osoba_form.nazwisko(class="form-control") }}
+                                            {% if osoba_form.nazwisko.errors %}
+                                                <ul class="text-danger">
+                                                    {% for error in osoba_form.nazwisko.errors %}
+                                                        <li>{{ error }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 mb-2">
-                                            {{ osoba.stanowisko.label(class="form-label") }}
-                                            {{ osoba.stanowisko(class="form-control") }}
+                                            {{ osoba_form.stanowisko.label(class="form-label") }}
+                                            {{ osoba_form.stanowisko(class="form-control") }}
+                                            {% if osoba_form.stanowisko.errors %}
+                                                <ul class="text-danger">
+                                                    {% for error in osoba_form.stanowisko.errors %}
+                                                        <li>{{ error }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 mb-2">
-                                            {{ osoba.email.label(class="form-label") }}
-                                            {{ osoba.email(class="form-control") }}
+                                            {{ osoba_form.email.label(class="form-label") }}
+                                            {{ osoba_form.email(class="form-control") }}
+                                            {% if osoba_form.email.errors %}
+                                                <ul class="text-danger">
+                                                    {% for error in osoba_form.email.errors %}
+                                                        <li>{{ error }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
                                         </div>
                                         <div class="col-md-6 mb-2">
-                                            {{ osoba.telefon.label(class="form-label") }}
-                                            {{ osoba.telefon(class="form-control") }}
+                                            {{ osoba_form.telefon.label(class="form-label") }}
+                                            {{ osoba_form.telefon(class="form-control") }}
+                                            {% if osoba_form.telefon.errors %}
+                                                <ul class="text-danger">
+                                                    {% for error in osoba_form.telefon.errors %}
+                                                        <li>{{ error }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
                                         </div>
                                     </div>
+                                    <button type="button" class="btn btn-sm btn-danger remove-entry mt-2">Usuń osobę</button>
                                 </div>
                                 {% endfor %}
-                                 <button type="button" id="dodaj-osobe" class="btn btn-secondary">
-                                <i class="bi bi-plus-circle"></i> Dodaj osobę
-                                </button>
                             </div>
+                            <button type="button" class="btn btn-secondary add-entry" data-container="osoby-container" data-template-id="osoba-template">
+                                <i class="bi bi-plus-circle"></i> Dodaj osobę
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Sekcja ocen -->
                     <div class="card mb-4">
                         <div class="card-header bg-dark text-white">
                             <h5 class="mb-0">Oceny</h5>
                         </div>
                         <div class="card-body">
                             <div id="oceny-container">
-                                {% for ocena in form.oceny %}
-                                <div class="ocena-form mb-4 p-3 border rounded">
-                                    {{ ocena.hidden_tag() }}
+                                {% for ocena_form in form.oceny %}
+                                <div class="entry-form ocena-form mb-4 p-3 border rounded">
+                                    {{ ocena_form.hidden_tag() }}
                                     <div class="row">
                                         <div class="col-md-6 mb-2">
-                                            {{ ocena.osoba_oceniajaca.label(class="form-label") }}
-                                            {{ ocena.osoba_oceniajaca(class="form-control") }}
+                                            {{ ocena_form.osoba_oceniajaca.label(class="form-label") }}
+                                            {{ ocena_form.osoba_oceniajaca(class="form-control") }}
+                                            {% if ocena_form.osoba_oceniajaca.errors %}
+                                                <ul class="text-danger">
+                                                    {% for error in ocena_form.osoba_oceniajaca.errors %}
+                                                        <li>{{ error }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
                                         </div>
                                         <div class="col-md-6 mb-2">
-                                            {{ ocena.budowa_dzial.label(class="form-label") }}
-                                            {{ ocena.budowa_dzial(class="form-control") }}
+                                            {{ ocena_form.budowa_dzial.label(class="form-label") }}
+                                            {{ ocena_form.budowa_dzial(class="form-control") }}
+                                            {% if ocena_form.budowa_dzial.errors %}
+                                                <ul class="text-danger">
+                                                    {% for error in ocena_form.budowa_dzial.errors %}
+                                                        <li>{{ error }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 mb-2">
-                                            {{ ocena.rok_wspolpracy.label(class="form-label") }}
-                                            {{ ocena.rok_wspolpracy(class="form-control") }}
+                                            {{ ocena_form.rok_wspolpracy.label(class="form-label") }}
+                                            {{ ocena_form.rok_wspolpracy(class="form-control") }}
+                                            {% if ocena_form.rok_wspolpracy.errors %}
+                                                <ul class="text-danger">
+                                                    {% for error in ocena_form.rok_wspolpracy.errors %}
+                                                        <li>{{ error }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
                                         </div>
                                         <div class="col-md-6 mb-2">
-                                            {{ ocena.ocena.label(class="form-label") }}
-                                            {{ ocena.ocena(class="form-control") }}
+                                            {{ ocena_form.ocena.label(class="form-label") }}
+                                            {{ ocena_form.ocena(class="form-control") }}
+                                            {% if ocena_form.ocena.errors %}
+                                                <ul class="text-danger">
+                                                    {% for error in ocena_form.ocena.errors %}
+                                                        <li>{{ error }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
                                         </div>
                                     </div>
                                     <div class="mb-2">
-                                        {{ ocena.komentarz.label(class="form-label") }}
-                                        {{ ocena.komentarz(class="form-control", rows="2") }}
+                                        {{ ocena_form.komentarz.label(class="form-label") }}
+                                        {{ ocena_form.komentarz(class="form-control", rows="2") }}
+                                        {% if ocena_form.komentarz.errors %}
+                                                <ul class="text-danger">
+                                                    {% for error in ocena_form.komentarz.errors %}
+                                                        <li>{{ error }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
                                     </div>
+                                    <button type="button" class="btn btn-sm btn-danger remove-entry mt-2">Usuń ocenę</button>
                                 </div>
                                 {% endfor %}
-                                <button type="button" id="dodaj-ocene" class="btn btn-secondary">
-                                <i class="bi bi-plus-circle"></i> Dodaj ocenę
-                                </button>
                             </div>
+                            <button type="button" class="btn btn-secondary add-entry" data-container="oceny-container" data-template-id="ocena-template">
+                                <i class="bi bi-plus-circle"></i> Dodaj ocenę
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Przyciski formularza -->
                     <div class="d-flex justify-content-between">
                         <button type="submit" class="btn btn-success">
                             <i class="bi bi-save"></i> Zapisz firmę
@@ -299,7 +473,179 @@
     </div>
 </div>
 
-<!-- Overlay do dodawania nowych typów -->
+<div id="adres-template" style="display: none;">
+    <div class="entry-form adres-form mb-3 p-3 border rounded">
+        <div class="row">
+            <div class="col-12 mb-2">
+                <label class="form-label" for="adresy-__prefix__-typ_adresu">Typ adresu</label>
+                <div class="input-group">
+                    <select class="form-select" id="adresy-__prefix__-typ_adresu" name="adresy-__prefix__-typ_adresu">
+                         {# Assuming form.address_type_choices is available for the template #}
+                         {# If these choices are specific to the AdresForm, you might need a way to pass them #}
+                         {# For FieldList, choices can often be set on the field definition in the form class #}
+                         {# This part might need adjustment based on how address_type_choices is populated #}
+                        {% for value, label in form.address_type_choices %}
+                         <option value="{{ value }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="button" class="btn btn-outline-secondary add-new-option" data-type="adres_typ" data-select-id="adresy-__prefix__-typ_adresu">
+                        <i class="bi bi-plus-circle"></i> Dodaj
+                    </button>
+                </div>
+                {# Error display for dynamic template fields - requires careful handling in JS or server-side #}
+                {# Typically, errors for dynamic fields are handled after the form is rendered with errors #}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 mb-2">
+                <label class="form-label" for="adresy-__prefix__-kod">Kod pocztowy</label>
+                <input class="form-control" id="adresy-__prefix__-kod" name="adresy-__prefix__-kod" type="text" value="">
+                {# Error display #}
+            </div>
+            <div class="col-md-4 mb-2">
+                <label class="form-label" for="adresy-__prefix__-miejscowosc">Miejscowość</label>
+                <input class="form-control" id="adresy-__prefix__-miejscowosc" name="adresy-__prefix__-miejscowosc" type="text" value="">
+                {# Error display #}
+            </div>
+            <div class="col-md-6 mb-2">
+                <label class="form-label" for="adresy-__prefix__-ulica_miejscowosc">Ulica/Miejscowość</label>
+                <input class="form-control" id="adresy-__prefix__-ulica_miejscowosc" name="adresy-__prefix__-ulica_miejscowosc" type="text" value="">
+                {# Error display #}
+            </div>
+        </div>
+        <button type="button" class="btn btn-sm btn-danger remove-entry mt-2">Usuń adres</button>
+    </div>
+</div>
+
+<div id="telefon-template" style="display: none;">
+    <div class="entry-form telefon-form mb-3 p-3 border rounded">
+        <div class="row">
+            <div class="col-12 mb-2">
+                <label class="form-label" for="telefony-__prefix__-typ_telefonu">Typ telefonu</label>
+                <div class="input-group">
+                    <select class="form-select" id="telefony-__prefix__-typ_telefonu" name="telefony-__prefix__-typ_telefonu">
+                         {# Assuming form.phone_type_choices is available #}
+                        {% for value, label in form.phone_type_choices %}
+                         <option value="{{ value }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="button" class="btn btn-outline-secondary add-new-option" data-type="telefon_typ" data-select-id="telefony-__prefix__-typ_telefonu">
+                        <i class="bi bi-plus-circle"></i> Dodaj
+                    </button>
+                </div>
+                 {# Error display #}
+            </div>
+            <div class="col-12 mb-2">
+                <label class="form-label" for="telefony-__prefix__-telefon">Telefon</label>
+                <input class="form-control" id="telefony-__prefix__-telefon" name="telefony-__prefix__-telefon" type="text" value="">
+                 {# Error display #}
+            </div>
+        </div>
+        <button type="button" class="btn btn-sm btn-danger remove-entry mt-2">Usuń telefon</button>
+    </div>
+</div>
+
+<div id="email-template" style="display: none;">
+    <div class="entry-form email-form mb-3 p-3 border rounded">
+        <div class="row">
+            <div class="col-12 mb-2">
+                <label class="form-label" for="emaile-__prefix__-typ_emaila">Typ emaila</label>
+                <div class="input-group">
+                    <select class="form-select" id="emaile-__prefix__-typ_emaila" name="emaile-__prefix__-typ_emaila">
+                       {# Assuming form.email_type_choices is available #}
+                       {% for value, label in form.email_type_choices %}
+                        <option value="{{ value }}">{{ label }}</option>
+                       {% endfor %}
+                    </select>
+                    <button type="button" class="btn btn-outline-secondary add-new-option" data-type="email_typ" data-select-id="emaile-__prefix__-typ_emaila">
+                        <i class="bi bi-plus-circle"></i> Dodaj
+                    </button>
+                </div>
+                 {# Error display #}
+            </div>
+            <div class="col-12 mb-2">
+                <label class="form-label" for="emaile-__prefix__-email">Email</label>
+                <input class="form-control" id="emaile-__prefix__-email" name="emaile-__prefix__-email" type="email" value="">
+                 {# Error display #}
+            </div>
+        </div>
+        <button type="button" class="btn btn-sm btn-danger remove-entry mt-2">Usuń e-mail</button>
+    </div>
+</div>
+
+<div id="osoba-template" style="display: none;">
+    <div class="entry-form osoba-form mb-4 p-3 border rounded">
+        <div class="row">
+            <div class="col-md-6 mb-2">
+                <label class="form-label" for="osoby-__prefix__-imie">Imię</label>
+                <input class="form-control" id="osoby-__prefix__-imie" name="osoby-__prefix__-imie" type="text" value="">
+                 {# Error display #}
+            </div>
+            <div class="col-md-6 mb-2">
+                <label class="form-label" for="osoby-__prefix__-nazwisko">Nazwisko</label>
+                <input class="form-control" id="osoby-__prefix__-nazwisko" name="osoby-__prefix__-nazwisko" type="text" value="">
+                 {# Error display #}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-2">
+                <label class="form-label" for="osoby-__prefix__-stanowisko">Stanowisko</label>
+                <input class="form-control" id="osoby-__prefix__-stanowisko" name="osoby-__prefix__-stanowisko" type="text" value="">
+                 {# Error display #}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-2">
+                <label class="form-label" for="osoby-__prefix__-email">Email</label>
+                <input class="form-control" id="osoby-__prefix__-email" name="osoby-__prefix__-email" type="email" value="">
+                 {# Error display #}
+            </div>
+            <div class="col-md-6 mb-2">
+                <label class="form-label" for="osoby-__prefix__-telefon">Telefon</label>
+                <input class="form-control" id="osoby-__prefix__-telefon" name="osoby-__prefix__-telefon" type="text" value="">
+                 {# Error display #}
+            </div>
+        </div>
+        <button type="button" class="btn btn-sm btn-danger remove-entry mt-2">Usuń osobę</button>
+    </div>
+</div>
+
+<div id="ocena-template" style="display: none;">
+    <div class="entry-form ocena-form mb-4 p-3 border rounded">
+        <div class="row">
+            <div class="col-md-6 mb-2">
+                <label class="form-label" for="oceny-__prefix__-osoba_oceniajaca">Osoba oceniająca</label>
+                <input class="form-control" id="oceny-__prefix__-osoba_oceniajaca" name="oceny-__prefix__-osoba_oceniajaca" type="text" value="">
+                 {# Error display #}
+            </div>
+            <div class="col-md-6 mb-2">
+                <label class="form-label" for="oceny-__prefix__-budowa_dzial">Budowa/Dział</label>
+                <input class="form-control" id="oceny-__prefix__-budowa_dzial" name="oceny-__prefix__-budowa_dzial" type="text" value="">
+                 {# Error display #}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-2">
+                <label class="form-label" for="oceny-__prefix__-rok_wspolpracy">Rok współpracy</label>
+                <input class="form-control" id="oceny-__prefix__-rok_wspolpracy" name="oceny-__prefix__-rok_wspolpracy" type="number" value="">
+                 {# Error display #}
+            </div>
+            <div class="col-md-6 mb-2">
+                <label class="form-label" for="oceny-__prefix__-ocena">Ocena (1-5)</label>
+                <input class="form-control" id="oceny-__prefix__-ocena" name="oceny-__prefix__-ocena" type="number" min="1" max="5" value="">
+                 {# Error display #}
+            </div>
+        </div>
+        <div class="mb-2">
+            <label class="form-label" for="oceny-__prefix__-komentarz">Komentarz</label>
+            <textarea class="form-control" id="oceny-__prefix__-komentarz" name="oceny-__prefix__-komentarz" rows="2"></textarea>
+             {# Error display #}
+        </div>
+        <button type="button" class="btn btn-sm btn-danger remove-entry mt-2">Usuń ocenę</button>
+    </div>
+</div>
+
+
 <div id="overlay-form-container" class="position-fixed top-0 start-0 w-100 h-100 d-none" style="background-color: rgba(0,0,0,0.5); z-index: 1050;">
     <div class="container h-100 d-flex align-items-center justify-content-center">
         <div class="card col-md-6">
@@ -314,13 +660,14 @@
                         <input type="text" class="form-control" id="overlay-input" required>
                     </div>
                     <input type="hidden" id="overlay-type">
-                    <input type="hidden" id="overlay-id">
+                    <input type="hidden" id="overlay-target-select-id">
                     <button type="submit" class="btn btn-primary">Dodaj</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
 {% endblock %}
 
 {% block scripts %}

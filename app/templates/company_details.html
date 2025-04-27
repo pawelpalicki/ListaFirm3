@@ -202,7 +202,7 @@
     </div>
     
     <div class="mt-3">
-        <a href="#" class="btn btn-warning">Edytuj firmę</a>
+        <a href="{{ url_for('main.edit_company', company_id=company.ID_FIRMY) }}" class="btn btn-warning">Edytuj firmę</a>
         <a href="{{ url_for('main.index') }}" class="btn btn-secondary">Powrót</a>
     </div>
 </div>

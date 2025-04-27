@@ -2,8 +2,13 @@
 
 {% block content %}
 <div class="company-form-content">
+    {% if company %}
     <h2>Edycja firmy: {{ company.Nazwa_Firmy }}</h2>
-    <form method="POST" action="{{ url_for('main.company_edit_form', company_id=company.ID_FIRMY) }}">
+    <form method="POST" action="{{ url_for('main.edit_company', company_id=company.ID_FIRMY) }}">
+    {% else %}
+    <h2>Edycja firmy</h2>
+    <form method="POST">
+    {% endif %}
         {{ form.hidden_tag() }}
 
         <div class="mb-3">
@@ -195,10 +200,15 @@
             {{ form.specjalnosci(class="form-select", multiple=true) }}
         </div>
 
-        <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
-        <a href="{{ url_for('main.company_details', company_id=company.ID_FIRMY) }}" class="btn btn-secondary">Powrót</a>
-    </form>
-</div>
+           <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
+            {% if company %}
+            <a href="{{ url_for('main.company_details', company_id=company.ID_FIRMY) }}" class="btn btn-secondary">Powrót</a>
+            {% else %}
+            <!-- Zmień to na poprawny endpoint, np. 'main.company_list' lub 'main.index' -->
+            <a href="{{ url_for('main.company_details', company_id=0) }}" class="btn btn-secondary">Powrót</a>
+            {% endif %}
+        </form>
+        </div>
 {% endblock %}
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/company_form.js') }}"></script>

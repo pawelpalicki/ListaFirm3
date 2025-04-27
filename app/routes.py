@@ -1,9 +1,9 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from sqlalchemy import or_, func
-from app.models import *
+from app.models import Firmy, FirmyTyp, Adresy, AdresyTyp, Email, EmailTyp, Telefon, TelefonTyp, Specjalnosci, FirmySpecjalnosci, Kraj, Wojewodztwa, Powiaty, FirmyObszarDzialania, Osoby, Oceny
 from app import db
 from unidecode import unidecode
-from app.forms import CompanyForm # Upewnij się, że CompanyForm jest importowany
+from app.forms import CompanyForm, SimplePersonForm, SimpleRatingForm, SpecialtyForm, AddressTypeForm, EmailTypeForm, PhoneTypeForm, CompanyTypeForm
 from sqlalchemy.exc import SQLAlchemyError # Ważne: Importujemy SQLAlchemyError
 
 main = Blueprint('main', __name__)
@@ -239,9 +239,6 @@ def get_powiaty(wojewodztwo_id):
     powiaty = Powiaty.query.filter_by(ID_WOJEWODZTWA=wojewodztwo_id).all()
     return jsonify([{'id': p.ID_POWIATY, 'name': p.Powiat} for p in powiaty])
 
-
-
-
 @main.route('/api/adres_typ', methods=['POST'])
 def add_adres_typ():
     data = request.json
@@ -396,7 +393,14 @@ def new_company():
                     ID_FIRMY=company.ID_FIRMY
                 )
                 db.session.add(email)
-        
+
+        # Pobierz emaile
+        emaile = Email.query.filter_by(ID_FIRMY=company_id).all()
+        while len(form.emaile) < len(emaile):
+            form.emaile.append_entry()
+        for i, email in enumerate(emaile):
+            form.emaile[i].typ_emaila.data = email.ID_EMAIL_TYP
+            form.emaile[i].email.data = email.e_mail
         # Add phones
         for phone_form in form.telefony:
             if phone_form.telefon.data:  # Only add if phone is provided
@@ -482,227 +486,214 @@ def new_company():
 
 @main.route('/company/<int:company_id>/edit', methods=['GET', 'POST'])
 def edit_company(company_id):
-    # from app.forms import CompanyForm # Przenosimy import formularza na początek modułu
+    from app.forms import CompanyForm
+
+    # Pobierz firmę z bazy danych lub zwróć 404 jeśli nie istnieje
     company = Firmy.query.get_or_404(company_id)
 
+    # Utwórz formularz i wypełnij go danymi
+    form = CompanyForm(obj=company)
+
+    # Jeśli to GET request, zapełnij pola formularza danymi z bazy
     if request.method == 'GET':
-        form = CompanyForm(obj=company)
+        # Zapełnij podstawowe informacje
+        form.nazwa_firmy.data = company.Nazwa_Firmy
+        form.typ_firmy.data = company.ID_FIRMY_TYP
+        form.strona_www.data = company.Strona_www
+        form.uwagi.data = company.Uwagi
 
-        # Populate address forms
-        while len(form.adresy) < len(company.adresy):
+        # Pobierz adresy
+        adresy = Adresy.query.filter_by(ID_FIRMY=company_id).all()
+        while len(form.adresy) < len(adresy):
             form.adresy.append_entry()
-        for i, address in enumerate(company.adresy):
-            form.adresy[i].typ_adresu.data = address.ID_ADRESY_TYP
-            form.adresy[i].kod.data = address.Kod
-            form.adresy[i].miejscowosc.data = address.Miejscowosc
-            form.adresy[i].ulica_miejscowosc.data = address.Ulica_Miejscowosc
+        for i, adres in enumerate(adresy):
+            form.adresy[i].typ_adresu.data = adres.ID_ADRESY_TYP
+            form.adresy[i].kod.data = adres.Kod
+            form.adresy[i].miejscowosc.data = adres.Miejscowosc
+            form.adresy[i].ulica_miejscowosc.data = adres.Ulica_Miejscowosc
 
-        # Populate email forms
-        while len(form.emaile) < len(company.emaile):
+        # Pobierz emaile
+        emaile = Email.query.filter_by(ID_FIRMY=company_id).all()
+        while len(form.emaile) < len(emaile):
             form.emaile.append_entry()
-        for i, email in enumerate(company.emaile):
+        for i, email in enumerate(emaile):
             form.emaile[i].typ_emaila.data = email.ID_EMAIL_TYP
             form.emaile[i].email.data = email.e_mail
-
-        # Populate phone forms
-        while len(form.telefony) < len(company.telefony):
+        
+        # Pobierz telefony
+        telefony = Telefon.query.filter_by(ID_FIRMY=company_id).all()
+        while len(form.telefony) < len(telefony):
             form.telefony.append_entry()
-        for i, phone in enumerate(company.telefony):
-            form.telefony[i].typ_telefonu.data = phone.ID_TELEFON_TYP
-            form.telefony[i].telefon.data = phone.telefon
+        for i, telefon in enumerate(telefony):
+            form.telefony[i].typ_telefonu.data = telefon.ID_TELEFON_TYP
+            form.telefony[i].telefon.data = telefon.telefon
 
-        # Populate person forms
-        while len(form.osoby) < len(company.osoby):
+        # Pobierz osoby kontaktowe
+        osoby = Osoby.query.filter_by(ID_FIRMY=company_id).all()
+        while len(form.osoby) < len(osoby):
             form.osoby.append_entry()
-        for i, person in enumerate(company.osoby):
-            form.osoby[i].imie.data = person.Imie
-            form.osoby[i].nazwisko.data = person.Nazwisko
-            form.osoby[i].stanowisko.data = person.Stanowisko
-            form.osoby[i].email.data = person.e_mail
-            form.osoby[i].telefon.data = person.telefon
+        for i, osoba in enumerate(osoby):
+            form.osoby[i].imie.data = osoba.Imie
+            form.osoby[i].nazwisko.data = osoba.Nazwisko
+            form.osoby[i].stanowisko.data = osoba.Stanowisko
+            form.osoby[i].email.data = osoba.e_mail
+            form.osoby[i].telefon.data = osoba.telefon
 
-        # Populate rating forms
-        while len(form.oceny) < len(company.oceny):
+        # Pobierz oceny
+        oceny = Oceny.query.filter_by(ID_FIRMY=company_id).all()
+        while len(form.oceny) < len(oceny):
             form.oceny.append_entry()
-        for i, rating in enumerate(company.oceny):
-            form.oceny[i].osoba_oceniajaca.data = rating.Osoba_oceniajaca
-            form.oceny[i].budowa_dzial.data = rating.Budowa_Dzial
-            form.oceny[i].rok_wspolpracy.data = rating.Rok_wspolpracy
-            form.oceny[i].ocena.data = rating.Ocena
-            form.oceny[i].komentarz.data = rating.Komentarz
+        for i, ocena in enumerate(oceny):
+            form.oceny[i].osoba_oceniajaca.data = ocena.Osoba_oceniajaca
+            form.oceny[i].budowa_dzial.data = ocena.Budowa_Dzial
+            form.oceny[i].rok_wspolpracy.data = ocena.Rok_wspolpracy
+            form.oceny[i].ocena.data = ocena.Ocena
+            form.oceny[i].komentarz.data = ocena.Komentarz
 
-        # Populate area of operation
-        nationwide = db.session.query(FirmyObszarDzialania).filter(
-            FirmyObszarDzialania.ID_FIRMY == company_id,
-            FirmyObszarDzialania.ID_KRAJ == 'POL'
-        ).first() is not None
-        if nationwide:
+        # Pobierz obszar działania
+        obszary = FirmyObszarDzialania.query.filter_by(ID_FIRMY=company_id).all()
+
+        # Sprawdź czy firma działa w całym kraju
+        obszar_krajowy = next((o for o in obszary if o.ID_KRAJ == 'POL'), None)
+        if obszar_krajowy:
             form.kraj.data = 'POL'
         else:
-            wojewodztwa_ids = [
-                w.ID_WOJEWODZTWA
-                for w in db.session.query(FirmyObszarDzialania).filter(
-                    FirmyObszarDzialania.ID_FIRMY == company_id,
-                    FirmyObszarDzialania.ID_WOJEWODZTWA != ''
-                ).distinct()
-            ]
-            form.wojewodztwa.data = wojewodztwa_ids
+            form.kraj.data = ''  # Pusty string oznacza, że nie działa w całym kraju
 
-            powiaty_ids = [
-                p.ID_POWIATY
-                for p in db.session.query(FirmyObszarDzialania).filter(
-                    FirmyObszarDzialania.ID_FIRMY == company_id,
-                    FirmyObszarDzialania.ID_POWIATY != 0
-                ).all()
-            ]
+            # Zbierz ID województw (unikalne)
+            wojewodztwa_ids = list(set([o.ID_WOJEWODZTWA for o in obszary if o.ID_WOJEWODZTWA]))
+            form.wojewodztwa.data = [w for w in wojewodztwa_ids if w]  # Pomiń puste wartości
+
+            # Zbierz ID powiatów
+            powiaty_ids = [o.ID_POWIATY for o in obszary if o.ID_POWIATY and o.ID_POWIATY > 0]
             form.powiaty.data = powiaty_ids
 
-        # Populate specialties
-        specialties = [
-            s.ID_SPECJALNOSCI
-            for s in db.session.query(FirmySpecjalnosci).filter(
-                FirmySpecjalnosci.ID_FIRMY == company_id
-            ).all()
-        ]
-        form.specjalnosci.data = specialties
+        # Pobierz specjalności
+        specjalnosci = FirmySpecjalnosci.query.filter_by(ID_FIRMY=company_id).all()
+        form.specjalnosci.data = [s.ID_SPECJALNOSCI for s in specjalnosci]
 
-        return render_template('company_edit_form.html', form=form, title='Edycja firmy') # Dodano przekazywanie form do szablonu
+    if form.validate_on_submit():
+        # Aktualizuj podstawowe dane firmy
+        company.Nazwa_Firmy = form.nazwa_firmy.data
+        company.ID_FIRMY_TYP = form.typ_firmy.data
+        company.Strona_www = form.strona_www.data
+        company.Uwagi = form.uwagi.data
 
-    else:
-        form = CompanyForm() # Inicjalizacja formularza dla POST
-        if form.validate_on_submit():
-            try:
-                # Update company basic info
-                company.Nazwa_Firmy = form.nazwa_firmy.data
-                company.ID_FIRMY_TYP = form.typ_firmy.data
-                company.Strona_www = form.strona_www.data
-                company.Uwagi = form.uwagi.data
+        # Usuń istniejące adresy, emaile, telefony, osoby, oceny, obszary, specjalności
+        Adresy.query.filter_by(ID_FIRMY=company_id).delete()
+        Email.query.filter_by(ID_FIRMY=company_id).delete()
+        Telefon.query.filter_by(ID_FIRMY=company_id).delete()
+        Osoby.query.filter_by(ID_FIRMY=company_id).delete()
+        Oceny.query.filter_by(ID_FIRMY=company_id).delete()
+        FirmyObszarDzialania.query.filter_by(ID_FIRMY=company_id).delete()
+        FirmySpecjalnosci.query.filter_by(ID_FIRMY=company_id).delete()
 
-                # Remove existing related data
-                db.session.query(Adresy).filter(Adresy.ID_FIRMY == company_id).delete()
-                db.session.query(Email).filter(Email.ID_FIRMY == company_id).delete()
-                db.session.query(Telefon).filter(Telefon.ID_FIRMY == company_id).delete()
-                db.session.query(Osoby).filter(Osoby.ID_FIRMY == company_id).delete()
-                db.session.query(Oceny).filter(Oceny.ID_FIRMY == company_id).delete()
-                db.session.query(FirmyObszarDzialania).filter(FirmyObszarDzialania.ID_FIRMY == company_id).delete()
-                db.session.query(FirmySpecjalnosci).filter(FirmySpecjalnosci.ID_FIRMY == company_id).delete()
+        # Dodaj nowe adresy
+        for address_form in form.adresy:
+            if address_form.miejscowosc.data:  # Dodaj tylko jeśli miejscowość jest podana
+                address = Adresy(
+                    Kod=address_form.kod.data,
+                    Miejscowosc=address_form.miejscowosc.data,
+                    Ulica_Miejscowosc=address_form.ulica_miejscowosc.data,
+                    ID_ADRESY_TYP=address_form.typ_adresu.data,
+                    ID_FIRMY=company_id
+                )
+                db.session.add(address)
 
-                # Add addresses
-                if form.adresy: # Sprawdzamy, czy lista adresów nie jest pusta
-                    for address_form in form.adresy:
-                        if address_form.miejscowosc.data: # Dodatkowy warunek, czy miejscowość została wprowadzona
-                            address = Adresy(
-                                Kod=address_form.kod.data,
-                                Miejscowosc=address_form.miejscowosc.data,
-                                Ulica_Miejscowosc=address_form.ulica_miejscowosc.data,
-                                ID_ADRESY_TYP=address_form.typ_adresu.data,
-                                ID_FIRMY=company_id
-                            )
-                            db.session.add(address)
+        # Dodaj nowe emaile
+        for email_form in form.emaile:
+            if email_form.email.data:  # Dodaj tylko jeśli email jest podany
+                email = Email(
+                    e_mail=email_form.email.data,
+                    ID_EMAIL_TYP=email_form.typ_emaila.data,
+                    ID_FIRMY=company_id
+                )
+                db.session.add(email)
 
-                # Add emails
-                if form.emaile:
-                    for email_form in form.emaile:
-                        if email_form.email.data:
-                            email = Email(
-                                e_mail=email_form.email.data,
-                                ID_EMAIL_TYP=email_form.typ_emaila.data,
-                                ID_FIRMY=company_id
-                            )
-                            db.session.add(email)
+        # Dodaj nowe telefony
+        for phone_form in form.telefony:
+            if phone_form.telefon.data:  # Dodaj tylko jeśli telefon jest podany
+                phone = Telefon(
+                    telefon=phone_form.telefon.data,
+                    ID_TELEFON_TYP=phone_form.typ_telefonu.data,
+                    ID_FIRMY=company_id
+                )
+                db.session.add(phone)
 
-                # Add phones
-                if form.telefony:
-                    for phone_form in form.telefony:
-                        if phone_form.telefon.data:
-                            phone = Telefon(
-                                telefon=phone_form.telefon.data,
-                                ID_TELEFON_TYP=phone_form.typ_telefonu.data,
-                                ID_FIRMY=company_id
-                            )
-                            db.session.add(phone)
+        # Dodaj nowe osoby
+        for person_form in form.osoby:
+            if person_form.imie.data and person_form.nazwisko.data:  # Dodaj tylko jeśli imię i nazwisko są podane
+                person = Osoby(
+                    Imie=person_form.imie.data,
+                    Nazwisko=person_form.nazwisko.data,
+                    Stanowisko=person_form.stanowisko.data,
+                    e_mail=person_form.email.data,
+                    telefon=person_form.telefon.data,
+                    ID_FIRMY=company_id
+                )
+                db.session.add(person)
 
-                # Add people
-                if form.osoby:
-                    for person_form in form.osoby:
-                        if person_form.imie.data and person_form.nazwisko.data:
-                            person = Osoby(
-                                Imie=person_form.imie.data,
-                                Nazwisko=person_form.nazwisko.data,
-                                Stanowisko=person_form.stanowisko.data,
-                                e_mail=person_form.email.data,
-                                telefon=person_form.telefon.data,
-                                ID_FIRMY=company_id
-                            )
-                            db.session.add(person)
+        # Dodaj nowe oceny
+        for rating_form in form.oceny:
+            if rating_form.osoba_oceniajaca.data:  # Dodaj tylko jeśli osoba oceniająca jest podana
+                rating = Oceny(
+                    Osoba_oceniajaca=rating_form.osoba_oceniajaca.data,
+                    Budowa_Dzial=rating_form.budowa_dzial.data,
+                    Rok_wspolpracy=rating_form.rok_wspolpracy.data,
+                    Ocena=rating_form.ocena.data,
+                    Komentarz=rating_form.komentarz.data,
+                    ID_FIRMY=company_id
+                )
+                db.session.add(rating)
 
-                # Add ratings
-                if form.oceny:
-                    for rating_form in form.oceny:
-                        if rating_form.osoba_oceniajaca.data:
-                            rating = Oceny(
-                                Osoba_oceniajaca=rating_form.osoba_oceniajaca.data,
-                                Budowa_Dzial=rating_form.budowa_dzial.data,
-                                Rok_wspolpracy=rating_form.rok_wspolpracy.data,
-                                Ocena=rating_form.ocena.data,
-                                Komentarz=rating_form.komentarz.data,
-                                ID_FIRMY=company_id
-                            )
-                            db.session.add(rating)
+        # Dodaj obszar działania
+        if form.kraj.data == 'POL':
+            # Dodaj operację ogólnokrajową
+            obszar = FirmyObszarDzialania(
+                ID_FIRMY=company_id,
+                ID_KRAJ='POL',
+                ID_WOJEWODZTWA='',
+                ID_POWIATY=0
+            )
+            db.session.add(obszar)
+        else:
+            # Dodaj województwa
+            for woj_id in form.wojewodztwa.data:
+                obszar = FirmyObszarDzialania(
+                    ID_FIRMY=company_id,
+                    ID_KRAJ='',
+                    ID_WOJEWODZTWA=woj_id,
+                    ID_POWIATY=0
+                )
+                db.session.add(obszar)
 
-                # Add area of operation
-                if form.kraj.data == 'POL':
+            # Dodaj powiaty
+            for pow_id in form.powiaty.data:
+                # Pobierz województwo dla tego powiatu
+                powiat = Powiaty.query.get(pow_id)
+                if powiat:  # Sprawdź czy powiat istnieje
                     obszar = FirmyObszarDzialania(
                         ID_FIRMY=company_id,
-                        ID_KRAJ='POL',
-                        ID_WOJEWODZTWA='',
-                        ID_POWIATY=0
+                        ID_KRAJ='',
+                        ID_WOJEWODZTWA=powiat.ID_WOJEWODZTWA,
+                        ID_POWIATY=pow_id
                     )
                     db.session.add(obszar)
-                else:
-                    if form.wojewodztwa.data:  # Dodano sprawdzenie, czy wojewodztwa są wybrane
-                        for woj_id in form.wojewodztwa.data:
-                            obszar = FirmyObszarDzialania(
-                                ID_FIRMY=company_id,
-                                ID_KRAJ='',
-                                ID_WOJEWODZTWA=woj_id,
-                                ID_POWIATY=0
-                            )
-                            db.session.add(obszar)
 
-                    if form.powiaty.data: # Dodano sprawdzenie, czy powiaty są wybrane
-                        for pow_id in form.powiaty.data:
-                            powiat = Powiaty.query.get(pow_id)
-                            if powiat: # Dodano sprawdzenie, czy powiat istnieje
-                                obszar = FirmyObszarDzialania(
-                                    ID_FIRMY=company_id,
-                                    ID_KRAJ='',
-                                    ID_WOJEWODZTWA=powiat.ID_WOJEWODZTWA,
-                                    ID_POWIATY=pow_id
-                                )
-                                db.session.add(obszar)
+        # Dodaj specjalności
+        for spec_id in form.specjalnosci.data:
+            spec = FirmySpecjalnosci(
+                ID_FIRMY=company_id,
+                ID_SPECJALNOSCI=spec_id
+            )
+            db.session.add(spec)
 
-                # Add specialties
-                if form.specjalnosci.data:
-                    for spec_id in form.specjalnosci.data:
-                        spec = FirmySpecjalnosci(
-                            ID_FIRMY=company_id,
-                            ID_SPECJALNOSCI=spec_id
-                        )
-                        db.session.add(spec)
+        db.session.commit()
+        flash('Firma została zaktualizowana pomyślnie!', 'success')
+        return redirect(url_for('main.company_details', company_id=company_id))
 
-                db.session.commit()
-                flash('Firma została zaktualizowana pomyślnie!', 'success')
-                return redirect(url_for('main.company_details', company_id=company_id))
-            except SQLAlchemyError as e: # Obsługa błędów bazy danych
-                db.session.rollback()
-                flash(f'Wystąpił błąd podczas aktualizacji firmy: {e}', 'error')
-                return render_template('company_edit_form.html', form=form, title='Edycja firmy') # Dodano context
-        else:
-            return render_template('company_edit_form.html', form=form, title='Edycja firmy') # Dodano context
-
-
-
+    return render_template('company_form.html', form=form, title='Edycja firmy')
+    
 @main.route('/specialties')
 def list_specialties():
     specialties = Specjalnosci.query.all()
@@ -1034,3 +1025,132 @@ def delete_company_type(id):
         db.session.rollback()
         flash(f'Wystąpił błąd podczas usuwania typu firmy: {e}', 'danger')
     return redirect(url_for('main.list_company_types'))
+
+# Routes for Persons
+@main.route('/persons')
+def list_persons():
+    persons = Osoby.query.all()
+    return render_template('persons.html', items=persons, title='Osoby Kontaktowe')
+
+@main.route('/persons/new', methods=['GET', 'POST'])
+def new_person():
+    form = SimplePersonForm()
+    if form.validate_on_submit():
+        try:
+            new_person = Osoby(
+                Imie=form.Imie.data,
+                Nazwisko=form.Nazwisko.data,
+                Stanowisko=form.Stanowisko.data,
+                e_mail=form.e_mail.data,
+                telefon=form.telefon.data,
+                ID_FIRMY=form.ID_FIRMY.data
+            )
+            db.session.add(new_person)
+            db.session.commit()
+            flash('Osoba kontaktowa została dodana pomyślnie!', 'success')
+            return redirect(url_for('main.list_persons'))
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            flash(f'Wystąpił błąd podczas dodawania osoby kontaktowej: {e}', 'danger')
+    return render_template('person_form.html', form=form, title='Dodaj Osobę Kontaktową', back_url=url_for('main.list_persons'))
+
+@main.route('/persons/<int:id>/edit', methods=['GET', 'POST'])
+def edit_person(id):
+    person = Osoby.query.get_or_404(id)
+    # Użyj zaktualizowanej definicji formularza SimplePersonForm
+    form = SimplePersonForm(obj=person) # Teraz obj=person powinno poprawnie wypełnić WSZYSTKIE pola
+
+    if form.validate_on_submit():
+        try:
+            # Używaj zaktualizowanych nazw pól z formularza
+            person.Imie = form.Imie.data
+            person.Nazwisko = form.Nazwisko.data
+            person.Stanowisko = form.Stanowisko.data
+            person.e_mail = form.e_mail.data # Poprawna nazwa
+            person.telefon = form.telefon.data # Poprawna nazwa
+            person.ID_FIRMY = form.ID_FIRMY.data # Poprawna nazwa dla pola SelectField
+            db.session.commit()
+            flash('Osoba kontaktowa została zaktualizowana pomyślnie!', 'success')
+            return redirect(url_for('main.list_persons'))
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            flash(f'Wystąpił błąd podczas aktualizacji osoby kontaktowej: {e}', 'danger')
+
+    # Przy GET lub błędzie walidacji, renderuj szablon.
+    # Formularz przekazany do szablonu będzie już wypełniony danymi z 'person' dzięki obj=person
+    return render_template('person_form.html', form=form, title='Edytuj Osobę Kontaktową', back_url=url_for('main.list_persons'))
+
+
+@main.route('/persons/<int:id>/delete', methods=['POST'])
+def delete_person(id):
+    person = Osoby.query.get_or_404(id)
+    try:
+        db.session.delete(person)
+        db.session.commit()
+        flash('Osoba kontaktowa została usunięta pomyślnie!', 'success')
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        flash(f'Wystąpił błąd podczas usuwania osoby kontaktowej: {e}', 'danger')
+    return redirect(url_for('main.list_persons'))
+
+
+# Routes for Ratings
+@main.route('/ratings')
+def list_ratings():
+    ratings = Oceny.query.all()
+    return render_template('ratings.html', items=ratings, title='Oceny Współpracy')
+
+@main.route('/ratings/new', methods=['GET', 'POST'])
+def new_rating():
+    form = SimpleRatingForm()
+    if form.validate_on_submit():
+        try:
+            new_rating = Oceny(
+                Osoba_oceniajaca=form.Osoba_oceniajaca.data,
+                Budowa_Dzial=form.Budowa_Dzial.data,
+                Rok_wspolpracy=form.Rok_wspolpracy.data,
+                Ocena=form.Ocena.data,
+                Komentarz=form.Komentarz.data,
+                ID_FIRMY=form.ID_FIRMY.data
+            )
+            db.session.add(new_rating)
+            db.session.commit()
+            flash('Ocena została dodana pomyślnie!', 'success')
+            return redirect(url_for('main.list_ratings'))
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            flash(f'Wystąpił błąd podczas dodawania oceny: {e}', 'danger')
+    return render_template('rating_form.html', form=form, title='Dodaj Ocenę Współpracy', back_url=url_for('main.list_ratings'))
+
+@main.route('/ratings/<int:id>/edit', methods=['GET', 'POST'])
+def edit_rating(id):
+    rating = Oceny.query.get_or_404(id)
+    form = SimpleRatingForm(obj=rating)
+    if form.validate_on_submit():
+        try:
+            rating.Osoba_oceniajaca = form.Osoba_oceniajaca.data
+            rating.Budowa_Dzial = form.Budowa_Dzial.data
+            rating.Rok_wspolpracy = form.Rok_wspolpracy.data
+            rating.Ocena = form.Ocena.data
+            rating.Komentarz = form.Komentarz.data
+            rating.ID_FIRMY = form.ID_FIRMY.data
+            db.session.commit()
+            flash('Ocena została zaktualizowana pomyślnie!', 'success')
+            return redirect(url_for('main.list_ratings'))
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            flash(f'Wystąpił błąd podczas aktualizacji oceny: {e}', 'danger')
+    # On GET request or validation failure, the form will be pre-populated by obj=
+    return render_template('rating_form.html', form=form, title='Edytuj Ocenę Współpracy', back_url=url_for('main.list_ratings'))
+
+@main.route('/ratings/<int:id>/delete', methods=['POST'])
+def delete_rating(id):
+    rating = Oceny.query.get_or_404(id)
+    try:
+        db.session.delete(rating)
+        db.session.commit()
+        flash('Ocena została usunięta pomyślnie!', 'success')
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        flash(f'Wystąpił błąd podczas usuwania oceny: {e}', 'danger')
+    return redirect(url_for('main.list_ratings'))

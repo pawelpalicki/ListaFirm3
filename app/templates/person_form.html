@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <div class="card-header-content d-flex justify-content-between w-100">
+                    <h5 class="card-title">{{ title }}</h5>
+                    <div class="card-actions">
+                        <a href="{{ back_url }}" class="btn btn-secondary btn-sm">
+                            <i class="bi bi-arrow-left"></i> Powrót
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.Imie.label(class="form-label") }}      {# Zmieniono na Imie #}
+                        {{ form.Imie(class="form-control") }}         {# Zmieniono na Imie #}
+                        {% for error in form.Imie.errors %}           {# Zmieniono na Imie #}
+                            <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.Nazwisko.label(class="form-label") }}  {# Zmieniono na Nazwisko #}
+                        {{ form.Nazwisko(class="form-control") }}     {# Zmieniono na Nazwisko #}
+                        {% for error in form.Nazwisko.errors %}       {# Zmieniono na Nazwisko #}
+                            <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                     <div class="mb-3">
+                        {{ form.Stanowisko.label(class="form-label") }} {# Zmieniono na Stanowisko #}
+                        {{ form.Stanowisko(class="form-control") }}    {# Zmieniono na Stanowisko #}
+                        {% for error in form.Stanowisko.errors %}      {# Zmieniono na Stanowisko #}
+                            <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                     <div class="mb-3">
+                        {{ form.e_mail.label(class="form-label") }}    {# Zmieniono na e_mail #}
+                        {{ form.e_mail(class="form-control") }}       {# Zmieniono na e_mail #}
+                        {% for error in form.e_mail.errors %}         {# Zmieniono na e_mail #}
+                            <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                     <div class="mb-3">
+                        {{ form.telefon.label(class="form-label") }}   {# Bez zmian #}
+                        {{ form.telefon(class="form-control") }}      {# Bez zmian #}
+                        {% for error in form.telefon.errors %}        {# Bez zmian #}
+                            <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                         {{ form.ID_FIRMY.label(class="form-label") }}  {# Zmieniono na ID_FIRMY #}
+                         {{ form.ID_FIRMY(class="form-select") }}     {# Zmieniono na ID_FIRMY #}
+                         {% for error in form.ID_FIRMY.errors %}       {# Zmieniono na ID_FIRMY #}
+                             <span class="text-danger">{{ error }}</span>
+                         {% endfor %}
+                     </div>
+                    {{ form.submit(class="btn btn-primary") }}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

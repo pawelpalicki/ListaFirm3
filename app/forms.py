@@ -13,16 +13,16 @@ class Select2MultipleField(SelectMultipleField):
 class AddressForm(FlaskForm):
     typ_adresu = SelectField('Typ adresu', coerce=int)
     kod = StringField('Kod pocztowy')
-    miejscowosc = StringField('Miejscowość', validators=[DataRequired()])
-    ulica_miejscowosc = StringField('Ulica/Miejscowość', validators=[DataRequired()])
+    miejscowosc = StringField('Miejscowość', validators=[Optional()]) # Zmieniono na Optional, jeśli nie jest wymagane w pustym szablonie
+    ulica_miejscowosc = StringField('Ulica/Miejscowość', validators=[Optional()]) # Zmieniono na Optional
 
 class EmailForm(FlaskForm):
     typ_emaila = SelectField('Typ emaila', coerce=int)
-    email = StringField('Email', validators=[DataRequired(),])
+    email = StringField('Email', validators=[Optional(), Email()]) # Dodano Optional
 
 class PhoneForm(FlaskForm):
     typ_telefonu = SelectField('Typ telefonu', coerce=int)
-    telefon = StringField('Telefon', validators=[DataRequired()])
+    telefon = StringField('Telefon', validators=[Optional()]) # Dodano Optional
 
 class PersonForm(FlaskForm):
     imie = StringField('Imię', validators=[DataRequired()])
@@ -41,11 +41,11 @@ class RatingForm(FlaskForm):
 class CompanyForm(FlaskForm):
     nazwa_firmy = StringField('Nazwa firmy', validators=[DataRequired()])
     typ_firmy = SelectField('Typ firmy')
-    strona_www = StringField('Strona WWW')
+    strona_www = StringField('Strona WWW', validators=[Optional()]) # Dodano Optional
     uwagi = TextAreaField('Uwagi')
 
     # Areas of operation
-    kraj = SelectField('Kraj działania', choices=[('', 'Brak'), ('POL', 'Cały kraj')])
+    kraj = SelectField('Kraj działania', choices=[('', 'Brak'), ('POL', 'Cały kraj')], default='')
     # Zmiana na Select2MultipleField
     wojewodztwa = Select2MultipleField('Województwa', coerce=str)
     powiaty = Select2MultipleField('Powiaty', coerce=int)
@@ -54,69 +54,94 @@ class CompanyForm(FlaskForm):
     specjalnosci = Select2MultipleField('Specjalności', coerce=int)
 
     # Related data
-    adresy = FieldList(FormField(AddressForm), min_entries=1)
-    emaile = FieldList(FormField(EmailForm), min_entries=1)
-    telefony = FieldList(FormField(PhoneForm), min_entries=1)
-    osoby = FieldList(FormField(PersonForm), min_entries=1)
-    oceny = FieldList(FormField(RatingForm), min_entries=1)
+    # Używamy min_entries=0, aby lista mogła być pusta
+    adresy = FieldList(FormField(AddressForm), min_entries=0)
+    emaile = FieldList(FormField(EmailForm), min_entries=0)
+    telefony = FieldList(FormField(PhoneForm), min_entries=0)
+    osoby = FieldList(FormField(PersonForm), min_entries=0)
+    oceny = FieldList(FormField(RatingForm), min_entries=0)
+
+    # Dodano atrybuty do przechowywania opcji dla szablonów
+    address_type_choices = []
+    email_type_choices = []
+    phone_type_choices = []
+    company_type_choices = []
+    specialty_choices = []
+    wojewodztwa_choices = []
+    # Powiaty są ładowane dynamicznie, więc nie potrzebujemy ich tutaj dla szablonu
 
     def __init__(self, *args, **kwargs):
         super(CompanyForm, self).__init__(*args, **kwargs)
+        # Importy modeli wewnątrz, aby uniknąć problemów z cyklicznym importem
         from app.models import FirmyTyp, AdresyTyp, EmailTyp, TelefonTyp, Wojewodztwa, Powiaty, Specjalnosci
         from app import db
 
-        # Load data for dropdowns
-        self.typ_firmy.choices = [(t.ID_FIRMY_TYP, t.Typ_firmy) for t in FirmyTyp.query.all()]
+        # Załaduj opcje i zapisz je jako atrybuty instancji
+        self.company_type_choices = [(t.ID_FIRMY_TYP, t.Typ_firmy) for t in FirmyTyp.query.order_by(FirmyTyp.Typ_firmy).all()]
+        self.typ_firmy.choices = self.company_type_choices
 
-        # Load data for address type dropdown in all address forms
-        address_types = [(t.ID_ADRESY_TYP, t.Typ_adresu) for t in AdresyTyp.query.all()]
-        for form in self.adresy:
-            form.typ_adresu.choices = address_types
+        self.address_type_choices = [(t.ID_ADRESY_TYP, t.Typ_adresu) for t in AdresyTyp.query.order_by(AdresyTyp.Typ_adresu).all()]
+        # Ustaw opcje dla istniejących wpisów ORAZ dla pola szablonu (jeśli WTForms go udostępnia - ale my użyjemy self.address_type_choices)
+        for adres_entry in self.adresy:
+            adres_entry.typ_adresu.choices = self.address_type_choices
+        # if hasattr(self.adresy, 'template'): # Sprawdzenie, czy WTForms udostępnia szablon - zazwyczaj nie
+        #     self.adresy.template.typ_adresu.choices = self.address_type_choices
 
-        # Load data for email type dropdown in all email forms
-        email_types = [(t.ID_EMAIL_TYP, t.Typ_emaila) for t in EmailTyp.query.all()]
-        for form in self.emaile:
-            form.typ_emaila.choices = email_types
+        self.email_type_choices = [(t.ID_EMAIL_TYP, t.Typ_emaila) for t in EmailTyp.query.order_by(EmailTyp.Typ_emaila).all()]
+        for email_entry in self.emaile:
+            email_entry.typ_emaila.choices = self.email_type_choices
 
-        # Load data for phone type dropdown in all phone forms
-        phone_types = [(t.ID_TELEFON_TYP, t.Typ_telefonu) for t in TelefonTyp.query.all()]
-        for form in self.telefony:
-            form.typ_telefonu.choices = phone_types
+        self.phone_type_choices = [(t.ID_TELEFON_TYP, t.Typ_telefonu) for t in TelefonTyp.query.order_by(TelefonTyp.Typ_telefonu).all()]
+        for telefon_entry in self.telefony:
+            telefon_entry.typ_telefonu.choices = self.phone_type_choices
 
-        # Load data for wojewodztwa and powiaty
-        self.wojewodztwa.choices = [(w.ID_WOJEWODZTWA, w.Wojewodztwo) for w in Wojewodztwa.query.all()]
-        self.powiaty.choices = [(p.ID_POWIATY, f"{p.Powiat} ({p.ID_WOJEWODZTWA})") for p in Powiaty.query.all()]
+        self.wojewodztwa_choices = [(w.ID_WOJEWODZTWA, w.Wojewodztwo) for w in Wojewodztwa.query.order_by(Wojewodztwa.Wojewodztwo).all()]
+        self.wojewodztwa.choices = self.wojewodztwa_choices
+        # Dla powiatów - ładujemy wszystkie jako początkowe opcje, JS je przefiltruje
+        self.powiaty.choices = [(p.ID_POWIATY, f"{p.Powiat} ({p.wojewodztwo.Wojewodztwo if p.wojewodztwo else 'Brak woj.'})") for p in Powiaty.query.order_by(Powiaty.Powiat).all()]
 
-        # Load data for specialties
-        self.specjalnosci.choices = [(s.ID_SPECJALNOSCI, s.Specjalnosc) for s in Specjalnosci.query.all()]
+
+        self.specialty_choices = [(s.ID_SPECJALNOSCI, s.Specjalnosc) for s in Specjalnosci.query.order_by(Specjalnosci.Specjalnosc).all()]
+        self.specjalnosci.choices = self.specialty_choices
 
 class SimplePersonForm(FlaskForm):
-    imie = StringField('Imię', validators=[DataRequired()])
-    nazwisko = StringField('Nazwisko', validators=[DataRequired()])
-    stanowisko = StringField('Stanowisko')
-    email = StringField('Email', validators=[Optional(),])
-    telefon = StringField('Telefon')
-    firma = SelectField('Firma', coerce=int, validators=[DataRequired()])
+    # Użyj nazw atrybutów z modelu Osoby
+    Imie = StringField('Imię', validators=[DataRequired()])
+    Nazwisko = StringField('Nazwisko', validators=[DataRequired()])
+    Stanowisko = StringField('Stanowisko')
+    e_mail = StringField('E-mail', validators=[Optional(), Email()]) 
+    telefon = StringField('Telefon') 
+    ID_FIRMY = SelectField('Firma', coerce=int, validators=[DataRequired()])
+    submit = SubmitField('Zapisz')
 
     def __init__(self, *args, **kwargs):
         super(SimplePersonForm, self).__init__(*args, **kwargs)
+        # Importuj model wewnątrz metody, jeśli chcesz uniknąć problemów z cyklicznym importem
         from app.models import Firmy
-        # Load companies for dropdown
-        self.firma.choices = [(f.ID_FIRMY, f.Nazwa_Firmy) for f in Firmy.query.all()]
+        # Załaduj opcje do poprawnego pola (ID_FIRMY)
+        # Dodano order_by dla lepszej użyteczności listy rozwijanej
+        self.ID_FIRMY.choices = [(f.ID_FIRMY, f.Nazwa_Firmy) for f in Firmy.query.order_by(Firmy.Nazwa_Firmy).all()]
+        # Dodaj pustą opcję na początku, jeśli pole nie zawsze musi być wybrane od razu
+        self.ID_FIRMY.choices.insert(0, (0, '--- Wybierz ---')) 
 
 class SimpleRatingForm(FlaskForm):
-    osoba_oceniajaca = StringField('Osoba oceniająca', validators=[DataRequired()])
-    budowa_dzial = StringField('Budowa/Dział', validators=[DataRequired()])
-    rok_wspolpracy = IntegerField('Rok współpracy', validators=[DataRequired()])
-    ocena = IntegerField('Ocena (1-5)', validators=[DataRequired(), NumberRange(min=1, max=5)])
-    komentarz = TextAreaField('Komentarz')
-    firma = SelectField('Firma', coerce=int, validators=[DataRequired()])
+    # Użyj nazw atrybutów z modelu Osoby
+    Osoba_oceniajaca = StringField('Osoba oceniająca', validators=[DataRequired()])
+    Budowa_Dzial = StringField('Budowa/Dział', validators=[DataRequired()])
+    Rok_wspolpracy = IntegerField('Rok współpracy', validators=[DataRequired()])
+    Ocena = IntegerField('Ocena (1-5)', validators=[DataRequired(), NumberRange(min=1, max=5)])
+    Komentarz = TextAreaField('Komentarz')
+    ID_FIRMY = SelectField('Firma', coerce=int, validators=[DataRequired()])
+    submit = SubmitField('Zapisz')
 
     def __init__(self, *args, **kwargs):
         super(SimpleRatingForm, self).__init__(*args, **kwargs)
         from app.models import Firmy
         # Load companies for dropdown
-        self.firma.choices = [(f.ID_FIRMY, f.Nazwa_Firmy) for f in Firmy.query.all()]
+        self.ID_FIRMY.choices = [(f.ID_FIRMY, f.Nazwa_Firmy) for f in Firmy.query.order_by(Firmy.Nazwa_Firmy).all()]
+        # dodaj pustą opcję na początku, jeśli pole nie zawsze musi być wybrane od razu
+        self.ID_FIRMY.choices.insert(0, (0, '--- Wybierz ---')) # Pamiętaj o walidatorze DataRequired, jeśli dodasz pustą opcję
+
 
 # Forms for adding/editing the four tables
 class SpecialtyForm(FlaskForm):

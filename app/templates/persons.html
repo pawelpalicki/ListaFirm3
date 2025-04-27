@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title">{{ title }}</h5>
+                 <a href="{{ url_for('main.new_person') }}" class="btn btn-success btn-sm">
+                    <i class="bi bi-plus-circle"></i> Dodaj nową osobę kontaktową
+                </a>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Imię</th>
+                            <th>Nazwisko</th>
+                            <th>Stanowisko</th>
+                            <th>Email</th>
+                            <th>Telefon</th>
+                            <th>Firma</th>
+                            <th>Akcje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                        <tr>
+                            <td>{{ item.ID_OSOBY }}</td>
+                            <td>{{ item.Imie }}</td>
+                            <td>{{ item.Nazwisko }}</td>
+                            <td>{{ item.Stanowisko }}</td>
+                            <td>{{ item.e_mail }}</td>
+                            <td>{{ item.telefon }}</td>
+                            <td>{% if item.firma %}{{ item.firma.Nazwa_Firmy }}{% else %}Brak firmy{% endif %}</td>
+                            <td>
+                                <a href="{{ url_for('main.edit_person', id=item.ID_OSOBY) }}" class="btn btn-sm btn-primary">Edytuj</a>
+                                <form action="{{ url_for('main.delete_person', id=item.ID_OSOBY) }}" method="POST" style="display: inline;">
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Czy na pewno chcesz usunąć tę osobę kontaktową?');">Usuń</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
