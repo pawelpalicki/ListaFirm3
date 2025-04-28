@@ -1,3 +1,0 @@
-runtime: python312  # lub python38, python310, python311, python312
-entrypoint: gunicorn -b :$PORT run:app  # Przykładowo uruchamia aplikację 'app' z pliku 'main.py' przy użyciu Gunicorn
-# Dostosuj 'main:app' do miejsca, gdzie masz obiekt swojej aplikacji (np. nazwapliku:zmiennaaplikacji)
