@@ -395,7 +395,7 @@ def new_company():
                 db.session.add(email)
 
         # Pobierz emaile
-        emaile = Email.query.filter_by(ID_FIRMY=company_id).all()
+        emaile = Email.query.filter_by(ID_FIRMY=company.ID_FIRMY).all()
         while len(form.emaile) < len(emaile):
             form.emaile.append_entry()
         for i, email in enumerate(emaile):
