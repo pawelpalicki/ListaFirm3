@@ -1,3 +1,5 @@
+logging: CLOUD_LOGGING_ONLY # Dodaj tę linię
+
 steps:
 - name: 'gcr.io/cloud-builders/gcloud' # Użyj narzędzia gcloud od Google
   args: ['app', 'deploy'] # Uruchom komendę wdrożenia App Engine
