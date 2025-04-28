@@ -1,0 +1,4 @@
+steps:
+- name: 'gcr.io/cloud-builders/gcloud' # Użyj narzędzia gcloud od Google
+  args: ['app', 'deploy'] # Uruchom komendę wdrożenia App Engine
+  timeout: '1600s' # Daj czas na wdrożenie (może potrwać kilka minut)
