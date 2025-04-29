@@ -34,6 +34,21 @@ $(document).ready(function() {
         const newHtml = templateHtml.replace(/__prefix__/g, currentIndex);
         const newElement = $(newHtml); // Utwórz element jQuery
 
+        // Get the CSRF token from the main form
+        const csrfToken = $('input[name="csrf_token"]').val();
+
+        // Determine the field list name from the container ID
+        const fieldListName = containerId.replace('-container', ''); // e.g., 'adresy-container' -> 'adresy'
+
+        // Find the placeholder CSRF input within the new element
+        const csrfInput = newElement.find('.js-csrf-token');
+
+        // Set the name and value for the CSRF input
+        if (csrfInput.length > 0) {
+            csrfInput.attr('name', `${fieldListName}-${currentIndex}-csrf_token`);
+            csrfInput.val(csrfToken);
+        }
+
         // Dodaj nowy zestaw pól do kontenera
         container.append(newElement);
 
@@ -288,6 +303,38 @@ $(document).ready(function() {
             }
         });
     });
+
+    // Obsługa przycisku potwierdzającego usunięcie firmy
+    $('#confirmDeleteCompany').on('click', function() {
+        const companyId = $(this).data('company-id');
+        $.ajax({
+            url: `/company/${companyId}/delete`,
+            type: 'POST',
+            success: function(response) {
+                if (response.success) {
+                    $('#deleteCompanyModal').modal('hide');
+                    alert('Firma została usunięta pomyślnie!');
+                    window.location.href = response.redirect;
+                } else {
+                    $('#deleteCompanyModal').modal('hide');
+                    alert('Wystąpił błąd: ' + response.error);
+                }
+            },
+            error: function(xhr) {
+                $('#deleteCompanyModal').modal('hide');
+                let errorMessage = 'Wystąpił błąd podczas usuwania firmy.';
+                try {
+                    const responseJson = JSON.parse(xhr.responseText);
+                    if (responseJson && responseJson.error) {
+                        errorMessage = 'Wystąpił błąd: ' + responseJson.error;
+                    }
+                } catch (e) { /* Ignoruj błąd parsowania */ }
+                alert(errorMessage);
+            }
+        });
+    });
+
+    // Removed the problematic form submit handler
 
     // --- INICJALIZACJA PO ZAŁADOWANIU STRONY ---
     setupRemoveButtons(); // Dla już istniejących wpisów

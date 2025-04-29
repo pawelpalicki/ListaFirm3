@@ -15,7 +15,7 @@
                 </div>
             </div>
             <div class="card-body">
-                <form method="POST" action="">
+                <form method="POST" action="" id="companyForm">
                     {{ form.hidden_tag() }}
 
                     <div class="card mb-4">
@@ -160,7 +160,7 @@
                                                     <label class="form-label" for="{{ telefon_form.typ_telefonu.id }}">{{ telefon_form.typ_telefonu.label }}</label>
                                                     <div class="input-group">
                                                         {{ telefon_form.typ_telefonu(class="form-select") }}
-                                                        <button type="button" class="btn btn-outline-secondary add-new-option" data-type="telefon_typ" data-select-id="{{ telefon_form.typ_telefonu.id }}">
+                                                        <button type="button" class="btn btn-outline-secondary add-new-option" data-type="telefon_typ" data-select-id="telefony_{{ loop.index0 }}_typ_telefonu">
                                                             <i class="bi bi-plus-circle"></i> Dodaj
                                                         </button>
                                                     </div>
@@ -204,7 +204,7 @@
                                                     <label class="form-label" for="{{ email_form.typ_emaila.id }}">{{ email_form.typ_emaila.label }}</label>
                                                     <div class="input-group">
                                                         {{ email_form.typ_emaila(class="form-select") }}
-                                                        <button type="button" class="btn btn-outline-secondary add-new-option" data-type="email_typ" data-select-id="{{ email_form.typ_emaila.id }}">
+                                                        <button type="button" class="btn btn-outline-secondary add-new-option" data-type="email_typ" data-select-id="emaile_{{ loop.index0 }}_typ_emaila">
                                                             <i class="bi bi-plus-circle"></i> Dodaj
                                                         </button>
                                                     </div>
@@ -442,11 +442,10 @@
                                         {{ ocena_form.komentarz.label(class="form-label") }}
                                         {{ ocena_form.komentarz(class="form-control", rows="2") }}
                                         {% if ocena_form.komentarz.errors %}
-                                                <ul class="text-danger">
-                                                    {% for error in ocena_form.komentarz.errors %}
-                                                        <li>{{ error }}</li>
-                                                    {% endfor %}
-                                                </ul>
+                                            <ul class="text-danger">
+                                                {% for error in ocena_form.komentarz.errors %}
+                                                    <li>{{ error }}</li>
+                                                {% endfor %}
                                             {% endif %}
                                     </div>
                                     <button type="button" class="btn btn-sm btn-danger remove-entry mt-2">Usuń ocenę</button>
@@ -463,11 +462,39 @@
                         <button type="submit" class="btn btn-success">
                             <i class="bi bi-save"></i> Zapisz firmę
                         </button>
-                        <a href="{{ url_for('main.index') }}" class="btn btn-secondary">
-                            <i class="bi bi-arrow-left"></i> Powrót
-                        </a>
+                        <div>
+                            {% if company_id %}
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteCompanyModal">
+                                <i class="bi bi-trash"></i> Usuń firmę
+                            </button>
+                            {% endif %}
+                            <a href="{{ url_for('main.index') }}" class="btn btn-secondary ms-2">
+                                <i class="bi bi-arrow-left"></i> Powrót
+                            </a>
+                        </div>
                     </div>
                 </form>
+
+                {% if company_id %}
+                <div class="modal fade" id="deleteCompanyModal" tabindex="-1" aria-labelledby="deleteCompanyModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteCompanyModalLabel">Potwierdź usunięcie</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+                            </div>
+                            <div class="modal-body">
+                                Czy na pewno chcesz usunąć firmę <strong>{{ form.nazwa_firmy.data }}</strong>?
+                                Ta operacja jest nieodwracalna i usunie wszystkie powiązane dane (adresy, e-maile, telefony, osoby, oceny, specjalności, obszary działania).
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+                                <button type="button" class="btn btn-danger" id="confirmDeleteCompany" data-company-id="{{ company_id }}">Usuń</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -475,42 +502,34 @@
 
 <div id="adres-template" style="display: none;">
     <div class="entry-form adres-form mb-3 p-3 border rounded">
+         <input type="hidden" class="js-csrf-token"> {# Placeholder for CSRF token #}
         <div class="row">
             <div class="col-12 mb-2">
                 <label class="form-label" for="adresy-__prefix__-typ_adresu">Typ adresu</label>
                 <div class="input-group">
                     <select class="form-select" id="adresy-__prefix__-typ_adresu" name="adresy-__prefix__-typ_adresu">
-                         {# Assuming form.address_type_choices is available for the template #}
-                         {# If these choices are specific to the AdresForm, you might need a way to pass them #}
-                         {# For FieldList, choices can often be set on the field definition in the form class #}
-                         {# This part might need adjustment based on how address_type_choices is populated #}
                         {% for value, label in form.address_type_choices %}
-                         <option value="{{ value }}">{{ label }}</option>
+                        <option value="{{ value }}">{{ label }}</option>
                         {% endfor %}
                     </select>
                     <button type="button" class="btn btn-outline-secondary add-new-option" data-type="adres_typ" data-select-id="adresy-__prefix__-typ_adresu">
                         <i class="bi bi-plus-circle"></i> Dodaj
                     </button>
                 </div>
-                {# Error display for dynamic template fields - requires careful handling in JS or server-side #}
-                {# Typically, errors for dynamic fields are handled after the form is rendered with errors #}
             </div>
         </div>
         <div class="row">
             <div class="col-md-2 mb-2">
                 <label class="form-label" for="adresy-__prefix__-kod">Kod pocztowy</label>
                 <input class="form-control" id="adresy-__prefix__-kod" name="adresy-__prefix__-kod" type="text" value="">
-                {# Error display #}
             </div>
             <div class="col-md-4 mb-2">
                 <label class="form-label" for="adresy-__prefix__-miejscowosc">Miejscowość</label>
                 <input class="form-control" id="adresy-__prefix__-miejscowosc" name="adresy-__prefix__-miejscowosc" type="text" value="">
-                {# Error display #}
             </div>
             <div class="col-md-6 mb-2">
                 <label class="form-label" for="adresy-__prefix__-ulica_miejscowosc">Ulica/Miejscowość</label>
                 <input class="form-control" id="adresy-__prefix__-ulica_miejscowosc" name="adresy-__prefix__-ulica_miejscowosc" type="text" value="">
-                {# Error display #}
             </div>
         </div>
         <button type="button" class="btn btn-sm btn-danger remove-entry mt-2">Usuń adres</button>
@@ -519,26 +538,24 @@
 
 <div id="telefon-template" style="display: none;">
     <div class="entry-form telefon-form mb-3 p-3 border rounded">
+        <input type="hidden" class="js-csrf-token"> {# Placeholder for CSRF token #}
         <div class="row">
             <div class="col-12 mb-2">
                 <label class="form-label" for="telefony-__prefix__-typ_telefonu">Typ telefonu</label>
                 <div class="input-group">
                     <select class="form-select" id="telefony-__prefix__-typ_telefonu" name="telefony-__prefix__-typ_telefonu">
-                         {# Assuming form.phone_type_choices is available #}
                         {% for value, label in form.phone_type_choices %}
-                         <option value="{{ value }}">{{ label }}</option>
+                        <option value="{{ value }}">{{ label }}</option>
                         {% endfor %}
                     </select>
                     <button type="button" class="btn btn-outline-secondary add-new-option" data-type="telefon_typ" data-select-id="telefony-__prefix__-typ_telefonu">
                         <i class="bi bi-plus-circle"></i> Dodaj
                     </button>
                 </div>
-                 {# Error display #}
             </div>
             <div class="col-12 mb-2">
                 <label class="form-label" for="telefony-__prefix__-telefon">Telefon</label>
                 <input class="form-control" id="telefony-__prefix__-telefon" name="telefony-__prefix__-telefon" type="text" value="">
-                 {# Error display #}
             </div>
         </div>
         <button type="button" class="btn btn-sm btn-danger remove-entry mt-2">Usuń telefon</button>
@@ -547,26 +564,24 @@
 
 <div id="email-template" style="display: none;">
     <div class="entry-form email-form mb-3 p-3 border rounded">
+        <input type="hidden" class="js-csrf-token"> {# Placeholder for CSRF token #}
         <div class="row">
             <div class="col-12 mb-2">
                 <label class="form-label" for="emaile-__prefix__-typ_emaila">Typ emaila</label>
                 <div class="input-group">
                     <select class="form-select" id="emaile-__prefix__-typ_emaila" name="emaile-__prefix__-typ_emaila">
-                       {# Assuming form.email_type_choices is available #}
-                       {% for value, label in form.email_type_choices %}
+                        {% for value, label in form.email_type_choices %}
                         <option value="{{ value }}">{{ label }}</option>
-                       {% endfor %}
+                        {% endfor %}
                     </select>
                     <button type="button" class="btn btn-outline-secondary add-new-option" data-type="email_typ" data-select-id="emaile-__prefix__-typ_emaila">
                         <i class="bi bi-plus-circle"></i> Dodaj
                     </button>
                 </div>
-                 {# Error display #}
             </div>
             <div class="col-12 mb-2">
                 <label class="form-label" for="emaile-__prefix__-email">Email</label>
                 <input class="form-control" id="emaile-__prefix__-email" name="emaile-__prefix__-email" type="email" value="">
-                 {# Error display #}
             </div>
         </div>
         <button type="button" class="btn btn-sm btn-danger remove-entry mt-2">Usuń e-mail</button>
@@ -575,35 +590,31 @@
 
 <div id="osoba-template" style="display: none;">
     <div class="entry-form osoba-form mb-4 p-3 border rounded">
+        <input type="hidden" class="js-csrf-token"> {# Placeholder for CSRF token #}
         <div class="row">
             <div class="col-md-6 mb-2">
                 <label class="form-label" for="osoby-__prefix__-imie">Imię</label>
                 <input class="form-control" id="osoby-__prefix__-imie" name="osoby-__prefix__-imie" type="text" value="">
-                 {# Error display #}
             </div>
             <div class="col-md-6 mb-2">
                 <label class="form-label" for="osoby-__prefix__-nazwisko">Nazwisko</label>
                 <input class="form-control" id="osoby-__prefix__-nazwisko" name="osoby-__prefix__-nazwisko" type="text" value="">
-                 {# Error display #}
             </div>
         </div>
         <div class="row">
             <div class="col-md-6 mb-2">
                 <label class="form-label" for="osoby-__prefix__-stanowisko">Stanowisko</label>
                 <input class="form-control" id="osoby-__prefix__-stanowisko" name="osoby-__prefix__-stanowisko" type="text" value="">
-                 {# Error display #}
             </div>
         </div>
         <div class="row">
             <div class="col-md-6 mb-2">
                 <label class="form-label" for="osoby-__prefix__-email">Email</label>
                 <input class="form-control" id="osoby-__prefix__-email" name="osoby-__prefix__-email" type="email" value="">
-                 {# Error display #}
             </div>
             <div class="col-md-6 mb-2">
                 <label class="form-label" for="osoby-__prefix__-telefon">Telefon</label>
                 <input class="form-control" id="osoby-__prefix__-telefon" name="osoby-__prefix__-telefon" type="text" value="">
-                 {# Error display #}
             </div>
         </div>
         <button type="button" class="btn btn-sm btn-danger remove-entry mt-2">Usuń osobę</button>
@@ -612,39 +623,34 @@
 
 <div id="ocena-template" style="display: none;">
     <div class="entry-form ocena-form mb-4 p-3 border rounded">
+        <input type="hidden" class="js-csrf-token"> {# Placeholder for CSRF token #}
         <div class="row">
             <div class="col-md-6 mb-2">
                 <label class="form-label" for="oceny-__prefix__-osoba_oceniajaca">Osoba oceniająca</label>
                 <input class="form-control" id="oceny-__prefix__-osoba_oceniajaca" name="oceny-__prefix__-osoba_oceniajaca" type="text" value="">
-                 {# Error display #}
             </div>
             <div class="col-md-6 mb-2">
                 <label class="form-label" for="oceny-__prefix__-budowa_dzial">Budowa/Dział</label>
                 <input class="form-control" id="oceny-__prefix__-budowa_dzial" name="oceny-__prefix__-budowa_dzial" type="text" value="">
-                 {# Error display #}
             </div>
         </div>
         <div class="row">
             <div class="col-md-6 mb-2">
                 <label class="form-label" for="oceny-__prefix__-rok_wspolpracy">Rok współpracy</label>
                 <input class="form-control" id="oceny-__prefix__-rok_wspolpracy" name="oceny-__prefix__-rok_wspolpracy" type="number" value="">
-                 {# Error display #}
             </div>
             <div class="col-md-6 mb-2">
                 <label class="form-label" for="oceny-__prefix__-ocena">Ocena (1-5)</label>
                 <input class="form-control" id="oceny-__prefix__-ocena" name="oceny-__prefix__-ocena" type="number" min="1" max="5" value="">
-                 {# Error display #}
             </div>
         </div>
         <div class="mb-2">
             <label class="form-label" for="oceny-__prefix__-komentarz">Komentarz</label>
             <textarea class="form-control" id="oceny-__prefix__-komentarz" name="oceny-__prefix__-komentarz" rows="2"></textarea>
-             {# Error display #}
         </div>
         <button type="button" class="btn btn-sm btn-danger remove-entry mt-2">Usuń ocenę</button>
     </div>
 </div>
-
 
 <div id="overlay-form-container" class="position-fixed top-0 start-0 w-100 h-100 d-none" style="background-color: rgba(0,0,0,0.5); z-index: 1050;">
     <div class="container h-100 d-flex align-items-center justify-content-center">
