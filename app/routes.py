@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
-from sqlalchemy import or_, func
+from sqlalchemy import or_, and_, func
 from app.models import Firmy, FirmyTyp, Adresy, AdresyTyp, Email, EmailTyp, Telefon, TelefonTyp, Specjalnosci, FirmySpecjalnosci, Kraj, Wojewodztwa, Powiaty, FirmyObszarDzialania, Osoby, Oceny
 from app import db
 from unidecode import unidecode
@@ -134,44 +134,90 @@ def index():
     
     # Handle area filter (województwo)
     wojewodztwo = request.args.get('wojewodztwo')
-    if wojewodztwo:
-        # Include companies with nationwide service
-        nationwide_companies = db.session.query(Firmy.ID_FIRMY)\
-                                .join(FirmyObszarDzialania)\
-                                .filter(FirmyObszarDzialania.ID_KRAJ == 'POL')
-        
-        # Companies serving in the selected wojewodztwo
-        wojewodztwo_companies = db.session.query(Firmy.ID_FIRMY)\
-                                .join(FirmyObszarDzialania)\
-                                .filter(FirmyObszarDzialania.ID_WOJEWODZTWA == wojewodztwo)
-        
-        query = query.filter(Firmy.ID_FIRMY.in_(nationwide_companies.union(wojewodztwo_companies)))
-    
-    # Handle area filter (powiat)
     powiat = request.args.get('powiat')
+    # Handle area filter (powiat)
+    #powiat = request.args.get('powiat')
     if powiat:
         # Include companies with nationwide service
         nationwide_companies = db.session.query(Firmy.ID_FIRMY)\
                                 .join(FirmyObszarDzialania)\
                                 .filter(FirmyObszarDzialania.ID_KRAJ == 'POL')
         
-        # Companies serving in the selected powiat's wojewodztwo
+        # Get powiat data to find its wojewodztwo
         powiat_data = Powiaty.query.filter_by(ID_POWIATY=powiat).first()
+        
         if powiat_data:
             wojewodztwo_id = powiat_data.ID_WOJEWODZTWA
-            wojewodztwo_companies = db.session.query(Firmy.ID_FIRMY)\
+            
+            # Companies serving the specific powiat
+            powiat_companies = db.session.query(Firmy.ID_FIRMY)\
+                                .join(FirmyObszarDzialania)\
+                                .filter(FirmyObszarDzialania.ID_POWIATY == powiat)
+            
+            # Companies serving the whole wojewodztwo (with empty powiat fields)
+            wojewodztwo_empty_powiat_companies = db.session.query(Firmy.ID_FIRMY)\
                                     .join(FirmyObszarDzialania)\
-                                    .filter(FirmyObszarDzialania.ID_WOJEWODZTWA == wojewodztwo_id)
+                                    .filter(
+                                        and_(
+                                            FirmyObszarDzialania.ID_WOJEWODZTWA == wojewodztwo_id,
+                                            or_(
+                                                FirmyObszarDzialania.ID_POWIATY == 0,
+                                                FirmyObszarDzialania.ID_POWIATY.is_(None),
+                                                FirmyObszarDzialania.ID_POWIATY == ""
+                                            )
+                                        )
+                                    )
+            
+            # Combine all relevant companies
+            combined_companies = nationwide_companies.union(
+                powiat_companies, 
+                wojewodztwo_empty_powiat_companies
+            ).subquery()
         else:
-            wojewodztwo_companies = db.session.query(Firmy.ID_FIRMY).filter(False)
+            # If powiat not found, only include nationwide companies
+            combined_companies = nationwide_companies.subquery()
         
-        # Companies serving in the selected powiat
-        powiat_companies = db.session.query(Firmy.ID_FIRMY)\
-                            .join(FirmyObszarDzialania)\
-                            .filter(FirmyObszarDzialania.ID_POWIATY == powiat)
+        # Apply filter to the main query
+        query = query.filter(Firmy.ID_FIRMY.in_(combined_companies))
         
-        query = query.filter(Firmy.ID_FIRMY.in_(nationwide_companies.union(wojewodztwo_companies, powiat_companies)))
-    
+    elif wojewodztwo and not powiat:
+        # Firmy o zasięgu ogólnokrajowym
+        nationwide_companies = db.session.query(Firmy.ID_FIRMY)\
+                                .join(FirmyObszarDzialania)\
+                                .filter(FirmyObszarDzialania.ID_KRAJ == 'POL')
+        
+        # Firmy działające tylko na poziomie województwa (bez przypisanych powiatów)
+        wojewodztwo_companies = db.session.query(Firmy.ID_FIRMY)\
+                                .join(FirmyObszarDzialania)\
+                                .filter(FirmyObszarDzialania.ID_WOJEWODZTWA == wojewodztwo)\
+                                .filter(
+                                    or_(
+                                        FirmyObszarDzialania.ID_POWIATY == 0, 
+                                        FirmyObszarDzialania.ID_POWIATY.is_(None), 
+                                        FirmyObszarDzialania.ID_POWIATY == ""
+                                    )
+                                )\
+                                .except_(
+                                    # Wykluczenie firm, które mają jakikolwiek wpis z przypisanym powiatem
+                                    db.session.query(Firmy.ID_FIRMY)\
+                                    .join(FirmyObszarDzialania)\
+                                    .filter(FirmyObszarDzialania.ID_WOJEWODZTWA == wojewodztwo)\
+                                    .filter(
+                                        and_(
+                                            FirmyObszarDzialania.ID_POWIATY != 0,
+                                            FirmyObszarDzialania.ID_POWIATY.is_not(None),
+                                            FirmyObszarDzialania.ID_POWIATY != ""
+                                        )
+                                    )
+                                )
+        
+        # Połączenie zbiorów
+        combined_companies = nationwide_companies.union(wojewodztwo_companies).subquery()
+        
+        # Filtrowanie głównego zapytania
+        query = query.filter(Firmy.ID_FIRMY.in_(combined_companies))
+        
+
     # Handle company type filter
     company_types = [ct for ct in request.args.getlist('company_types') if ct.strip()]
     if company_types:

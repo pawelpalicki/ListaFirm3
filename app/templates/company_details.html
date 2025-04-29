@@ -102,7 +102,7 @@
                     <p><strong>Cały kraj</strong></p>
                     {% endif %}
                     
-                    {% if wojewodztwa and not nationwide %}
+                    {% if wojewodztwa and not powiaty %}
                     <h6>Wybrane województwa:</h6>
                     <ul class="list-group mb-3">
                         {% for woj in wojewodztwa %}
@@ -111,11 +111,11 @@
                     </ul>
                     {% endif %}
                     
-                    {% if powiaty %}
+                    {% if powiaty and wojewodztwa%}
                     <h6>Wybrane powiaty:</h6>
                     <ul class="list-group">
                         {% for pow, woj_id in powiaty %}
-                        <li class="list-group-item">{{ pow.Powiat }} ({{ woj_id }})</li>
+                        <li class="list-group-item">{{ pow.Powiat }} ({{ pow.wojewodztwo.Wojewodztwo }})</li>
                         {% endfor %}
                     </ul>
                     {% endif %}
