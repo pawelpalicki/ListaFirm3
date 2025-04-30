@@ -441,6 +441,10 @@ h6 {
     .action-btn {
         padding: 0.25rem 0.5rem;
     }
+
+    .radio-group-container {
+        flex-wrap: nowrap !important;
+    }
 }
 
 @media (max-width: 767.98px) {
@@ -483,4 +487,17 @@ h6 {
     .responsive-table tbody {
         display: block;
     }
+}
+
+/* Radio button */
+
+.form-check-input {
+    margin-top: 0.3rem;
+}
+.form-check {
+    min-width: 150px; /* Minimalna szerokość opcji */
+    transition: all 0.2s ease;
+}
+.form-check:hover {
+    background-color: #f8f9fa;
 }

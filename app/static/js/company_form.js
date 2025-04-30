@@ -68,89 +68,96 @@ $(document).ready(function() {
         });
     }
 
-    // --- LOGIKA DLA WOJEWÓDZTW/POWIATÓW I OBSZARU DZIAŁANIA ---
+    // --- LOGIKA DLA OBSZARU DZIAŁANIA ---
 
-    // Funkcja do ładowania powiatów na podstawie wybranych województw
+    // Funkcja do ładowania powiatów (bez zmian)
     function loadPowiaty() {
-        const selectedWojewodztwa = $('#wojewodztwa').val(); // ID pola select województw
-        const powiatySelect = $('#powiaty'); // ID pola select powiatów
-        const currentPowiatySelection = powiatySelect.val() || []; // Zachowaj obecne zaznaczenie powiatów
+        const selectedWojewodztwa = $('#wojewodztwa').val();
+        const powiatySelect = $('#powiaty');
+        const currentPowiatySelection = powiatySelect.val() || [];
 
-        powiatySelect.empty(); // Wyczyść obecne opcje powiatów
+        powiatySelect.empty();
 
         if (selectedWojewodztwa && selectedWojewodztwa.length > 0) {
-             // Użyj Promise.all, aby poczekać na wszystkie zapytania AJAX
-             const requests = selectedWojewodztwa.map(wojewodztwo_id => {
-                // Zwróć obietnicę z zapytania AJAX
+            const requests = selectedWojewodztwa.map(wojewodztwo_id => {
                 return $.getJSON(`/api/powiaty/${wojewodztwo_id}`);
             });
 
             Promise.all(requests).then(results => {
-                 const allPowiaty = [];
-                 // Zbierz powiaty ze wszystkich odpowiedzi
-                 results.forEach(data => {
-                     if (data) {
-                         allPowiaty.push(...data);
-                     }
-                 });
+                const allPowiaty = [];
+                results.forEach(data => {
+                    if (data) {
+                        allPowiaty.push(...data);
+                    }
+                });
 
-                 // Posortuj powiaty alfabetycznie
-                 allPowiaty.sort((a, b) => a.name.localeCompare(b.name));
+                allPowiaty.sort((a, b) => a.name.localeCompare(b.name));
 
-                 // Dodaj posortowane opcje do selecta powiatów
-                 allPowiaty.forEach(item => {
+                allPowiaty.forEach(item => {
                     powiatySelect.append($('<option>', {
                         value: item.id,
                         text: item.name
                     }));
-                 });
+                });
 
-                 // Przywróć poprzednie zaznaczenie powiatów (jeśli nadal istnieją)
-                 powiatySelect.val(currentPowiatySelection);
-                 // Odśwież Select2 dla powiatów, jeśli jest używany
-                 if (powiatySelect.hasClass('select2-hidden-accessible')) {
+                powiatySelect.val(currentPowiatySelection);
+                if (powiatySelect.hasClass('select2-hidden-accessible')) {
                     powiatySelect.trigger('change');
-                 }
-
+                }
             }).catch(error => {
                 console.error("Błąd podczas ładowania powiatów:", error);
-                 // Można dodać powiadomienie dla użytkownika
             });
-
         } else {
-            // Jeśli żadne województwo nie jest wybrane, wyczyść i odśwież Select2 powiatów
             powiatySelect.empty();
-             if (powiatySelect.hasClass('select2-hidden-accessible')) {
+            if (powiatySelect.hasClass('select2-hidden-accessible')) {
                 powiatySelect.trigger('change');
             }
         }
     }
 
-     // Funkcja kontrolująca widoczność wyboru województw/powiatów
-    function toggleAreaSelection() {
-        const krajValue = $('#kraj').val(); // ID pola select kraju
-        if (krajValue === 'POL') {
-            $('#area-selection').hide(); // Ukryj wybór województw/powiatów
-             // Opcjonalnie wyczyść zaznaczenia województw/powiatów
-            $('#wojewodztwa').val(null).trigger('change');
-            $('#powiaty').val(null).trigger('change');
+    // Funkcja kontrolująca widoczność sekcji
+    function toggleAreaSelection(initialLoad = false) {
+        const selectedOption = $('input[name="obszar_dzialania"]:checked').val();
+        
+        // Zarządzanie wartością kraju
+        if (selectedOption === 'kraj') {
+            $('#kraj').val('POL').trigger('change');
         } else {
-            $('#area-selection').show(); // Pokaż wybór województw/powiatów
+            $('#kraj').val('').trigger('change');
+        }
+        
+        // Zarządzanie widocznością sekcji
+        $('#wojewodztwa-selection, #powiaty-selection').hide();
+        
+        if (selectedOption === 'wojewodztwa') {
+            $('#wojewodztwa-selection').show();
+        } else if (selectedOption === 'powiaty') {
+            $('#wojewodztwa-selection, #powiaty-selection').show();
+            if (!initialLoad) {
+                loadPowiaty();
+            }
         }
     }
 
-    // Nasłuchiwanie na zmianę województw
-    $('#wojewodztwa').on('change', function() {
-        loadPowiaty();
-    });
-
-     // Nasłuchiwanie na zmianę kraju
-    $('#kraj').on('change', function() {
-        toggleAreaSelection();
-         // Jeśli wybrano inny kraj niż POL, załaduj powiaty dla wybranych województw
-        if ($(this).val() !== 'POL') {
-            loadPowiaty();
-        }
+    // Inicjalizacja przy ładowaniu strony
+    $(document).ready(function() {
+        // Ustaw domyślne wartości
+        $('#kraj').val('').trigger('change');
+        
+        // Nasłuchuj zmian w radiobuttonach
+        $('input[name="obszar_dzialania"]').change(function() {
+            toggleAreaSelection();
+        });
+        
+        // Inicjalizacja stanu początkowego
+        toggleAreaSelection(true);
+        
+        // Nasłuchiwanie na zmianę województw
+        $('#wojewodztwa').on('change', function() {
+            if ($('input[name="obszar_dzialania"]:checked').val() === 'powiaty') {
+                loadPowiaty();
+            }
+        });
     });
 
     // --- LOGIKA DLA OVERLAY "Dodaj nowy typ" ---

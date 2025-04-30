@@ -1,7 +1,9 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, SelectField, SelectMultipleField, IntegerField, FormField, FieldList, SubmitField
+from wtforms import StringField, TextAreaField, SelectField, SelectMultipleField, IntegerField, FormField, FieldList, SubmitField, RadioField
 from wtforms.validators import DataRequired, Email, Optional, NumberRange
 from wtforms.widgets import ListWidget, CheckboxInput, Select
+from flask_wtf.file import FileField, FileAllowed
+
 
 # Zamiast tworzenia własnych widgetów, użyjmy atrybutów HTML i klas CSS
 class Select2MultipleField(SelectMultipleField):
@@ -41,12 +43,20 @@ class RatingForm(FlaskForm):
 class CompanyForm(FlaskForm):
     nazwa_firmy = StringField('Nazwa firmy', validators=[DataRequired()])
     typ_firmy = SelectField('Typ firmy')
-    strona_www = StringField('Strona WWW', validators=[Optional()]) # Dodano Optional
+    strona_www = StringField('Strona WWW', validators=[Optional()])
     uwagi = TextAreaField('Uwagi')
 
-    # Areas of operation
-    kraj = SelectField('Kraj działania', choices=[('', 'Brak'), ('POL', 'Cały kraj')], default='')
-    # Zmiana na Select2MultipleField
+    # Nowe pole dla typu obszaru działania
+    obszar_dzialania = RadioField('Obszar działania', 
+                                choices=[
+                                    ('kraj', 'Cały kraj'),
+                                    ('wojewodztwa', 'Wybrane województwa'),
+                                    ('powiaty', 'Wybrane powiaty')
+                                ],
+                                default='kraj')
+    
+    # Pola select
+    kraj = SelectField('Kraj działania', choices=[('', 'Brak'), ('POL', 'Polska')], default='')
     wojewodztwa = Select2MultipleField('Województwa', coerce=str)
     powiaty = Select2MultipleField('Powiaty', coerce=int)
 

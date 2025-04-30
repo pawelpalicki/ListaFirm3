@@ -132,11 +132,10 @@ def index():
         query = query.join(FirmySpecjalnosci)\
                     .filter(FirmySpecjalnosci.ID_SPECJALNOSCI.in_(specialties))
     
-    # Handle area filter (województwo)
+    # Handle area filter
     wojewodztwo = request.args.get('wojewodztwo')
     powiat = request.args.get('powiat')
-    # Handle area filter (powiat)
-    #powiat = request.args.get('powiat')
+    
     if powiat:
         # Include companies with nationwide service
         nationwide_companies = db.session.query(Firmy.ID_FIRMY)\
@@ -485,18 +484,31 @@ def new_company():
                     )
                     db.session.add(rating)
             
-            # Add area of operation
-            if form.kraj.data == 'POL':
-                # Add nationwide operation
-                obszar = FirmyObszarDzialania(
-                    ID_FIRMY=company.ID_FIRMY,
-                    ID_KRAJ='POL',
-                    ID_WOJEWODZTWA='',
-                    ID_POWIATY=0
-                )
-                db.session.add(obszar)
-            else:
-                # Add wojewodztwa
+            # Obszar działania - nowa logika
+            obszar_type = form.obszar_dzialania.data
+            
+            if obszar_type == 'kraj':
+                # Cały kraj - upewnij się, że kraj to POL
+                if form.kraj.data == 'POL':
+                    obszar = FirmyObszarDzialania(
+                        ID_FIRMY=company.ID_FIRMY,
+                        ID_KRAJ='POL',
+                        ID_WOJEWODZTWA='',
+                        ID_POWIATY=0
+                    )
+                    db.session.add(obszar)
+            elif obszar_type == 'wojewodztwa':
+                # Tylko województwa - kraj powinien być pusty
+                for woj_id in form.wojewodztwa.data:
+                    obszar = FirmyObszarDzialania(
+                        ID_FIRMY=company.ID_FIRMY,
+                        ID_KRAJ='',
+                        ID_WOJEWODZTWA=woj_id,
+                        ID_POWIATY=0
+                    )
+                    db.session.add(obszar)
+            elif obszar_type == 'powiaty':
+                # Powiaty (województwa są również zapisywane) - kraj pusty
                 for woj_id in form.wojewodztwa.data:
                     obszar = FirmyObszarDzialania(
                         ID_FIRMY=company.ID_FIRMY,
@@ -506,9 +518,7 @@ def new_company():
                     )
                     db.session.add(obszar)
                 
-                # Add powiaty
                 for pow_id in form.powiaty.data:
-                    # Get the wojewodztwo for this powiat
                     powiat = Powiaty.query.get(pow_id)
                     obszar = FirmyObszarDzialania(
                         ID_FIRMY=company.ID_FIRMY,
@@ -605,16 +615,29 @@ def edit_company(company_id):
             form.oceny[i].ocena.data = ocena.Ocena
             form.oceny[i].komentarz.data = ocena.Komentarz
 
-        # Pobierz obszar działania
+        # Obszar działania
         obszary = FirmyObszarDzialania.query.filter_by(ID_FIRMY=company_id).all()
 
         # Sprawdź czy firma działa w całym kraju
         obszar_krajowy = next((o for o in obszary if o.ID_KRAJ == 'POL'), None)
         if obszar_krajowy:
+            form.obszar_dzialania.data = 'kraj'
             form.kraj.data = 'POL'
         else:
-            form.kraj.data = ''  # Pusty string oznacza, że nie działa w całym kraju
-
+            # Sprawdź czy są powiaty
+            has_powiaty = any(o.ID_POWIATY > 0 for o in obszary)
+            if has_powiaty:
+                form.obszar_dzialania.data = 'powiaty'
+            else:
+                # Sprawdź czy są województwa
+                has_wojewodztwa = any(o.ID_WOJEWODZTWA for o in obszary)
+                if has_wojewodztwa:
+                    form.obszar_dzialania.data = 'wojewodztwa'
+                else:
+                    form.obszar_dzialania.data = 'kraj'  # Domyślna wartość
+            
+            form.kraj.data = ''
+            
             # Zbierz ID województw (unikalne)
             wojewodztwa_ids = list(set([o.ID_WOJEWODZTWA for o in obszary if o.ID_WOJEWODZTWA]))
             form.wojewodztwa.data = [w for w in wojewodztwa_ids if w]  # Pomiń puste wartości
@@ -622,7 +645,7 @@ def edit_company(company_id):
             # Zbierz ID powiatów
             powiaty_ids = [o.ID_POWIATY for o in obszary if o.ID_POWIATY and o.ID_POWIATY > 0]
             form.powiaty.data = powiaty_ids
-
+            
         # Pobierz specjalności
         specjalnosci = FirmySpecjalnosci.query.filter_by(ID_FIRMY=company_id).all()
         form.specjalnosci.data = [s.ID_SPECJALNOSCI for s in specjalnosci]
@@ -703,39 +726,49 @@ def edit_company(company_id):
                     )
                     db.session.add(rating)
 
-            # Dodaj obszar działania
-            if form.kraj.data == 'POL':
-                # Dodaj operację ogólnokrajową
-                obszar = FirmyObszarDzialania(
-                    ID_FIRMY=company_id,
-                    ID_KRAJ='POL',
-                    ID_WOJEWODZTWA='',
-                    ID_POWIATY=0
-                )
-                db.session.add(obszar)
-            else:
-                # Dodaj województwa
+            # Obszar działania - nowa logika
+            obszar_type = form.obszar_dzialania.data
+            
+            if obszar_type == 'kraj':
+                # Cały kraj - upewnij się, że kraj to POL
+                if form.kraj.data == 'POL':
+                    obszar = FirmyObszarDzialania(
+                        ID_FIRMY=company.ID_FIRMY,
+                        ID_KRAJ='POL',
+                        ID_WOJEWODZTWA='',
+                        ID_POWIATY=0
+                    )
+                    db.session.add(obszar)
+            elif obszar_type == 'wojewodztwa':
+                # Tylko województwa - kraj powinien być pusty
                 for woj_id in form.wojewodztwa.data:
                     obszar = FirmyObszarDzialania(
-                        ID_FIRMY=company_id,
+                        ID_FIRMY=company.ID_FIRMY,
                         ID_KRAJ='',
                         ID_WOJEWODZTWA=woj_id,
                         ID_POWIATY=0
                     )
                     db.session.add(obszar)
-
-                # Dodaj powiaty
+            elif obszar_type == 'powiaty':
+                # Powiaty (województwa są również zapisywane) - kraj pusty
+                for woj_id in form.wojewodztwa.data:
+                    obszar = FirmyObszarDzialania(
+                        ID_FIRMY=company.ID_FIRMY,
+                        ID_KRAJ='',
+                        ID_WOJEWODZTWA=woj_id,
+                        ID_POWIATY=0
+                    )
+                    db.session.add(obszar)
+                
                 for pow_id in form.powiaty.data:
-                    # Pobierz województwo dla tego powiatu
                     powiat = Powiaty.query.get(pow_id)
-                    if powiat:  # Sprawdź czy powiat istnieje
-                        obszar = FirmyObszarDzialania(
-                            ID_FIRMY=company_id,
-                            ID_KRAJ='',
-                            ID_WOJEWODZTWA=powiat.ID_WOJEWODZTWA,
-                            ID_POWIATY=pow_id
-                        )
-                        db.session.add(obszar)
+                    obszar = FirmyObszarDzialania(
+                        ID_FIRMY=company.ID_FIRMY,
+                        ID_KRAJ='',
+                        ID_WOJEWODZTWA=powiat.ID_WOJEWODZTWA,
+                        ID_POWIATY=pow_id
+                    )
+                    db.session.add(obszar)
 
             # Dodaj specjalności
             for spec_id in form.specjalnosci.data:

@@ -245,6 +245,7 @@
                             <h5 class="mb-0">Specjalności i obszar działania</h5>
                         </div>
                         <div class="card-body">
+                            <!-- Sekcja specjalności -->
                             <div class="mb-3">
                                 <label for="specjalnosci" class="form-label">{{ form.specjalnosci.label }}</label>
                                 <div class="input-group">
@@ -261,22 +262,36 @@
                                     </ul>
                                 {% endif %}
                             </div>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    {{ form.kraj.label(class="form-label") }}
-                                    {{ form.kraj(id="kraj", class="form-select") }}
-                                    {% if form.kraj.errors %}
-                                        <ul class="text-danger">
-                                            {% for error in form.kraj.errors %}
-                                                <li>{{ error }}</li>
-                                            {% endfor %}
-                                        </ul>
-                                    {% endif %}
+                    
+                            <!-- Nowa sekcja z radiobuttonami -->
+                            <div class="mb-3">
+                                <label class="form-label">Obszar działania</label>
+                                <div class="d-flex flex-wrap justify-content-between gap-3">
+                                    <div class="form-check flex-grow-1 px-3 py-2 border rounded">
+                                        <input class="form-check-input" type="radio" name="obszar_dzialania" id="obszar_kraj" value="kraj" 
+                                            {% if form.obszar_dzialania.data == 'kraj' or not form.obszar_dzialania.data %}checked{% endif %}>
+                                        <label class="form-check-label w-100" for="obszar_kraj">Cały kraj</label>
+                                    </div>
+                                    <div class="form-check flex-grow-1 px-3 py-2 border rounded">
+                                        <input class="form-check-input" type="radio" name="obszar_dzialania" id="obszar_wojewodztwa" value="wojewodztwa"
+                                            {% if form.obszar_dzialania.data == 'wojewodztwa' %}checked{% endif %}>
+                                        <label class="form-check-label w-100" for="obszar_wojewodztwa">Wybrane województwa</label>
+                                    </div>
+                                    <div class="form-check flex-grow-1 px-3 py-2 border rounded">
+                                        <input class="form-check-input" type="radio" name="obszar_dzialania" id="obszar_powiaty" value="powiaty"
+                                            {% if form.obszar_dzialania.data == 'powiaty' %}checked{% endif %}>
+                                        <label class="form-check-label w-100" for="obszar_powiaty">Wybrane powiaty</label>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="row" id="area-selection">
+                            
+                            <!-- Ukryte pole kraju -->
+                            {{ form.kraj(id="kraj", class="form-select d-none") }}
+                    
+                            <!-- Sekcja województw -->
+                            <div class="row" id="wojewodztwa-selection" style="display: {% if form.obszar_dzialania.data in ['wojewodztwa', 'powiaty'] %}block{% else %}none{% endif %};">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label">Województwa</label>
+                                    <label class="form-label">{{ form.wojewodztwa.label }}</label>
                                     {{ form.wojewodztwa(id="wojewodztwa", class="form-select") }}
                                     {% if form.wojewodztwa.errors %}
                                         <ul class="text-danger">
@@ -286,8 +301,12 @@
                                         </ul>
                                     {% endif %}
                                 </div>
+                            </div>
+                    
+                            <!-- Sekcja powiatów -->
+                            <div class="row" id="powiaty-selection" style="display: {% if form.obszar_dzialania.data == 'powiaty' %}block{% else %}none{% endif %};">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label">Powiaty</label>
+                                    <label class="form-label">{{ form.powiaty.label }}</label>
                                     {{ form.powiaty(id="powiaty", class="form-select") }}
                                     {% if form.powiaty.errors %}
                                         <ul class="text-danger">
