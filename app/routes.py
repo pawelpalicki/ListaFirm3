@@ -494,7 +494,7 @@ def new_company():
                         ID_FIRMY=company.ID_FIRMY,
                         ID_KRAJ='POL',
                         ID_WOJEWODZTWA='',
-                        ID_POWIATY=0
+                        ID_POWIATY=''
                     )
                     db.session.add(obszar)
             elif obszar_type == 'wojewodztwa':
@@ -504,19 +504,19 @@ def new_company():
                         ID_FIRMY=company.ID_FIRMY,
                         ID_KRAJ='',
                         ID_WOJEWODZTWA=woj_id,
-                        ID_POWIATY=0
+                        ID_POWIATY=''
                     )
                     db.session.add(obszar)
             elif obszar_type == 'powiaty':
-                # Powiaty (województwa są również zapisywane) - kraj pusty
-                for woj_id in form.wojewodztwa.data:
-                    obszar = FirmyObszarDzialania(
-                        ID_FIRMY=company.ID_FIRMY,
-                        ID_KRAJ='',
-                        ID_WOJEWODZTWA=woj_id,
-                        ID_POWIATY=0
-                    )
-                    db.session.add(obszar)
+                # # Powiaty (województwa są również zapisywane) - kraj pusty
+                # for woj_id in form.wojewodztwa.data:
+                #     obszar = FirmyObszarDzialania(
+                #         ID_FIRMY=company.ID_FIRMY,
+                #         ID_KRAJ='',
+                #         ID_WOJEWODZTWA=woj_id,
+                #         ID_POWIATY=''
+                #     )
+                #     db.session.add(obszar)
                 
                 for pow_id in form.powiaty.data:
                     powiat = Powiaty.query.get(pow_id)
@@ -736,7 +736,7 @@ def edit_company(company_id):
                         ID_FIRMY=company.ID_FIRMY,
                         ID_KRAJ='POL',
                         ID_WOJEWODZTWA='',
-                        ID_POWIATY=0
+                        ID_POWIATY=''
                     )
                     db.session.add(obszar)
             elif obszar_type == 'wojewodztwa':
@@ -746,19 +746,19 @@ def edit_company(company_id):
                         ID_FIRMY=company.ID_FIRMY,
                         ID_KRAJ='',
                         ID_WOJEWODZTWA=woj_id,
-                        ID_POWIATY=0
+                        ID_POWIATY=''
                     )
                     db.session.add(obszar)
             elif obszar_type == 'powiaty':
-                # Powiaty (województwa są również zapisywane) - kraj pusty
-                for woj_id in form.wojewodztwa.data:
-                    obszar = FirmyObszarDzialania(
-                        ID_FIRMY=company.ID_FIRMY,
-                        ID_KRAJ='',
-                        ID_WOJEWODZTWA=woj_id,
-                        ID_POWIATY=0
-                    )
-                    db.session.add(obszar)
+                # # Powiaty (województwa są również zapisywane) - kraj pusty
+                # for woj_id in form.wojewodztwa.data:
+                #     obszar = FirmyObszarDzialania(
+                #         ID_FIRMY=company.ID_FIRMY,
+                #         ID_KRAJ='',
+                #         ID_WOJEWODZTWA=woj_id,
+                #         ID_POWIATY=0
+                #     )
+                #     db.session.add(obszar)
                 
                 for pow_id in form.powiaty.data:
                     powiat = Powiaty.query.get(pow_id)
