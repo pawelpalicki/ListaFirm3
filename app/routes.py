@@ -494,7 +494,7 @@ def new_company():
                         ID_FIRMY=company.ID_FIRMY,
                         ID_KRAJ='POL',
                         ID_WOJEWODZTWA='',
-                        ID_POWIATY=''
+                        ID_POWIATY=0
                     )
                     db.session.add(obszar)
             elif obszar_type == 'wojewodztwa':
@@ -504,7 +504,7 @@ def new_company():
                         ID_FIRMY=company.ID_FIRMY,
                         ID_KRAJ='',
                         ID_WOJEWODZTWA=woj_id,
-                        ID_POWIATY=''
+                        ID_POWIATY=0
                     )
                     db.session.add(obszar)
             elif obszar_type == 'powiaty':
@@ -736,7 +736,7 @@ def edit_company(company_id):
                         ID_FIRMY=company.ID_FIRMY,
                         ID_KRAJ='POL',
                         ID_WOJEWODZTWA='',
-                        ID_POWIATY=''
+                        ID_POWIATY=0
                     )
                     db.session.add(obszar)
             elif obszar_type == 'wojewodztwa':
@@ -746,7 +746,7 @@ def edit_company(company_id):
                         ID_FIRMY=company.ID_FIRMY,
                         ID_KRAJ='',
                         ID_WOJEWODZTWA=woj_id,
-                        ID_POWIATY=''
+                        ID_POWIATY=0
                     )
                     db.session.add(obszar)
             elif obszar_type == 'powiaty':
