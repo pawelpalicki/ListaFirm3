@@ -507,7 +507,21 @@ h6 {
 /* Domyślnie pokazuj wszystko */
 .table-responsive-stacking th,
 .table-responsive-stacking td {
-    /* Możesz tu dodać domyślne style dla komórek, jeśli potrzebujesz */
+    padding: 8px; /* Dodaj wewnętrzny margines 8 pikseli */
+    text-align: left; /* Wyrównaj tekst do lewej */
+    vertical-align: top; /* Wyrównaj treść do góry komórki */
+    border: 1px solid #ddd; /* Dodaj delikatne obramowanie komórek */
+    box-sizing: border-box; /* Model pudełkowy */
+    /* Możesz też dodać inne style, np. */
+    /* color: #333; */ /* Ciemnoszary kolor tekstu */
+    /* background-color: #fff; */ /* Białe tło komórki (domyślne) */
+}
+
+/* Opcjonalnie, możesz nadać inny styl tylko nagłówkom (th) */
+.table-responsive-stacking th {
+    background-color: #aaaaaa; /* Jasnoszare tło dla nagłówków */
+    font-weight: bold; /* Pogrubiona czcionka (domyślne dla th, ale warto jawnie ustawić) */
+    text-align: center; /* Nagłówki wyśrodkowane */
 }
 
 .table-responsive-stacking .action-btn .btn-text {
@@ -602,14 +616,15 @@ h6 {
    gdzie np. tylko ukryjesz tekst przycisków, ale tabela pozostanie standardowa */
 @media (min-width: 768px) and (max-width: 991.98px) {
      .table-responsive-stacking .action-btn .btn-text {
-        /* display: none; */ /* Odkomentuj, jeśli chcesz ukryć tekst też na tabletach */
+        display: none; /* Odkomentuj, jeśli chcesz ukryć tekst też na tabletach */
      }
 }
 
 
 /* Dodatkowe style dla przycisków akcji, które już masz lub możesz dostosować */
 .action-btn {
-    padding: 0.375rem 0.75rem; /* Domyślny padding */
+    padding: 0.15rem 0.5rem; /* Domyślny padding */
+    margin: 0.15rem;
     display: inline-flex;
     align-items: center;
     gap: 0.3rem;

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Export firm (HTML)</title>
+    <style>
+        /* Podstawowe style dla ekranu */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            font-size: 12pt;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #0056b3;
+        }
+        .company {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .company h2 {
+            margin-top: 0;
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+        }
+        .company p {
+            margin: 5px 0;
+            line-height: 1.5;
+        }
+        .company table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .company th, .company td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        .company th {
+            background-color: #e9ecef;
+            font-weight: bold;
+        }
+         .company td {
+             background-color: #fff;
+         }
+        .section-title {
+             margin-top: 15px;
+             margin-bottom: 5px;
+             font-weight: bold;
+             color: #555;
+             border-bottom: 1px dashed #ccc;
+             padding-bottom: 3px;
+        }
+        ul {
+            padding-left: 20px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+        li {
+            margin-bottom: 3px;
+        }
+
+        /* Style dla drukowania (media print) */
+        @media print {
+            body {
+                margin: 10mm; /* Mniejsze marginesy na wydruku */
+                font-size: 10pt; /* Mniejszy rozmiar czcionki */
+                color: #000; /* Czarny tekst */
+                -webkit-print-color-adjust: exact; /* Zachowaj kolory tła/tekstu */
+                print-color-adjust: exact;
+            }
+            h1 {
+                color: #000;
+                border-bottom: 1px solid #000;
+                padding-bottom: 5px;
+            }
+             .company {
+                border: 1px solid #000;
+                background-color: #fff;
+                page-break-inside: avoid; /* Staraj się nie łamać bloku firmy w środku strony */
+                margin-bottom: 15px;
+                padding: 10mm;
+            }
+            .company h2 {
+                color: #000;
+                border-bottom: 1px solid #000;
+            }
+             .company th {
+                 background-color: #f2f2f2 !important; /* Upewnij się, że tło się drukuje */
+                 color: #000 !important;
+             }
+             .company td {
+                 background-color: #fff !important;
+                 color: #000 !important;
+             }
+             .section-title {
+                 color: #000;
+                 border-bottom: 1px dashed #000;
+             }
+             a[href]:after { /* Ukryj URL linków na wydruku */
+                 content: none !important;
+             }
+             /* Możesz dodać style ukrywające elementy niepotrzebne na wydruku, np. przyciski eksportu */
+             .no-print {
+                 display: none !important;
+             }
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista wyeksportowanych firm</h1>
+
+    {% if companies %}
+        {% for company in companies %}
+            <div class="company">
+                <h2>{{ company.Nazwa_Firmy }}</h2>
+                <p><strong>ID:</strong> {{ company.ID_FIRMY }}</p>
+                {% if company.Strona_www %}
+                    <p><strong>Strona WWW:</strong> <a href="{{ company.Strona_www }}" target="_blank">{{ company.Strona_www }}</a></p>
+                {% endif %}
+                 {% if company.Uwagi %}
+                    <p><strong>Uwagi:</strong> {{ company.Uwagi }}</p>
+                {% endif %}
+
+                {% if company.ID_FIRMY in related_data and related_data[company.ID_FIRMY].adresy %}
+                    <div class="section-title">Adresy:</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Kod</th>
+                                <th>Miejscowość</th>
+                                <th>Ulica/Nr</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for adres in related_data[company.ID_FIRMY].adresy %}
+                                <tr>
+                                    <td>{{ adres.Kod }}</td>
+                                    <td>{{ adres.Miejscowosc }}</td>
+                                    <td>{{ adres.Ulica_Miejscowosc }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+
+                 {% if company.ID_FIRMY in related_data and related_data[company.ID_FIRMY].emails %}
+                    <div class="section-title">Email:</div>
+                     <ul>
+                        {% for email in related_data[company.ID_FIRMY].emails %}
+                            <li>{{ email.e_mail }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                {% if company.ID_FIRMY in related_data and related_data[company.ID_FIRMY].telefony %}
+                    <div class="section-title">Telefony:</div>
+                     <ul>
+                        {% for telefon in related_data[company.ID_FIRMY].telefony %}
+                            <li>{{ telefon.telefon }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                {% if company.ID_FIRMY in related_data and related_data[company.ID_FIRMY].osoby %}
+                    <div class="section-title">Osoby kontaktowe:</div>
+                     <table>
+                        <thead>
+                            <tr>
+                                <th>Imię</th>
+                                <th>Nazwisko</th>
+                                <th>Stanowisko</th>
+                                <th>Email</th>
+                                <th>Telefon</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for osoba in related_data[company.ID_FIRMY].osoby %}
+                                <tr>
+                                    <td>{{ osoba.Imie }}</td>
+                                    <td>{{ osoba.Nazwisko }}</td>
+                                    <td>{{ osoba.Stanowisko }}</td>
+                                    <td>{{ osoba.e_mail }}</td>
+                                    <td>{{ osoba.telefon }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+
+                 {% if company.ID_FIRMY in related_data and related_data[company.ID_FIRMY].oceny %}
+                    <div class="section-title">Oceny:</div>
+                     <table>
+                        <thead>
+                            <tr>
+                                <th>Osoba oceniająca</th>
+                                <th>Dział</th>
+                                <th>Ocena</th>
+                                <th>Komentarz</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ocena in related_data[company.ID_FIRMY].oceny %}
+                                <tr>
+                                    <td>{{ ocena.Osoba_oceniajaca }}</td>
+                                    <td>{{ ocena.Budowa_Dzial }}</td>
+                                    <td>{{ ocena.Ocena }}</td>
+                                    <td>{{ ocena.Komentarz }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+
+                {% if company.ID_FIRMY in related_data and related_data[company.ID_FIRMY].specjalnosci %}
+                     <div class="section-title">Specjalności:</div>
+                     <ul>
+                        {% for fs in related_data[company.ID_FIRMY].specjalnosci %}
+                            {% if fs.ID_SPECJALNOSCI in related_data.specialty_details %}
+                                <li>{{ related_data.specialty_details[fs.ID_SPECJALNOSCI].Specjalnosc }}</li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                {% if company.ID_FIRMY in related_data and related_data[company.ID_FIRMY].obszary %}
+                     <div class="section-title">Obszar działania:</div>
+                     <ul>
+                        {% for fo in related_data[company.ID_FIRMY].obszary %}
+                            {% if fo.ID_KRAJ == 'POL' and not fo.ID_WOJEWODZTWA and not fo.ID_POWIATY %}
+                                <li>Cały kraj</li>
+                            {% else %}
+                                <li>
+                                    {% if fo.ID_WOJEWODZTWA and fo.ID_WOJEWODZTWA in related_data.wojewodztwa_details %}
+                                        {{ related_data.wojewodztwa_details[fo.ID_WOJEWODZTWA].Wojewodztwo }}
+                                    {% endif %}
+                                    {% if fo.ID_POWIATY and fo.ID_POWIATY in related_data.powiaty_details %}
+                                        , {{ related_data.powiaty_details[fo.ID_POWIATY].Powiat }}
+                                    {% endif %}
+                                     {% if fo.ID_KRAJ and fo.ID_KRAJ != 'POL' %} {# Handle foreign countries if needed #}
+                                         , Kraj: {{ fo.ID_KRAJ }}
+                                     {% endif %}
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Brak firm spełniających kryteria filtrowania.</p>
+    {% endif %}
+
+</body>
+</html>

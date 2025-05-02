@@ -18,9 +18,12 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
-                        <!-- <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('main.index') }}">Strona główna</a>
-                        </li> -->
+                        <li class="nav-item">
+                            {# Link kieruje do endpointu export_companies_html i przekazuje aktualne parametry zapytania #}
+                            {# target="_blank" otwiera stronę eksportu w nowej karcie, co jest wygodne dla użytkownika #}
+                            {# Upewnij się, że request.args jest dostępne w szablonie, gdzie renderujesz ten navbar #}
+                            <a class="nav-link" href="{{ url_for('main.export_companies_html', **request.args) }}" target="_blank">Eksportuj Firmy</a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('main.new_company') }}">Dodaj firmę</a>
                         </li>

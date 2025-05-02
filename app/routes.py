@@ -1273,3 +1273,254 @@ def delete_rating(id):
         db.session.rollback()
         flash(f'Wystąpił błąd podczas usuwania oceny: {e}', 'danger')
     return redirect(url_for('main.list_ratings'))
+
+@main.route('/export_companies_html')
+def export_companies_html():
+    # Ta funkcja będzie generować stronę HTML do wydruku/zapisu
+    query = Firmy.query
+
+    # SKOPIUJ DOKŁADNIE LOGIKĘ FILTROWANIA ZE FUNKCJI index()
+    # Potrzebujemy zastosować TE SAME FILTRY, co na stronie głównej
+
+    # Handle search filter
+    search = request.args.get('search', '')
+    if search:
+        normalized_search = ''.join(c for c in search if c.isalnum() or c.isspace())
+        matching_company_ids = set()
+
+        # Replicate search logic across all relevant tables
+        # (This part is identical to your index function)
+        # --- Start of duplicated search logic ---
+        # UWAGA: Ta część jest nieefektywna dla dużych baz danych, ale skopiowana z oryginału
+        firmy_results = Firmy.query.all()
+        for firma in firmy_results:
+            if (normalized_search in normalize_text(firma.Nazwa_Firmy).lower() or
+                normalized_search in normalize_text(firma.Strona_www).lower() or
+                normalized_search in normalize_text(firma.Uwagi).lower()):
+                matching_company_ids.add(firma.ID_FIRMY)
+
+        adres_results = Adresy.query.all()
+        for adres in adres_results:
+            if (normalized_search in normalize_text(adres.Kod).lower() or
+                normalized_search in normalize_text(adres.Miejscowosc).lower() or
+                normalized_search in normalize_text(adres.Ulica_Miejscowosc).lower()):
+                if adres.ID_FIRMY:
+                    matching_company_ids.add(adres.ID_FIRMY)
+
+        email_results = Email.query.all()
+        for email in email_results:
+            if normalized_search in normalize_text(email.e_mail).lower():
+                if email.ID_FIRMY:
+                    matching_company_ids.add(email.ID_FIRMY)
+
+        telefon_results = Telefon.query.all()
+        for telefon in telefon_results:
+            if normalized_search in normalize_text(telefon.telefon).lower():
+                if telefon.ID_FIRMY:
+                    matching_company_ids.add(telefon.ID_FIRMY)
+
+        osoby_results = Osoby.query.all()
+        for osoba in osoby_results:
+            if (normalized_search in normalize_text(osoba.Imie).lower() or
+                normalized_search in normalize_text(osoba.Nazwisko).lower() or
+                normalized_search in normalize_text(osoba.Stanowisko).lower() or
+                normalized_search in normalize_text(osoba.e_mail).lower() or
+                normalized_search in normalize_text(osoba.telefon).lower()):
+                if osoba.ID_FIRMY:
+                    matching_company_ids.add(osoba.ID_FIRMY)
+
+        oceny_results = Oceny.query.all()
+        for ocena in oceny_results:
+            if (normalized_search in normalize_text(ocena.Osoba_oceniajaca).lower() or
+                normalized_search in normalize_text(ocena.Budowa_Dzial).lower() or
+                normalized_search in normalize_text(ocena.Komentarz).lower()):
+                if ocena.ID_FIRMY:
+                    matching_company_ids.add(ocena.ID_FIRMY)
+
+        specjalnosci_results = Specjalnosci.query.all()
+        for spec in specjalnosci_results:
+            if normalized_search in normalize_text(spec.Specjalnosc).lower():
+                firmy_spec = FirmySpecjalnosci.query.filter_by(ID_SPECJALNOSCI=spec.ID_SPECJALNOSCI).all()
+                for fs in firmy_spec:
+                    matching_company_ids.add(fs.ID_FIRMY)
+
+        firmy_typ_results = FirmyTyp.query.all()
+        for typ in firmy_typ_results:
+            if normalized_search in normalize_text(typ.Typ_firmy).lower():
+                firmy_by_typ = Firmy.query.filter_by(ID_FIRMY_TYP=typ.ID_FIRMY_TYP).all()
+                for firma in firmy_by_typ:
+                    matching_company_ids.add(firma.ID_FIRMY)
+
+        wojewodztwa_results = Wojewodztwa.query.all()
+        for woj in wojewodztwa_results:
+            if normalized_search in normalize_text(woj.Wojewodztwo).lower():
+                firmy_woj = FirmyObszarDzialania.query.filter_by(ID_WOJEWODZTWA=woj.ID_WOJEWODZTWA).all()
+                for fw in firmy_woj:
+                    matching_company_ids.add(fw.ID_FIRMY)
+
+        powiaty_results = Powiaty.query.all()
+        for pow in powiaty_results:
+            if normalized_search in normalize_text(pow.Powiat).lower():
+                firmy_pow = FirmyObszarDzialania.query.filter_by(ID_POWIATY=pow.ID_POWIATY).all()
+                for fp in firmy_pow:
+                    matching_company_ids.add(fp.ID_FIRMY)
+
+        kraje_results = Kraj.query.all() # Assuming Kraj model exists and has 'POL' ID
+        for kraj in kraje_results:
+             if normalized_search in normalize_text(kraj.Kraj).lower():
+                firmy_kraj = FirmyObszarDzialania.query.filter_by(ID_KRAJ=kraj.ID_KRAJ).all()
+                for fk in firmy_kraj:
+                    matching_company_ids.add(fk.ID_FIRMY)
+
+        if matching_company_ids:
+            query = query.filter(Firmy.ID_FIRMY.in_(matching_company_ids))
+        else:
+            query = query.filter(False) # No results match search criteria
+        # --- End of duplicated search logic ---
+
+    # Handle specialty filter
+    specialties = request.args.getlist('specialties')
+    if specialties:
+        # Apply the filter to the current query state
+        query = query.join(FirmySpecjalnosci)\
+                     .filter(FirmySpecjalnosci.ID_SPECJALNOSCI.in_(specialties))
+
+    # Handle area filter
+    wojewodztwo = request.args.get('wojewodztwo')
+    powiat = request.args.get('powiat')
+
+    if powiat:
+        # Replicate powiat logic
+        nationwide_companies = db.session.query(Firmy.ID_FIRMY)\
+                                 .join(FirmyObszarDzialania)\
+                                 .filter(FirmyObszarDzialania.ID_KRAJ == 'POL')
+
+        powiat_data = Powiaty.query.filter_by(ID_POWIATY=powiat).first()
+
+        if powiat_data:
+            wojewodztwo_id = powiat_data.ID_WOJEWODZTWA
+
+            powiat_companies = db.session.query(Firmy.ID_FIRMY)\
+                                 .join(FirmyObszarDzialania)\
+                                 .filter(FirmyObszarDzialania.ID_POWIATY == powiat)
+
+            wojewodztwo_empty_powiat_companies = db.session.query(Firmy.ID_FIRMY)\
+                                     .join(FirmyObszarDzialania)\
+                                     .filter(
+                                         and_(
+                                             FirmyObszarDzialania.ID_WOJEWODZTWA == wojewodztwo_id,
+                                             or_(
+                                                 FirmyObszarDzialania.ID_POWIATY == 0,
+                                                 FirmyObszarDzialania.ID_POWIATY.is_(None),
+                                                 FirmyObszarDzialania.ID_POWIATY == ""
+                                             )
+                                         )
+                                     )
+
+            combined_companies_ids_subquery = nationwide_companies.union(
+                powiat_companies,
+                wojewodztwo_empty_powiat_companies
+            ).subquery()
+
+        else:
+             combined_companies_ids_subquery = nationwide_companies.subquery()
+
+        query = query.filter(Firmy.ID_FIRMY.in_(combined_companies_ids_subquery))
+
+    elif wojewodztwo and not powiat:
+        # Replicate wojewodztwo logic
+        nationwide_companies = db.session.query(Firmy.ID_FIRMY)\
+                                 .join(FirmyObszarDzialania)\
+                                 .filter(FirmyObszarDzialania.ID_KRAJ == 'POL')
+
+        wojewodztwo_companies = db.session.query(Firmy.ID_FIRMY)\
+                                 .join(FirmyObszarDzialania)\
+                                 .filter(FirmyObszarDzialania.ID_WOJEWODZTWA == wojewodztwo)\
+                                 .filter(
+                                     or_(
+                                         FirmyObszarDzialania.ID_POWIATY == 0,
+                                         FirmyObszarDzialania.ID_POWIATY.is_(None),
+                                         FirmyObszarDzialania.ID_POWIATY == ""
+                                     )
+                                 )\
+                                 .except_(
+                                     db.session.query(Firmy.ID_FIRMY)\
+                                     .join(FirmyObszarDzialania)\
+                                     .filter(FirmyObszarDzialania.ID_WOJEWODZTWA == wojewodztwo)\
+                                     .filter(
+                                         and_(
+                                             FirmyObszarDzialania.ID_POWIATY != 0,
+                                             FirmyObszarDzialania.ID_POWIATY.is_not(None),
+                                             FirmyObszarDzialania.ID_POWIATY != ""
+                                         )
+                                     )
+                                 )
+
+        combined_companies_ids_subquery = nationwide_companies.union(wojewodztwo_companies).subquery()
+        query = query.filter(Firmy.ID_FIRMY.in_(combined_companies_ids_subquery))
+
+
+    # Handle company type filter
+    company_types = [ct for ct in request.args.getlist('company_types') if ct.strip()]
+    if company_types:
+        # Apply the filter to the current query state
+        query = query.filter(Firmy.ID_FIRMY_TYP.in_(company_types))
+
+
+    # EXECUTE THE FINAL FILTERED QUERY
+    filtered_companies = query.all()
+
+    # --- Fetch ALL related data for the filtered companies ---
+    # Potrzebujemy wszystkich szczegółów, tak jak dla PDF.
+    company_ids = [c.ID_FIRMY for c in filtered_companies]
+
+    # Fetch related data efficiently in batches
+    related_data = {}
+    if company_ids: # Only query if there are companies
+        related_data['adresy'] = db.session.query(Adresy).filter(Adresy.ID_FIRMY.in_(company_ids)).all()
+        related_data['emails'] = db.session.query(Email).filter(Email.ID_FIRMY.in_(company_ids)).all()
+        related_data['telefony'] = db.session.query(Telefon).filter(Telefon.ID_FIRMY.in_(company_ids)).all()
+        related_data['osoby'] = db.session.query(Osoby).filter(Osoby.ID_FIRMY.in_(company_ids)).all()
+        related_data['oceny'] = db.session.query(Oceny).filter(Oceny.ID_FIRMY.in_(company_ids)).all()
+        related_data['obszary'] = db.session.query(FirmyObszarDzialania).filter(FirmyObszarDzialania.ID_FIRMY.in_(company_ids)).all()
+        related_data['specjalnosci'] = db.session.query(FirmySpecjalnosci).filter(FirmySpecjalnosci.ID_FIRMY.in_(company_ids)).all()
+
+        # Potrzebujemy szczegółów dla tabel powiązanych przez ID (Specjalnosci, Wojewodztwa, Powiaty, Kraj)
+        specialty_ids = list(set([fs.ID_SPECJALNOSCI for fs in related_data.get('specjalnosci', []) if fs.ID_SPECJALNOSCI]))
+        if specialty_ids:
+             related_data['specialty_details'] = {s.ID_SPECJALNOSCI: s for s in db.session.query(Specjalnosci).filter(Specjalnosci.ID_SPECJALNOSCI.in_(specialty_ids)).all()}
+        else:
+             related_data['specialty_details'] = {}
+
+        woj_ids = list(set([fo.ID_WOJEWODZTWA for fo in related_data.get('obszary', []) if fo.ID_WOJEWODZTWA]))
+        powiat_ids = list(set([fo.ID_POWIATY for fo in related_data.get('obszary', []) if fo.ID_POWIATY]))
+        if woj_ids:
+            related_data['wojewodztwa_details'] = {w.ID_WOJEWODZTWA: w for w in db.session.query(Wojewodztwa).filter(Wojewodztwa.ID_WOJEWODZTWA.in_(woj_ids)).all()}
+        else:
+             related_data['wojewodztwa_details'] = {}
+        if powiat_ids:
+            related_data['powiaty_details'] = {p.ID_POWIATY: p for p in db.session.query(Powiaty).filter(Powiaty.ID_POWIATY.in_(powiat_ids)).all()}
+        else:
+             related_data['powiaty_details'] = {}
+        # Zakładamy, że Kraj 'POL' jest stały lub można go pobrać jeśli potrzebne nazwy krajów innych niż Polska
+
+
+    # Organizacja danych powiązanych wg ID firmy dla łatwego dostępu w szablonie
+    organized_related_data = {company.ID_FIRMY: {} for company in filtered_companies}
+    for data_type, items in related_data.items():
+         if '_details' in data_type: # Przechowuj szczegóły lookup'ów oddzielnie
+             organized_related_data[data_type] = items
+         else:
+            for item in items:
+                if item.ID_FIRMY not in organized_related_data:
+                     organized_related_data[item.ID_FIRMY] = {}
+                if data_type not in organized_related_data[item.ID_FIRMY]:
+                     organized_related_data[item.ID_FIRMY][data_type] = []
+                organized_related_data[item.ID_FIRMY][data_type].append(item)
+
+
+    # Renderuj szablon HTML do wydruku
+    return render_template('export_companies_html.html',
+                           companies=filtered_companies,
+                           related_data=organized_related_data) # Przekaż zorganizowane dane
+
