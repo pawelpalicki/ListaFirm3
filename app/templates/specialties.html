@@ -11,6 +11,14 @@
                 </a>
             </div>
             <div class="card-body">
+                <!-- Pole wyszukiwania -->
+                <div class="mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" id="search-specialty" class="form-control" placeholder="Wyszukaj specjalność...">
+                    </div>
+                </div>
+                
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -19,11 +27,11 @@
                             <th>Akcje</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="specialties-table">
                         {% for item in items %}
-                        <tr>
+                        <tr class="specialty-row">
                             <td>{{ item.ID_SPECJALNOSCI }}</td>
-                            <td>{{ item.Specjalnosc }}</td>
+                            <td class="specialty-name">{{ item.Specjalnosc }}</td>
                             <td>
                                 <a href="{{ url_for('main.edit_specialty', id=item.ID_SPECJALNOSCI) }}" class="btn btn-sm btn-primary">Edytuj</a>
                                 <form action="{{ url_for('main.delete_specialty', id=item.ID_SPECJALNOSCI) }}" method="POST" style="display: inline;">
@@ -34,8 +42,59 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                <!-- Informacja o braku wyników -->
+                <div id="no-results" class="alert alert-info text-center d-none">
+                    Brak specjalności pasujących do wyszukiwania
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search-specialty');
+    const rows = document.querySelectorAll('.specialty-row');
+    const noResults = document.getElementById('no-results');
+    
+    // Funkcja do normalizacji tekstu - usuwa polskie znaki diakrytyczne oraz znaki specjalne
+    function normalizeText(text) {
+        return text.toLowerCase()
+            // Zamień polskie znaki na ich odpowiedniki bez znaków diakrytycznych
+            .replace(/ą/g, 'a').replace(/ć/g, 'c')
+            .replace(/ę/g, 'e').replace(/ł/g, 'l')
+            .replace(/ń/g, 'n').replace(/ó/g, 'o')
+            .replace(/ś/g, 's').replace(/ź/g, 'z')
+            .replace(/ż/g, 'z')
+            // Usuń kropki, myślniki, podkreślniki i spacje
+            .replace(/[\.\-_\s]/g, '');
+    }
+    
+    searchInput.addEventListener('input', function() {
+        const searchText = normalizeText(this.value.trim());
+        let visibleCount = 0;
+        
+        rows.forEach(row => {
+            const specialtyName = row.querySelector('.specialty-name').textContent;
+            const normalizedName = normalizeText(specialtyName);
+            
+            if (normalizedName.includes(searchText)) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+        
+        // Pokaż lub ukryj komunikat o braku wyników
+        if (visibleCount === 0 && searchText !== '') {
+            noResults.classList.remove('d-none');
+        } else {
+            noResults.classList.add('d-none');
+        }
+    });
+});
+</script>
+{% endblock %}
 {% endblock %}

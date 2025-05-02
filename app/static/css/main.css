@@ -501,3 +501,131 @@ h6 {
 .form-check:hover {
     background-color: #f8f9fa;
 }
+
+/* ===== STYLE RESPONSYWNYCH TABEL (STACKING) ===== */
+
+/* Domyślnie pokazuj wszystko */
+.table-responsive-stacking th,
+.table-responsive-stacking td {
+    /* Możesz tu dodać domyślne style dla komórek, jeśli potrzebujesz */
+}
+
+.table-responsive-stacking .action-btn .btn-text {
+    display: inline; /* Domyślnie pokazuj tekst przycisku */
+}
+
+/* Style dla widoku mobilnego (np. poniżej 768px) */
+@media (max-width: 767.98px) {
+    .table-responsive-stacking thead {
+        display: none; /* Ukryj nagłówki tabeli */
+    }
+
+    .table-responsive-stacking tbody,
+    .table-responsive-stacking tr,
+    .table-responsive-stacking td {
+        display: block; /* Zmień wyświetlanie na blokowe */
+        width: 100%;
+    }
+
+    .table-responsive-stacking tr {
+        margin-bottom: 1rem; /* Dodaj odstęp między "zwiniętymi" wierszami */
+        border: 1px solid #dee2e6; /* Opcjonalna ramka dla każdego bloku */
+        border-radius: 0.375rem; /* Opcjonalne zaokrąglenie */
+        padding: 0.5rem 0; /* Wewnętrzny padding dla bloku wiersza */
+        background-color: #fff; /* Tło dla wiersza-karty */
+    }
+
+    /* Usuwamy paski z table-striped w widoku mobilnym */
+    .table-responsive-stacking.table-striped tbody tr:nth-of-type(odd) {
+        background-color: #fff;
+    }
+    .table-responsive-stacking.table-striped > tbody > tr:nth-of-type(2n+1) > * {
+        --bs-table-accent-bg: transparent; /* Reset bootstrapowego stylu dla pasów */
+    }
+
+
+    .table-responsive-stacking td {
+        position: relative;
+        padding-left: 45%; /* Zrób miejsce na etykietę */
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        text-align: left; /* Wyrównaj tekst do lewej w komórce */
+        border: none; /* Usuń domyślne ramki komórek */
+        min-height: 38px; /* Minimalna wysokość dla lepszego wyglądu */
+        display: flex; /* Użyj flexboxa dla lepszego wyrównania */
+        align-items: center; /* Wycentruj w pionie */
+    }
+
+    .table-responsive-stacking td::before {
+        content: attr(data-label); /* Pobierz tekst etykiety z atrybutu */
+        position: absolute;
+        left: 0.75rem; /* Odstęp etykiety od lewej krawędzi */
+        width: 40%; /* Szerokość etykiety */
+        padding-right: 0.5rem; /* Odstęp między etykietą a wartością */
+        font-weight: bold;
+        text-align: left;
+        white-space: nowrap; /* Zapobiegaj łamaniu tekstu etykiety */
+    }
+
+    /* Specjalne style dla komórki Akcje */
+    .table-responsive-stacking td[data-label="Akcje"] {
+        padding-left: 0.75rem; /* Brak potrzeby wcięcia dla akcji */
+        padding-top: 0.75rem;
+        /* Można dodać justowanie przycisków itp. jeśli jest więcej niż jeden */
+        display: block; /* Zmień z powrotem na block, aby przyciski były jeden pod drugim */
+        text-align: right; /* Wyrównaj przyciski do prawej (lub left/center) */
+    }
+
+     .table-responsive-stacking td[data-label="Akcje"]::before {
+       display: none; /* Nie pokazuj etykiety "Akcje:" */
+     }
+
+    .table-responsive-stacking td[data-label="Akcje"] form {
+        display: inline-block; /* Ustawienie formularzy obok siebie */
+        margin-left: 5px; /* Dodaj mały odstęp między przyciskami */
+    }
+     .table-responsive-stacking td[data-label="Akcje"] .action-btn {
+        margin-bottom: 5px; /* Dodaj odstęp pod przyciskami, jeśli są jeden pod drugim */
+     }
+
+    /* Ukryj tekst w przyciskach Akcji na mobile, zostaw tylko ikony */
+    .table-responsive-stacking .action-btn .btn-text {
+        display: none;
+    }
+     .table-responsive-stacking .action-btn {
+        padding: 0.375rem 0.5rem; /* Zmniejsz padding dla ikon */
+    }
+
+}
+
+/* Opcjonalnie: Możesz dodać breakpoint dla tabletów (np. 992px),
+   gdzie np. tylko ukryjesz tekst przycisków, ale tabela pozostanie standardowa */
+@media (min-width: 768px) and (max-width: 991.98px) {
+     .table-responsive-stacking .action-btn .btn-text {
+        /* display: none; */ /* Odkomentuj, jeśli chcesz ukryć tekst też na tabletach */
+     }
+}
+
+
+/* Dodatkowe style dla przycisków akcji, które już masz lub możesz dostosować */
+.action-btn {
+    padding: 0.375rem 0.75rem; /* Domyślny padding */
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: all 0.2s;
+    vertical-align: middle; /* Lepsze wyrównanie przycisków w linii */
+}
+
+.action-btn i {
+    font-size: 1rem; /* Rozmiar ikony */
+    line-height: 1; /* Zapobiega dodatkowej przestrzeni wokół ikony */
+}
+
+/* Poprawka dla formularza w linii */
+td[data-label="Akcje"] form {
+    margin: 0 0 0 0.25rem; /* Mały odstęp między przyciskami edytuj/usuń */
+}
+td[data-label="Akcje"] form:first-of-type {
+    margin-left: 0;
+}

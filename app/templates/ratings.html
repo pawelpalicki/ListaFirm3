@@ -6,46 +6,136 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title">{{ title }}</h5>
-                 <a href="{{ url_for('main.new_rating') }}" class="btn btn-success btn-sm">
+                <a href="{{ url_for('main.new_rating') }}" class="btn btn-success btn-sm">
                     <i class="bi bi-plus-circle"></i> Dodaj nową ocenę współpracy
                 </a>
             </div>
             <div class="card-body">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Osoba oceniająca</th>
-                            <th>Budowa/Dział</th>
-                            <th>Rok współpracy</th>
-                            <th>Ocena (1-5)</th>
-                            <th>Komentarz</th>
-                            <th>Firma</th>
-                            <th>Akcje</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in items %}
-                        <tr>
-                            <td>{{ item.OCENY_ID }}</td> {# Corrected from item.ID_OCENY #}
-                            <td>{{ item.Osoba_oceniajaca }}</td>
-                            <td>{{ item.Budowa_Dzial }}</td>
-                            <td>{{ item.Rok_wspolpracy }}</td>
-                            <td>{{ item.Ocena }}</td>
-                            <td>{{ item.Komentarz }}</td>
-                            <td>{% if item.firma %}{{ item.firma.Nazwa_Firmy }}{% else %}Brak firmy{% endif %}</td>
-                            <td>
-                                <a href="{{ url_for('main.edit_rating', id=item.OCENY_ID) }}" class="btn btn-sm btn-primary">Edytuj</a> {# Corrected from id=item.ID_OCENY #}
-                                <form action="{{ url_for('main.delete_rating', id=item.OCENY_ID) }}" method="POST" style="display: inline;"> {# Corrected from id=item.ID_OCENY #}
-                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Czy na pewno chcesz usunąć tę ocenę?');">Usuń</button>
-                                </form>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                <div class="mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" id="search-rating" class="form-control" placeholder="Wyszukaj ocenę (osoba, budowa, rok, komentarz, firma)...">
+                        <button class="btn btn-outline-secondary" type="button" id="clear-search">
+                            <i class="bi bi-x-circle"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-responsive-stacking"> {# Dodana klasa table-responsive-stacking #}
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Osoba oceniająca</th>
+                                <th>Budowa/Dział</th>
+                                <th>Rok współpracy</th>
+                                <th>Ocena (1-5)</th>
+                                <th>Komentarz</th>
+                                <th>Firma</th>
+                                <th>Akcje</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ratings-table">
+                            {% for item in items %}
+                            <tr class="rating-row">
+                                <td data-label="ID">{{ item.OCENY_ID }}</td> {# Dodany data-label #}
+                                <td data-label="Osoba oceniająca" class="rating-person">{{ item.Osoba_oceniajaca }}</td> {# Dodany data-label #}
+                                <td data-label="Budowa/Dział" class="rating-place">{{ item.Budowa_Dzial }}</td> {# Dodany data-label #}
+                                <td data-label="Rok współpracy" class="rating-year">{{ item.Rok_wspolpracy }}</td> {# Dodany data-label #}
+                                <td data-label="Ocena (1-5)" class="rating-score">{{ item.Ocena }}</td> {# Dodany data-label #}
+                                <td data-label="Komentarz" class="rating-comment">{{ item.Komentarz }}</td> {# Dodany data-label #}
+                                <td data-label="Firma" class="rating-company">{% if item.firma %}{{ item.firma.Nazwa_Firmy }}{% else %}Brak firmy{% endif %}</td> {# Dodany data-label #}
+                                <td data-label="Akcje"> {# Dodany data-label #}
+                                    <a href="{{ url_for('main.edit_rating', id=item.OCENY_ID) }}" class="btn btn-sm btn-primary action-btn">
+                                        <i class="bi bi-pencil-square"></i> <span class="btn-text">Edytuj</span>
+                                    </a>
+                                    <form action="{{ url_for('main.delete_rating', id=item.OCENY_ID) }}" method="POST" style="display: inline;">
+                                        <button type="submit" class="btn btn-sm btn-danger action-btn" onclick="return confirm('Czy na pewno chcesz usunąć tę ocenę?');">
+                                            <i class="bi bi-trash"></i> <span class="btn-text">Usuń</span>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="no-results" class="alert alert-info text-center d-none">
+                    Brak ocen pasujących do wyszukiwania
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+{% block scripts %}
+{{ super() }} {# Zachowujemy istniejące skrypty z base.html jeśli są #}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search-rating');
+    const clearButton = document.getElementById('clear-search');
+    const tableBody = document.getElementById('ratings-table'); // Zmieniono selektor na tbody
+    const rows = tableBody.querySelectorAll('.rating-row'); // Pobieramy wiersze z tbody
+    const noResults = document.getElementById('no-results');
+
+    // Funkcja do normalizacji tekstu - bez zmian
+    function normalizeText(text) {
+        if (!text) return '';
+        return String(text).toLowerCase()
+            .replace(/ą/g, 'a').replace(/ć/g, 'c')
+            .replace(/ę/g, 'e').replace(/ł/g, 'l')
+            .replace(/ń/g, 'n').replace(/ó/g, 'o')
+            .replace(/ś/g, 's').replace(/ź/g, 'z')
+            .replace(/ż/g, 'z')
+            .replace(/[\.\-_\s]/g, '');
+    }
+
+    // Funkcja do filtrowania wierszy - bez zmian w logice filtrowania
+    function filterRows() {
+        const searchText = normalizeText(searchInput.value.trim());
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            const person = normalizeText(row.querySelector('.rating-person').textContent);
+            const place = normalizeText(row.querySelector('.rating-place').textContent);
+            const year = normalizeText(row.querySelector('.rating-year').textContent);
+            const score = normalizeText(row.querySelector('.rating-score').textContent);
+            const comment = normalizeText(row.querySelector('.rating-comment').textContent);
+            const company = normalizeText(row.querySelector('.rating-company').textContent);
+
+            const allValues = person + place + year + score + comment + company;
+
+            if (searchText === '' || allValues.includes(searchText)) {
+                row.style.display = ''; // W widoku mobilnym to będzie 'block' lub 'flex' w zależności od CSS
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        if (visibleCount === 0 && searchText !== '') {
+            noResults.classList.remove('d-none');
+        } else {
+            noResults.classList.add('d-none');
+        }
+         // Dodatkowo: ukryj komunikat jeśli pole wyszukiwania jest puste
+        if (searchText === '') {
+             noResults.classList.add('d-none');
+        }
+    }
+
+    searchInput.addEventListener('input', filterRows);
+
+    clearButton.addEventListener('click', function() {
+        searchInput.value = '';
+        filterRows();
+        searchInput.focus();
+    });
+
+    // Wywołaj filtrowanie raz na starcie na wypadek, gdyby pole było już wypełnione (np. przez przeglądarkę)
+    filterRows();
+});
+</script>
+{% endblock %}
 {% endblock %}
