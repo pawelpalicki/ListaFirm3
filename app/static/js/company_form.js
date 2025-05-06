@@ -520,7 +520,7 @@ $(document).ready(function() {
     // ustawiona przez Flask na podstawie danych firmy (w przypadku edycji)
     // lub na wartość domyślną (w przypadku dodawania).
     // Ta funkcja tylko pokazuje/ukrywa divy i czyści pola ukryte.
-    toggleAreaSelection();
+    toggleAreaSelection();
     console.log("Initial toggleAreaSelection executed based on Flask form data."); // Debug
 
 
@@ -539,22 +539,22 @@ $(document).ready(function() {
         // (które Flask wstępnie ustawił w form.powiaty.data i które zostały odczytane
         // przez loadPowiaty przed czyszczeniem opcji).
         console.log("Initial load (Edit page): Area is 'powiaty'. Calling loadPowiaty to filter options and restore selection from Flask data."); // Debug
-        loadPowiaty(); // Ta funkcja pobierze opcje wg wybranych woj. i odświeży Select2/przywróci selekcję
-    } else {
+        loadPowiaty(); // Ta funkcja pobierze opcje wg wybranych woj. i odświeży Select2/przywróci selekcję
+    } else {
          console.log("Initial load: Area is not 'powiaty'. No initial loadPowiaty needed."); // Debug
     }
     // KONIEC KLUCZOWEJ LOGIKI DLA EDYCJI
 
 
-    // --- NASŁUCHIWANIE NA ZMIANY UŻYTKOWNIKA (Po inicjalizacji startowej) ---
+    // --- NASŁUCHIWANIE NA ZMIANY UŻYTKOWNIKA (Po inicjalizacji startowej) ---
 
     // Nasłuchiwanie na zmianę wybranego radiobuttona obszaru działania
     // Ten handler uruchamia się, gdy użytkownik KLIKNIE na inny radio button obszaru działania.
-    $('input[name="obszar_dzialania"]').change(function() {
+    $('input[name="obszar_dzialania"]').change(function() {
         const selectedOption = $(this).val();
         console.log("User changed Area radio TO:", selectedOption); // Debug
 
-        toggleAreaSelection(); // Zmień widoczność sekcji i wyczyść UKRYTE pola
+        toggleAreaSelection(); // Zmień widoczność sekcji i wyczyść UKRYTE pola
 
         // Jeśli użytkownik przełączył obszar działania NA 'powiaty',
         // musimy załadować listę powiatów na podstawie AKUTALNIE wybranych województw.
@@ -566,25 +566,25 @@ $(document).ready(function() {
         }
         // Jeśli zmieniono Z 'powiaty' na 'wojewodztwa', pole powiatów jest czyszczone w toggleAreaSelection
         // Jeśli zmieniono Z 'powiaty' na 'kraj', pola wojewodztwa i powiaty są czyszczone w toggleAreaSelection
-    });
+    });
 
-    // Nasłuchiwanie na zmianę wybranych województw
+    // Nasłuchiwanie na zmianę wybranych województw
     // Ten handler uruchamia się, gdy użytkownik zmieni zaznaczenie w polu Select2 województw.
     // Używamy zdarzenia 'change.select2', które jest specyficzne dla Select2
     // i jest wywoływane po zmianie wartości przez interakcję użytkownika lub `.val().trigger('change.select2')`.
-    $('#wojewodztwa').on('change.select2', function() {
+    $('#wojewodztwa').on('change.select2', function() {
         console.log("User changed Wojewodztwa selection."); // Debug
         // Jeśli aktualnie wybrany obszar działania to 'powiaty',
         // zmiana województw powinna spowodować przeładowanie listy dostępnych powiatów.
         // Pole powiatów zostanie wyczyszczone i zapełnione nowymi opcjami.
         // Zaznaczenie zostanie utracone (co jest oczekiwane przy zmianie filtrów województw).
-        if ($('input[name="obszar_dzialania"]:checked').val() === 'powiaty') {
+        if ($('input[name="obszar_dzialania"]:checked').val() === 'powiaty') {
              console.log("Area is 'powiaty' and Wojewodztwa changed: Calling loadPowiaty to refresh available options."); // Debug
-            loadPowiaty();
-        } else {
+            loadPowiaty();
+        } else {
              console.log("Area is not 'powiaty'. Wojewodztwa change ignored for Powiaty loading."); // Debug
         }
-    });
+    });
 
 
     // --- LOGIKA USUWANIA FIRMY (Przeniesiona tutaj) ---
