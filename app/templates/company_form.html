@@ -483,11 +483,11 @@
                         </button>
                         <div>
                             {% if company_id %}
-                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteCompanyModal">
+                            <button type="button" class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#deleteCompanyModal">
                                 <i class="bi bi-trash"></i> Usuń firmę
                             </button>
                             {% endif %}
-                            <a href="{{ url_for('main.index') }}" class="btn btn-secondary ms-2">
+                            <a href="{{ url_for('main.index') }}" class="btn btn-secondary">
                                 <i class="bi bi-arrow-left"></i> Powrót
                             </a>
                         </div>
