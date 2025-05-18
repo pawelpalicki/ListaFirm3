@@ -22,11 +22,11 @@
                     <tbody>
                         {% for item in items %}
                         <tr>
-                            <td>{{ item.ID_FIRMY_TYP }}</td>
-                            <td>{{ item.Typ_firmy }}</td>
+                            <td>{{ item.id_firmy_typ }}</td>
+                            <td>{{ item.typ_firmy }}</td>
                             <td>
-                                <a href="{{ url_for('main.edit_company_type', id=item.ID_FIRMY_TYP) }}" class="btn btn-sm btn-primary">Edytuj</a>
-                                <form action="{{ url_for('main.delete_company_type', id=item.ID_FIRMY_TYP) }}" method="POST" style="display: inline;">
+                                <a href="{{ url_for('main.edit_company_type', id=item.id_firmy_typ) }}" class="btn btn-sm btn-primary">Edytuj</a>
+                                <form action="{{ url_for('main.delete_company_type', id=item.id_firmy_typ) }}" method="POST" style="display: inline;">
                                     <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Czy na pewno chcesz usunąć ten typ firmy?');">Usuń</button>
                                 </form>
                             </td>

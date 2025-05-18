@@ -87,31 +87,31 @@ class CompanyForm(FlaskForm):
         from app import db
 
         # Załaduj opcje i zapisz je jako atrybuty instancji
-        self.company_type_choices = [(int(t.ID_FIRMY_TYP), t.Typ_firmy) for t in FirmyTyp.query.order_by(FirmyTyp.Typ_firmy).all()]
+        self.company_type_choices = [(int(t.id_firmy_typ), t.typ_firmy) for t in FirmyTyp.query.order_by(FirmyTyp.typ_firmy).all()]
         self.typ_firmy.choices = self.company_type_choices
 
-        self.address_type_choices = [(t.ID_ADRESY_TYP, t.Typ_adresu) for t in AdresyTyp.query.order_by(AdresyTyp.Typ_adresu).all()]
+        self.address_type_choices = [(t.id_adresy_typ, t.typ_adresu) for t in AdresyTyp.query.order_by(AdresyTyp.typ_adresu).all()]
         # Ustaw opcje dla istniejących wpisów ORAZ dla pola szablonu (jeśli WTForms go udostępnia - ale my użyjemy self.address_type_choices)
         for adres_entry in self.adresy:
             adres_entry.typ_adresu.choices = self.address_type_choices
         # if hasattr(self.adresy, 'template'): # Sprawdzenie, czy WTForms udostępnia szablon - zazwyczaj nie
         #     self.adresy.template.typ_adresu.choices = self.address_type_choices
 
-        self.email_type_choices = [(t.ID_EMAIL_TYP, t.Typ_emaila) for t in EmailTyp.query.order_by(EmailTyp.Typ_emaila).all()]
+        self.email_type_choices = [(t.id_email_typ, t.typ_emaila) for t in EmailTyp.query.order_by(EmailTyp.typ_emaila).all()]
         for email_entry in self.emaile:
             email_entry.typ_emaila.choices = self.email_type_choices
 
-        self.phone_type_choices = [(t.ID_TELEFON_TYP, t.Typ_telefonu) for t in TelefonTyp.query.order_by(TelefonTyp.Typ_telefonu).all()]
+        self.phone_type_choices = [(t.id_telefon_typ, t.typ_telefonu) for t in TelefonTyp.query.order_by(TelefonTyp.typ_telefonu).all()]
         for telefon_entry in self.telefony:
             telefon_entry.typ_telefonu.choices = self.phone_type_choices
 
-        self.wojewodztwa_choices = [(w.ID_WOJEWODZTWA, w.Wojewodztwo) for w in Wojewodztwa.query.order_by(Wojewodztwa.Wojewodztwo).all()]
+        self.wojewodztwa_choices = [(w.id_wojewodztwa, w.wojewodztwo) for w in Wojewodztwa.query.order_by(Wojewodztwa.wojewodztwo).all()]
         self.wojewodztwa.choices = self.wojewodztwa_choices
         # Dla powiatów - ładujemy wszystkie jako początkowe opcje, JS je przefiltruje
-        self.powiaty.choices = [(p.ID_POWIATY, f"{p.Powiat} ({p.wojewodztwo.Wojewodztwo if p.wojewodztwo else 'Brak woj.'})") for p in Powiaty.query.order_by(Powiaty.Powiat).all()]
+        self.powiaty.choices = [(p.id_powiaty, f"{p.powiat} ({p.wojewodztwo.wojewodztwo if p.wojewodztwo else 'Brak woj.'})") for p in Powiaty.query.order_by(Powiaty.powiat).all()]
 
 
-        self.specialty_choices = [(s.ID_SPECJALNOSCI, s.Specjalnosc) for s in Specjalnosci.query.order_by(Specjalnosci.Specjalnosc).all()]
+        self.specialty_choices = [(s.id_specjalnosci, s.specjalnosc) for s in Specjalnosci.query.order_by(Specjalnosci.specjalnosc).all()]
         self.specjalnosci.choices = self.specialty_choices
 
 class SimplePersonForm(FlaskForm):
@@ -121,7 +121,7 @@ class SimplePersonForm(FlaskForm):
     Stanowisko = StringField('Stanowisko')
     e_mail = StringField('E-mail', validators=[Optional(), Email()]) 
     telefon = StringField('Telefon') 
-    ID_FIRMY = SelectField('Firma', coerce=int, validators=[DataRequired()])
+    id_firmy = SelectField('Firma', coerce=int, validators=[DataRequired()])
     submit = SubmitField('Zapisz')
 
     def __init__(self, *args, **kwargs):
@@ -130,9 +130,9 @@ class SimplePersonForm(FlaskForm):
         from app.models import Firmy
         # Załaduj opcje do poprawnego pola (ID_FIRMY)
         # Dodano order_by dla lepszej użyteczności listy rozwijanej
-        self.ID_FIRMY.choices = [(f.ID_FIRMY, f.Nazwa_Firmy) for f in Firmy.query.order_by(Firmy.Nazwa_Firmy).all()]
+        self.id_firmy.choices = [(f.id_firmy, f.nazwa_firmy) for f in Firmy.query.order_by(Firmy.nazwa_firmy).all()]
         # Dodaj pustą opcję na początku, jeśli pole nie zawsze musi być wybrane od razu
-        self.ID_FIRMY.choices.insert(0, (0, '--- Wybierz ---')) 
+        self.id_firmy.choices.insert(0, (0, '--- Wybierz ---')) 
 
 class SimpleRatingForm(FlaskForm):
     # Użyj nazw atrybutów z modelu Osoby
@@ -141,16 +141,16 @@ class SimpleRatingForm(FlaskForm):
     Rok_wspolpracy = IntegerField('Rok współpracy', validators=[DataRequired()])
     Ocena = IntegerField('Ocena (1-5)', validators=[DataRequired(), NumberRange(min=1, max=5)])
     Komentarz = TextAreaField('Komentarz')
-    ID_FIRMY = SelectField('Firma', coerce=int, validators=[DataRequired()])
+    id_firmy = SelectField('Firma', coerce=int, validators=[DataRequired()])
     submit = SubmitField('Zapisz')
 
     def __init__(self, *args, **kwargs):
         super(SimpleRatingForm, self).__init__(*args, **kwargs)
         from app.models import Firmy
         # Load companies for dropdown
-        self.ID_FIRMY.choices = [(f.ID_FIRMY, f.Nazwa_Firmy) for f in Firmy.query.order_by(Firmy.Nazwa_Firmy).all()]
+        self.id_firmy.choices = [(f.id_firmy, f.nazwa_firmy) for f in Firmy.query.order_by(Firmy.nazwa_firmy).all()]
         # dodaj pustą opcję na początku, jeśli pole nie zawsze musi być wybrane od razu
-        self.ID_FIRMY.choices.insert(0, (0, '--- Wybierz ---')) # Pamiętaj o walidatorze DataRequired, jeśli dodasz pustą opcję
+        self.id_firmy.choices.insert(0, (0, '--- Wybierz ---')) # Pamiętaj o walidatorze DataRequired, jeśli dodasz pustą opcję
 
 
 # Forms for adding/editing the four tables

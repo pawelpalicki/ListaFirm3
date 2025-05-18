@@ -46,10 +46,10 @@
                                 <td data-label="Komentarz" class="rating-comment">{{ item.komentarz }}</td> {# Dodany data-label #}
                                 <td data-label="Firma" class="rating-company">{% if item.firma %}{{ item.firma.Nazwa_Firmy }}{% else %}Brak firmy{% endif %}</td> {# Dodany data-label #}
                                 <td data-label="Akcje"> {# Dodany data-label #}
-                                    <a href="{{ url_for('main.edit_rating', id=item.OCENY_ID) }}" class="btn btn-sm btn-primary action-btn">
+                                    <a href="{{ url_for('main.edit_rating', id=item.oceny_id) }}" class="btn btn-sm btn-primary action-btn">
                                         <i class="bi bi-pencil-square"></i> <span class="btn-text">Edytuj</span>
                                     </a>
-                                    <form action="{{ url_for('main.delete_rating', id=item.OCENY_ID) }}" method="POST" style="display: inline;">
+                                    <form action="{{ url_for('main.delete_rating', id=item.oceny_id) }}" method="POST" style="display: inline;">
                                         <button type="submit" class="btn btn-sm btn-danger action-btn" onclick="return confirm('Czy na pewno chcesz usunąć tę ocenę?');">
                                             <i class="bi bi-trash"></i> <span class="btn-text">Usuń</span>
                                         </button>

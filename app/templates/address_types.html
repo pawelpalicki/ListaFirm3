@@ -22,11 +22,11 @@
                     <tbody>
                         {% for item in items %}
                         <tr>
-                            <td>{{ item.ID_ADRESY_TYP }}</td>
-                            <td>{{ item.Typ_adresu }}</td>
+                            <td>{{ item.id_adresy_typ }}</td>
+                            <td>{{ item.typ_adresu }}</td>
                             <td>
-                                <a href="{{ url_for('main.edit_address_type', id=item.ID_ADRESY_TYP) }}" class="btn btn-sm btn-primary">Edytuj</a>
-                                <form action="{{ url_for('main.delete_address_type', id=item.ID_ADRESY_TYP) }}" method="POST" style="display: inline;">
+                                <a href="{{ url_for('main.edit_address_type', id=item.id_adresy_typ) }}" class="btn btn-sm btn-primary">Edytuj</a>
+                                <form action="{{ url_for('main.delete_address_type', id=item.id_adresy_typ) }}" method="POST" style="display: inline;">
                                     <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Czy na pewno chcesz usunąć ten typ adresu?');">Usuń</button>
                                 </form>
                             </td>

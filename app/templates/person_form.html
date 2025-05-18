@@ -53,9 +53,9 @@
                         {% endfor %}
                     </div>
                     <div class="mb-3">
-                         {{ form.ID_FIRMY.label(class="form-label") }}  {# Zmieniono na ID_FIRMY #}
-                         {{ form.ID_FIRMY(class="form-select", id="firmy_select") }}
-                         {% for error in form.ID_FIRMY.errors %}       {# Zmieniono na ID_FIRMY #}
+                         {{ form.id_firmy.label(class="form-label") }}  {# Zmieniono na id_firmy #}
+                         {{ form.id_firmy(class="form-select", id="firmy_select") }}
+                         {% for error in form.id_firmy.errors %}       {# Zmieniono na id_firmy #}
                              <span class="text-danger">{{ error }}</span>
                          {% endfor %}
                      </div>

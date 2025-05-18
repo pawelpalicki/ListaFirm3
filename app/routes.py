@@ -33,95 +33,95 @@ def index():
         # Wyszukiwanie w tabeli FIRMY
         firmy_results = Firmy.query.all()
         for firma in firmy_results:
-            if (normalized_search in normalize_text(firma.Nazwa_Firmy).lower() or
-                normalized_search in normalize_text(firma.Strona_www).lower() or
-                normalized_search in normalize_text(firma.Uwagi).lower()):
-                matching_company_ids.add(firma.ID_FIRMY)
+            if (normalized_search in normalize_text(firma.nazwa_firmy).lower() or
+                normalized_search in normalize_text(firma.strona_www).lower() or
+                normalized_search in normalize_text(firma.uwagi).lower()):
+                matching_company_ids.add(firma.id_firmy)
 
         # Wyszukiwanie w tabeli ADRESY
         adres_results = Adresy.query.all()
         for adres in adres_results:
-            if (normalized_search in normalize_text(adres.Kod).lower() or
-                normalized_search in normalize_text(adres.Miejscowosc).lower() or
-                normalized_search in normalize_text(adres.Ulica_Miejscowosc).lower()):
-                if adres.ID_FIRMY:
-                    matching_company_ids.add(adres.ID_FIRMY)
+            if (normalized_search in normalize_text(adres.kod).lower() or
+                normalized_search in normalize_text(adres.miejscowosc).lower() or
+                normalized_search in normalize_text(adres.ulica_miejscowosc).lower()):
+                if adres.id_firmy:
+                    matching_company_ids.add(adres.id_firmy)
 
         # Wyszukiwanie w tabeli EMAIL
         email_results = Email.query.all()
         for email in email_results:
             if normalized_search in normalize_text(email.e_mail).lower():
-                if email.ID_FIRMY:
-                    matching_company_ids.add(email.ID_FIRMY)
+                if email.id_firmy:
+                    matching_company_ids.add(email.id_firmy)
 
         # Wyszukiwanie w tabeli TELEFON
         telefon_results = Telefon.query.all()
         for telefon in telefon_results:
             if normalized_search in normalize_text(telefon.telefon).lower():
-                if telefon.ID_FIRMY:
-                    matching_company_ids.add(telefon.ID_FIRMY)
+                if telefon.id_firmy:
+                    matching_company_ids.add(telefon.id_firmy)
 
         # Wyszukiwanie w tabeli OSOBY
         osoby_results = Osoby.query.all()
         for osoba in osoby_results:
-            if (normalized_search in normalize_text(osoba.Imie).lower() or
-                normalized_search in normalize_text(osoba.Nazwisko).lower() or
-                normalized_search in normalize_text(osoba.Stanowisko).lower() or
+            if (normalized_search in normalize_text(osoba.imie).lower() or
+                normalized_search in normalize_text(osoba.nazwisko).lower() or
+                normalized_search in normalize_text(osoba.stanowisko).lower() or
                 normalized_search in normalize_text(osoba.e_mail).lower() or
                 normalized_search in normalize_text(osoba.telefon).lower()):
-                if osoba.ID_FIRMY:
-                    matching_company_ids.add(osoba.ID_FIRMY)
+                if osoba.id_firmy:
+                    matching_company_ids.add(osoba.id_firmy)
 
         # Wyszukiwanie w tabeli OCENY
         oceny_results = Oceny.query.all()
         for ocena in oceny_results:
-            if (normalized_search in normalize_text(ocena.Osoba_oceniajaca).lower() or
-                normalized_search in normalize_text(ocena.Budowa_Dzial).lower() or
-                normalized_search in normalize_text(ocena.Komentarz).lower()):
-                if ocena.ID_FIRMY:
-                    matching_company_ids.add(ocena.ID_FIRMY)
+            if (normalized_search in normalize_text(ocena.osoba_oceniajaca).lower() or
+                normalized_search in normalize_text(ocena.budowa_dzial).lower() or
+                normalized_search in normalize_text(ocena.komentarz).lower()):
+                if ocena.id_firmy:
+                    matching_company_ids.add(ocena.id_firmy)
 
         # Wyszukiwanie w tabeli SPECJALNOSCI (przez relację)
         specjalnosci_results = Specjalnosci.query.all()
         for spec in specjalnosci_results:
-            if normalized_search in normalize_text(spec.Specjalnosc).lower():
-                firmy_spec = FirmySpecjalnosci.query.filter_by(ID_SPECJALNOSCI=spec.ID_SPECJALNOSCI).all()
+            if normalized_search in normalize_text(spec.specjalnosc).lower():
+                firmy_spec = FirmySpecjalnosci.query.filter_by(id_specjalnosci=spec.id_specjalnosci).all()
                 for fs in firmy_spec:
-                    matching_company_ids.add(fs.ID_FIRMY)
+                    matching_company_ids.add(fs.id_firmy)
 
         # Wyszukiwanie po typie firmy
         firmy_typ_results = FirmyTyp.query.all()
         for typ in firmy_typ_results:
-            if normalized_search in normalize_text(typ.Typ_firmy).lower():
-                firmy_by_typ = Firmy.query.filter_by(ID_FIRMY_TYP=typ.ID_FIRMY_TYP).all()
+            if normalized_search in normalize_text(typ.typ_firmy).lower():
+                firmy_by_typ = Firmy.query.filter_by(id_firmy_typ=typ.id_firmy_typ).all()
                 for firma in firmy_by_typ:
-                    matching_company_ids.add(firma.ID_FIRMY)
+                    matching_company_ids.add(firma.id_firmy)
 
         # Wyszukiwanie po obszarze działania (województwa, powiaty, kraj)
         wojewodztwa_results = Wojewodztwa.query.all()
         for woj in wojewodztwa_results:
             if normalized_search in normalize_text(woj.Wojewodztwo).lower():
-                firmy_woj = FirmyObszarDzialania.query.filter_by(ID_WOJEWODZTWA=woj.ID_WOJEWODZTWA).all()
+                firmy_woj = FirmyObszarDzialania.query.filter_by(id_wojewodztwa=woj.id_wojewodztwa).all()
                 for fw in firmy_woj:
-                    matching_company_ids.add(fw.ID_FIRMY)
+                    matching_company_ids.add(fw.id_firmy)
 
         powiaty_results = Powiaty.query.all()
         for pow in powiaty_results:
-            if normalized_search in normalize_text(pow.Powiat).lower():
-                firmy_pow = FirmyObszarDzialania.query.filter_by(ID_POWIATY=pow.ID_POWIATY).all()
+            if normalized_search in normalize_text(pow.powiat).lower():
+                firmy_pow = FirmyObszarDzialania.query.filter_by(id_powiaty=pow.id_powiaty).all()
                 for fp in firmy_pow:
-                    matching_company_ids.add(fp.ID_FIRMY)
+                    matching_company_ids.add(fp.id_firmy)
 
         kraje_results = Kraj.query.all()
         for kraj in kraje_results:
-            if normalized_search in normalize_text(kraj.Kraj).lower():
-                firmy_kraj = FirmyObszarDzialania.query.filter_by(ID_KRAJ=kraj.ID_KRAJ).all()
+            if normalized_search in normalize_text(kraj.kraj).lower():
+                firmy_kraj = FirmyObszarDzialania.query.filter_by(id_kraj=kraj.id_kraj).all()
                 for fk in firmy_kraj:
-                    matching_company_ids.add(fk.ID_FIRMY)
+                    matching_company_ids.add(fk.id_firmy)
 
         # Filtrowanie głównego zapytania, aby zawierało tylko firmy pasujące do wyszukiwania
         if matching_company_ids:
-            query = query.filter(Firmy.ID_FIRMY.in_(matching_company_ids))
+            query = query.filter(Firmy.id_firmy.in_(matching_company_ids))
         else:
             # Jeśli nie znaleziono dopasowań, zwróć pustą listę
             query = query.filter(False)
@@ -130,7 +130,7 @@ def index():
     specialties = request.args.getlist('specialties')
     if specialties:
         query = query.join(FirmySpecjalnosci)\
-                    .filter(FirmySpecjalnosci.ID_SPECJALNOSCI.in_(specialties))
+                    .filter(FirmySpecjalnosci.id_specjalnosci.in_(specialties))
 
     # Handle area filter
     wojewodztwo = request.args.get('wojewodztwo')
@@ -138,32 +138,28 @@ def index():
 
     if powiat:
         # Include companies with nationwide service
-        nationwide_companies = db.session.query(Firmy.ID_FIRMY)\
+        nationwide_companies = db.session.query(Firmy.id_firmy)\
                                 .join(FirmyObszarDzialania)\
-                                .filter(FirmyObszarDzialania.ID_KRAJ == 'POL')
+                                .filter(FirmyObszarDzialania.id_kraj == 'POL')
 
         # Get powiat data to find its wojewodztwo
-        powiat_data = Powiaty.query.filter_by(ID_POWIATY=powiat).first()
+        powiat_data = Powiaty.query.filter_by(id_powiaty=powiat).first()
 
         if powiat_data:
-            wojewodztwo_id = powiat_data.ID_WOJEWODZTWA
+            wojewodztwo_id = powiat_data.id_wojewodztwa
 
             # Companies serving the specific powiat
-            powiat_companies = db.session.query(Firmy.ID_FIRMY)\
+            powiat_companies = db.session.query(Firmy.id_firmy)\
                                 .join(FirmyObszarDzialania)\
-                                .filter(FirmyObszarDzialania.ID_POWIATY == powiat)
+                                .filter(FirmyObszarDzialania.id_powiaty == powiat)
 
             # Companies serving the whole wojewodztwo (with empty powiat fields)
-            wojewodztwo_empty_powiat_companies = db.session.query(Firmy.ID_FIRMY)\
+            wojewodztwo_empty_powiat_companies = db.session.query(Firmy.id_firmy)\
                                     .join(FirmyObszarDzialania)\
                                     .filter(
                                         and_(
-                                            FirmyObszarDzialania.ID_WOJEWODZTWA == wojewodztwo_id,
-                                            or_(
-                                                FirmyObszarDzialania.ID_POWIATY == 0,
-                                                FirmyObszarDzialania.ID_POWIATY.is_(None),
-                                                FirmyObszarDzialania.ID_POWIATY == ""
-                                            )
+                                            FirmyObszarDzialania.id_wojewodztwa == wojewodztwo_id,
+                                            FirmyObszarDzialania.id_powiaty == 0
                                         )
                                     )
 
@@ -177,50 +173,37 @@ def index():
             combined_companies = nationwide_companies.subquery()
 
         # Apply filter to the main query
-        query = query.filter(Firmy.ID_FIRMY.in_(combined_companies))
+        query = query.filter(Firmy.id_firmy.in_(combined_companies))
 
     elif wojewodztwo and not powiat:
         # Firmy o zasięgu ogólnokrajowym
-        nationwide_companies = db.session.query(Firmy.ID_FIRMY)\
+        nationwide_companies = db.session.query(Firmy.id_firmy)\
                                 .join(FirmyObszarDzialania)\
-                                .filter(FirmyObszarDzialania.ID_KRAJ == 'POL')
+                                .filter(FirmyObszarDzialania.id_kraj == 'POL')
 
         # Firmy działające tylko na poziomie województwa (bez przypisanych powiatów)
-        wojewodztwo_companies = db.session.query(Firmy.ID_FIRMY)\
+        wojewodztwo_companies = db.session.query(Firmy.id_firmy)\
                                 .join(FirmyObszarDzialania)\
-                                .filter(FirmyObszarDzialania.ID_WOJEWODZTWA == wojewodztwo)\
-                                .filter(
-                                    or_(
-                                        FirmyObszarDzialania.ID_POWIATY == 0, 
-                                        FirmyObszarDzialania.ID_POWIATY.is_(None), 
-                                        FirmyObszarDzialania.ID_POWIATY == ""
-                                    )
-                                )\
+                                .filter(FirmyObszarDzialania.id_wojewodztwa == wojewodztwo)\
+                                .filter(FirmyObszarDzialania.id_powiaty == 0)\
                                 .except_(
                                     # Wykluczenie firm, które mają jakikolwiek wpis z przypisanym powiatem
-                                    db.session.query(Firmy.ID_FIRMY)\
+                                    db.session.query(Firmy.id_firmy)\
                                     .join(FirmyObszarDzialania)\
-                                    .filter(FirmyObszarDzialania.ID_WOJEWODZTWA == wojewodztwo)\
-                                    .filter(
-                                        and_(
-                                            FirmyObszarDzialania.ID_POWIATY != 0,
-                                            FirmyObszarDzialania.ID_POWIATY.is_not(None),
-                                            FirmyObszarDzialania.ID_POWIATY != ""
-                                        )
-                                    )
-                                )
+                                    .filter(FirmyObszarDzialania.id_wojewodztwa == wojewodztwo)\
+                                    .filter(FirmyObszarDzialania.id_powiaty != 0))
 
         # Połączenie zbiorów
         combined_companies = nationwide_companies.union(wojewodztwo_companies).subquery()
 
         # Filtrowanie głównego zapytania
-        query = query.filter(Firmy.ID_FIRMY.in_(combined_companies))
+        query = query.filter(Firmy.id_firmy.in_(combined_companies))
 
 
     # Handle company type filter
     company_types = [ct for ct in request.args.getlist('company_types') if ct.strip()]
     if company_types:
-        query = query.filter(Firmy.ID_FIRMY_TYP.in_(company_types))
+        query = query.filter(Firmy.id_firmy_typ.in_(company_types))
 
 
     companies = query.all()
@@ -281,8 +264,8 @@ def company_details(company_id):
 
 @main.route('/api/powiaty/<wojewodztwo_id>')
 def get_powiaty(wojewodztwo_id):
-    powiaty = Powiaty.query.filter_by(ID_WOJEWODZTWA=wojewodztwo_id).all()
-    return jsonify([{'id': p.ID_POWIATY, 'name': p.Powiat} for p in powiaty])
+    powiaty = Powiaty.query.filter_by(id_wojewodztwa=wojewodztwo_id).all()
+    return jsonify([{'id': p.id_powiaty, 'name': p.powiat} for p in powiaty])
 
 @main.route('/api/adres_typ', methods=['POST'])
 def add_adres_typ():
@@ -292,17 +275,17 @@ def add_adres_typ():
 
     try:
         # Sprawdzamy, czy typ już istnieje
-        existing = AdresyTyp.query.filter_by(Typ_adresu=data['name']).first()
+        existing = AdresyTyp.query.filter_by(typ_adresu=data['name']).first()
         if existing:
-            return jsonify({'error': 'Ten typ adresu już istnieje', 'id': existing.ID_ADRESY_TYP}), 400
+            return jsonify({'error': 'Ten typ adresu już istnieje', 'id': existing.id_adresy_typ}), 400
 
         # Dodajemy nowy typ adresu
-        max_id = db.session.query(db.func.max(AdresyTyp.ID_ADRESY_TYP)).scalar() or 0
-        new_typ = AdresyTyp(ID_ADRESY_TYP=max_id + 1, Typ_adresu=data['name'])
+        max_id = db.session.query(db.func.max(AdresyTyp.id_adresy_typ)).scalar() or 0
+        new_typ = AdresyTyp(id_adresy_typ=max_id + 1, typ_adresu=data['name'])
         db.session.add(new_typ)
         db.session.commit()
 
-        return jsonify({'id': new_typ.ID_ADRESY_TYP, 'name': new_typ.Typ_adresu}), 201
+        return jsonify({'id': new_typ.id_adresy_typ, 'name': new_typ.typ_adresu}), 201
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
@@ -315,17 +298,17 @@ def add_email_typ():
 
     try:
         # Sprawdzamy, czy typ już istnieje
-        existing = EmailTyp.query.filter_by(Typ_emaila=data['name']).first()
+        existing = EmailTyp.query.filter_by(typ_emaila=data['name']).first()
         if existing:
-            return jsonify({'error': 'Ten typ emaila już istnieje', 'id': existing.ID_EMAIL_TYP}), 400
+            return jsonify({'error': 'Ten typ emaila już istnieje', 'id': existing.id_email_typ}), 400
 
         # Dodajemy nowy typ emaila
-        max_id = db.session.query(db.func.max(EmailTyp.ID_EMAIL_TYP)).scalar() or 0
-        new_typ = EmailTyp(ID_EMAIL_TYP=max_id + 1, Typ_emaila=data['name'])
+        max_id = db.session.query(db.func.max(EmailTyp.id_email_typ)).scalar() or 0
+        new_typ = EmailTyp(id_email_typ=max_id + 1, typ_emaila=data['name'])
         db.session.add(new_typ)
         db.session.commit()
 
-        return jsonify({'id': new_typ.ID_EMAIL_TYP, 'name': new_typ.Typ_emaila}), 201
+        return jsonify({'id': new_typ.id_email_typ, 'name': new_typ.typ_emaila}), 201
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
@@ -338,17 +321,17 @@ def add_telefon_typ():
 
     try:
         # Sprawdzamy, czy typ już istnieje
-        existing = TelefonTyp.query.filter_by(Typ_telefonu=data['name']).first()
+        existing = TelefonTyp.query.filter_by(typ_telefonu=data['name']).first()
         if existing:
-            return jsonify({'error': 'Ten typ telefonu już istnieje', 'id': existing.ID_TELEFON_TYP}), 400
+            return jsonify({'error': 'Ten typ telefonu już istnieje', 'id': existing.id_telefon_typ}), 400
 
         # Dodajemy nowy typ telefonu
-        max_id = db.session.query(db.func.max(TelefonTyp.ID_TELEFON_TYP)).scalar() or 0
-        new_typ = TelefonTyp(ID_TELEFON_TYP=max_id + 1, Typ_telefonu=data['name'])
+        max_id = db.session.query(db.func.max(TelefonTyp.id_telefon_typ)).scalar() or 0
+        new_typ = TelefonTyp(id_telefon_typ=max_id + 1, typ_telefonu=data['name'])
         db.session.add(new_typ)
         db.session.commit()
 
-        return jsonify({'id': new_typ.ID_TELEFON_TYP, 'name': new_typ.Typ_telefonu}), 201
+        return jsonify({'id': new_typ.id_telefon_typ, 'name': new_typ.typ_telefonu}), 201
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
@@ -361,17 +344,17 @@ def add_firma_typ():
 
     try:
         # Sprawdzamy, czy typ już istnieje
-        existing = FirmyTyp.query.filter_by(Typ_firmy=data['name']).first()
+        existing = FirmyTyp.query.filter_by(typ_firmy=data['name']).first()
         if existing:
-            return jsonify({'error': 'Ten typ firmy już istnieje', 'id': existing.ID_FIRMY_TYP}), 400
+            return jsonify({'error': 'Ten typ firmy już istnieje', 'id': existing.id_firmy_typ}), 400
 
         # Dodajemy nowy typ firmy
-        max_id = db.session.query(db.func.max(FirmyTyp.ID_FIRMY_TYP)).scalar() or 0
-        new_typ = FirmyTyp(ID_FIRMY_TYP=max_id + 1, Typ_firmy=data['name'])
+        max_id = db.session.query(db.func.max(FirmyTyp.id_firmy_typ)).scalar() or 0
+        new_typ = FirmyTyp(id_firmy_typ=max_id + 1, typ_firmy=data['name'])
         db.session.add(new_typ)
         db.session.commit()
 
-        return jsonify({'id': new_typ.ID_FIRMY_TYP, 'name': new_typ.Typ_firmy}), 201
+        return jsonify({'id': new_typ.id_firmy_typ, 'name': new_typ.typ_firmy}), 201
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
@@ -386,15 +369,15 @@ def add_specjalnosc():
         # Sprawdzamy, czy specjalność już istnieje
         existing = Specjalnosci.query.filter_by(Specjalnosc=data['name']).first()
         if existing:
-            return jsonify({'error': 'Ta specjalność już istnieje', 'id': existing.ID_SPECJALNOSCI}), 400
+            return jsonify({'error': 'Ta specjalność już istnieje', 'id': existing.id_specjalnosci}), 400
 
         # Dodajemy nową specjalność
-        max_id = db.session.query(db.func.max(Specjalnosci.ID_SPECJALNOSCI)).scalar() or 0
-        new_spec = Specjalnosci(ID_SPECJALNOSCI=max_id + 1, Specjalnosc=data['name'])
+        max_id = db.session.query(db.func.max(Specjalnosci.id_specjalnosci)).scalar() or 0
+        new_spec = Specjalnosci(id_specjalnosci=max_id + 1, Specjalnosc=data['name'])
         db.session.add(new_spec)
         db.session.commit()
 
-        return jsonify({'id': new_spec.ID_SPECJALNOSCI, 'name': new_spec.Specjalnosc}), 201
+        return jsonify({'id': new_spec.id_specjalnosci, 'name': new_spec.specjalnosc}), 201
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
@@ -409,8 +392,8 @@ def new_company():
             print("Formularz przeszedł walidację")
             # Create new company
             company = Firmy(
-                Nazwa_Firmy=form.nazwa_firmy.data,
-                ID_FIRMY_TYP=form.typ_firmy.data,
+                nazwa_firmy=form.nazwa_firmy.data,
+                id_firmy_typ=form.typ_firmy.data,
                 Strona_www=form.strona_www.data,
                 Uwagi=form.uwagi.data
             )
@@ -424,8 +407,8 @@ def new_company():
                         Kod=address_form.kod.data,
                         Miejscowosc=address_form.miejscowosc.data,
                         Ulica_Miejscowosc=address_form.ulica_miejscowosc.data,
-                        ID_ADRESY_TYP=address_form.typ_adresu.data,
-                        ID_FIRMY=company.ID_FIRMY
+                        id_adresy_typ=address_form.typ_adresu.data,
+                        id_firmy=company.id_firmy
                     )
                     db.session.add(address)
 
@@ -434,25 +417,25 @@ def new_company():
                 if email_form.email.data:  # Only add if email is provided
                     email = Email(
                         e_mail=email_form.email.data,
-                        ID_EMAIL_TYP=email_form.typ_emaila.data,
-                        ID_FIRMY=company.ID_FIRMY
+                        id_email_typ=email_form.typ_emaila.data,
+                        id_firmy=company.id_firmy
                     )
                     db.session.add(email)
 
             # Pobierz emaile
-            emaile = Email.query.filter_by(ID_FIRMY=company.ID_FIRMY).all()
+            emaile = Email.query.filter_by(id_firmy=company.id_firmy).all()
             while len(form.emaile) < len(emaile):
                 form.emaile.append_entry()
             for i, email in enumerate(emaile):
-                form.emaile[i].typ_emaila.data = email.ID_EMAIL_TYP
+                form.emaile[i].typ_emaila.data = email.id_email_typ
                 form.emaile[i].email.data = email.e_mail
             # Add phones
             for phone_form in form.telefony:
                 if phone_form.telefon.data:  # Only add if phone is provided
                     phone = Telefon(
                         telefon=phone_form.telefon.data,
-                        ID_TELEFON_TYP=phone_form.typ_telefonu.data,
-                        ID_FIRMY=company.ID_FIRMY
+                        id_telefon_typ=phone_form.typ_telefonu.data,
+                        id_firmy=company.id_firmy
                     )
                     db.session.add(phone)
 
@@ -465,7 +448,7 @@ def new_company():
                         Stanowisko=person_form.stanowisko.data,
                         e_mail=person_form.email.data,
                         telefon=person_form.telefon.data,
-                        ID_FIRMY=company.ID_FIRMY
+                        id_firmy=company.id_firmy
                     )
                     db.session.add(person)
 
@@ -478,7 +461,7 @@ def new_company():
                         Rok_wspolpracy=rating_form.rok_wspolpracy.data,
                         Ocena=rating_form.ocena.data,
                         Komentarz=rating_form.komentarz.data,
-                        ID_FIRMY=company.ID_FIRMY
+                        id_firmy=company.id_firmy
                     )
                     db.session.add(rating)
 
@@ -489,54 +472,54 @@ def new_company():
                     # Cały kraj - upewnij się, że kraj to POL
                     if form.kraj.data == 'POL':
                         obszar = FirmyObszarDzialania(
-                            ID_FIRMY=company.ID_FIRMY,
-                            ID_KRAJ='POL',
-                            ID_WOJEWODZTWA='N/A',
-                            ID_POWIATY=0
+                            id_firmy=company.id_firmy,
+                            id_kraj='POL',
+                            id_wojewodztwa='N/A',
+                            id_powiaty=0
                         )
                         db.session.add(obszar)
             elif obszar_type == 'wojewodztwa':
                 # Tylko województwa - kraj powinien być N/A
                 for woj_id in form.wojewodztwa.data:
                     obszar = FirmyObszarDzialania(
-                        ID_FIRMY=company.ID_FIRMY,
-                        ID_KRAJ='N/A',
-                        ID_WOJEWODZTWA=woj_id,
-                        ID_POWIATY=0
+                        id_firmy=company.id_firmy,
+                        id_kraj='N/A',
+                        id_wojewodztwa=woj_id,
+                        id_powiaty=0
                     )
                     db.session.add(obszar)
             elif obszar_type == 'powiaty':
                 # # Powiaty (województwa są również zapisywane) - kraj pusty
                 # for woj_id in form.wojewodztwa.data:
                 #     obszar = FirmyObszarDzialania(
-                #         ID_FIRMY=company.ID_FIRMY,
-                #         ID_KRAJ='',
-                #         ID_WOJEWODZTWA=woj_id,
-                #         ID_POWIATY=''
+                #         id_firmy=company.id_firmy,
+                #         id_kraj='',
+                #         id_wojewodztwa=woj_id,
+                #         id_powiaty=''
                 #     )
                 #     db.session.add(obszar)
 
                 for pow_id in form.powiaty.data:
                     powiat = Powiaty.query.get(pow_id)
                     obszar = FirmyObszarDzialania(
-                        ID_FIRMY=company.ID_FIRMY,
-                        ID_KRAJ='N/A',
-                        ID_WOJEWODZTWA=powiat.ID_WOJEWODZTWA,
-                        ID_POWIATY=pow_id
+                        id_firmy=company.id_firmy,
+                        id_kraj='N/A',
+                        id_wojewodztwa=powiat.id_wojewodztwa,
+                        id_powiaty=pow_id
                     )
                     db.session.add(obszar)
 
             # Add specialties
             for spec_id in form.specjalnosci.data:
                 spec = FirmySpecjalnosci(
-                    ID_FIRMY=company.ID_FIRMY,
-                    ID_SPECJALNOSCI=spec_id
+                    id_firmy=company.id_firmy,
+                    id_specjalnosci=spec_id
                 )
                 db.session.add(spec)
 
             db.session.commit()
             flash('Firma została dodana pomyślnie!', 'success')
-            return redirect(url_for('main.company_details', company_id=company.ID_FIRMY))
+            return redirect(url_for('main.company_details', company_id=company.id_firmy))
         else:
             if form.errors:
                 print("Błędy walidacji:", form.errors)
@@ -559,76 +542,76 @@ def edit_company(company_id):
     # Jeśli to GET request, zapełnij pola formularza danymi z bazy
     if request.method == 'GET':
         # Zapełnij podstawowe informacje
-        form.nazwa_firmy.data = company.Nazwa_Firmy
-        form.typ_firmy.data = company.ID_FIRMY_TYP
-        form.strona_www.data = company.Strona_www
-        form.uwagi.data = company.Uwagi
+        form.nazwa_firmy.data = company.nazwa_firmy
+        form.typ_firmy.data = company.id_firmy_typ
+        form.strona_www.data = company.strona_www
+        form.uwagi.data = company.uwagi
 
         # Pobierz adresy
-        adresy = Adresy.query.filter_by(ID_FIRMY=company_id).all()
+        adresy = Adresy.query.filter_by(id_firmy=company_id).all()
         while len(form.adresy) < len(adresy):
             form.adresy.append_entry()
         for i, adres in enumerate(adresy):
-            form.adresy[i].typ_adresu.data = adres.ID_ADRESY_TYP
-            form.adresy[i].kod.data = adres.Kod
-            form.adresy[i].miejscowosc.data = adres.Miejscowosc
-            form.adresy[i].ulica_miejscowosc.data = adres.Ulica_Miejscowosc
+            form.adresy[i].typ_adresu.data = adres.id_adresy_typ
+            form.adresy[i].kod.data = adres.kod
+            form.adresy[i].miejscowosc.data = adres.miejscowosc
+            form.adresy[i].ulica_miejscowosc.data = adres.ulica_miejscowosc
 
         # Pobierz emaile
-        emaile = Email.query.filter_by(ID_FIRMY=company_id).all()
+        emaile = Email.query.filter_by(id_firmy=company_id).all()
         while len(form.emaile) < len(emaile):
             form.emaile.append_entry()
             form.emaile[-1].typ_emaila.choices = form.email_type_choices
         for i, email in enumerate(emaile):
-            form.emaile[i].typ_emaila.data = email.ID_EMAIL_TYP
+            form.emaile[i].typ_emaila.data = email.id_email_typ
             form.emaile[i].email.data = email.e_mail
 
         # Pobierz telefony
-        telefony = Telefon.query.filter_by(ID_FIRMY=company_id).all()
+        telefony = Telefon.query.filter_by(id_firmy=company_id).all()
         while len(form.telefony) < len(telefony):
             form.telefony.append_entry()
         for i, telefon in enumerate(telefony):
-            form.telefony[i].typ_telefonu.data = telefon.ID_TELEFON_TYP
+            form.telefony[i].typ_telefonu.data = telefon.id_telefon_typ
             form.telefony[i].telefon.data = telefon.telefon
 
         # Pobierz osoby kontaktowe
-        osoby = Osoby.query.filter_by(ID_FIRMY=company_id).all()
+        osoby = Osoby.query.filter_by(id_firmy=company_id).all()
         while len(form.osoby) < len(osoby):
             form.osoby.append_entry()
         for i, osoba in enumerate(osoby):
-            form.osoby[i].imie.data = osoba.Imie
-            form.osoby[i].nazwisko.data = osoba.Nazwisko
-            form.osoby[i].stanowisko.data = osoba.Stanowisko
+            form.osoby[i].imie.data = osoba.imie
+            form.osoby[i].nazwisko.data = osoba.nazwisko
+            form.osoby[i].stanowisko.data = osoba.stanowisko
             form.osoby[i].email.data = osoba.e_mail
             form.osoby[i].telefon.data = osoba.telefon
 
         # Pobierz oceny
-        oceny = Oceny.query.filter_by(ID_FIRMY=company_id).all()
+        oceny = Oceny.query.filter_by(id_firmy=company_id).all()
         while len(form.oceny) < len(oceny):
             form.oceny.append_entry()
         for i, ocena in enumerate(oceny):
-            form.oceny[i].osoba_oceniajaca.data = ocena.Osoba_oceniajaca
-            form.oceny[i].budowa_dzial.data = ocena.Budowa_Dzial
+            form.oceny[i].osoba_oceniajaca.data = ocena.osoba_oceniajaca
+            form.oceny[i].budowa_dzial.data = ocena.budowa_dzial
             form.oceny[i].rok_wspolpracy.data = ocena.Rok_wspolpracy
             form.oceny[i].ocena.data = ocena.Ocena
-            form.oceny[i].komentarz.data = ocena.Komentarz
+            form.oceny[i].komentarz.data = ocena.komentarz
 
         # Obszar działania
-        obszary = FirmyObszarDzialania.query.filter_by(ID_FIRMY=company_id).all()
+        obszary = FirmyObszarDzialania.query.filter_by(id_firmy=company_id).all()
 
         # Sprawdź czy firma działa w całym kraju
-        obszar_krajowy = next((o for o in obszary if o.ID_KRAJ == 'POL'), None)
+        obszar_krajowy = next((o for o in obszary if o.id_kraj == 'POL'), None)
         if obszar_krajowy:
             form.obszar_dzialania.data = 'kraj'
             form.kraj.data = 'POL'
         else:
             # Sprawdź czy są powiaty
-            has_powiaty = any(o.ID_POWIATY > 0 for o in obszary)
+            has_powiaty = any(o.id_powiaty > 0 for o in obszary)
             if has_powiaty:
                 form.obszar_dzialania.data = 'powiaty'
             else:
                 # Sprawdź czy są województwa
-                has_wojewodztwa = any(o.ID_WOJEWODZTWA for o in obszary)
+                has_wojewodztwa = any(o.id_wojewodztwa for o in obszary)
                 if has_wojewodztwa:
                     form.obszar_dzialania.data = 'wojewodztwa'
                 else:
@@ -637,34 +620,34 @@ def edit_company(company_id):
             form.kraj.data = ''
 
             # Zbierz ID województw (unikalne)
-            wojewodztwa_ids = list(set([o.ID_WOJEWODZTWA for o in obszary if o.ID_WOJEWODZTWA]))
+            wojewodztwa_ids = list(set([o.id_wojewodztwa for o in obszary if o.id_wojewodztwa]))
             form.wojewodztwa.data = [w for w in wojewodztwa_ids if w]  # Pomiń puste wartości
 
             # Zbierz ID powiatów
-            powiaty_ids = [o.ID_POWIATY for o in obszary if o.ID_POWIATY and o.ID_POWIATY > 0]
+            powiaty_ids = [o.id_powiaty for o in obszary if o.id_powiaty and o.id_powiaty > 0]
             form.powiaty.data = powiaty_ids
 
         # Pobierz specjalności
-        specjalnosci = FirmySpecjalnosci.query.filter_by(ID_FIRMY=company_id).all()
-        form.specjalnosci.data = [s.ID_SPECJALNOSCI for s in specjalnosci]
+        specjalnosci = FirmySpecjalnosci.query.filter_by(id_firmy=company_id).all()
+        form.specjalnosci.data = [s.id_specjalnosci for s in specjalnosci]
 
     elif request.method == 'POST':
         if form.validate_on_submit():
             print("Formularz przeszedł walidację")
             # Aktualizuj podstawowe dane firmy
-            company.Nazwa_Firmy = form.nazwa_firmy.data
-            company.ID_FIRMY_TYP = form.typ_firmy.data
-            company.Strona_www = form.strona_www.data
-            company.Uwagi = form.uwagi.data
+            company.nazwa_firmy = form.nazwa_firmy.data
+            company.id_firmy_typ = form.typ_firmy.data
+            company.strona_www = form.strona_www.data
+            company.uwagi = form.uwagi.data
 
             # Usuń istniejące adresy, emaile, telefony, osoby, oceny, obszary, specjalności
-            Adresy.query.filter_by(ID_FIRMY=company_id).delete()
-            Email.query.filter_by(ID_FIRMY=company_id).delete()
-            Telefon.query.filter_by(ID_FIRMY=company_id).delete()
-            Osoby.query.filter_by(ID_FIRMY=company_id).delete()
-            Oceny.query.filter_by(ID_FIRMY=company_id).delete()
-            FirmyObszarDzialania.query.filter_by(ID_FIRMY=company_id).delete()
-            FirmySpecjalnosci.query.filter_by(ID_FIRMY=company_id).delete()
+            Adresy.query.filter_by(id_firmy=company_id).delete()
+            Email.query.filter_by(id_firmy=company_id).delete()
+            Telefon.query.filter_by(id_firmy=company_id).delete()
+            Osoby.query.filter_by(id_firmy=company_id).delete()
+            Oceny.query.filter_by(id_firmy=company_id).delete()
+            FirmyObszarDzialania.query.filter_by(id_firmy=company_id).delete()
+            FirmySpecjalnosci.query.filter_by(id_firmy=company_id).delete()
 
             # Dodaj nowe adresy
             for address_form in form.adresy:
@@ -673,8 +656,8 @@ def edit_company(company_id):
                         Kod=address_form.kod.data,
                         Miejscowosc=address_form.miejscowosc.data,
                         Ulica_Miejscowosc=address_form.ulica_miejscowosc.data,
-                        ID_ADRESY_TYP=address_form.typ_adresu.data,
-                        ID_FIRMY=company_id
+                        id_adresy_typ=address_form.typ_adresu.data,
+                        id_firmy=company_id
                     )
                     db.session.add(address)
 
@@ -683,8 +666,8 @@ def edit_company(company_id):
                 if email_form.email.data:  # Dodaj tylko jeśli email jest podany
                     email = Email(
                         e_mail=email_form.email.data,
-                        ID_EMAIL_TYP=email_form.typ_emaila.data,
-                        ID_FIRMY=company_id
+                        id_email_typ=email_form.typ_emaila.data,
+                        id_firmy=company_id
                     )
                     db.session.add(email)
 
@@ -693,8 +676,8 @@ def edit_company(company_id):
                 if phone_form.telefon.data:  # Dodaj tylko jeśli telefon jest podany
                     phone = Telefon(
                         telefon=phone_form.telefon.data,
-                        ID_TELEFON_TYP=phone_form.typ_telefonu.data,
-                        ID_FIRMY=company_id
+                        id_telefon_typ=phone_form.typ_telefonu.data,
+                        id_firmy=company_id
                     )
                     db.session.add(phone)
 
@@ -707,7 +690,7 @@ def edit_company(company_id):
                         Stanowisko=person_form.stanowisko.data,
                         e_mail=person_form.email.data,
                         telefon=person_form.telefon.data,
-                        ID_FIRMY=company_id
+                        id_firmy=company_id
                     )
                     db.session.add(person)
 
@@ -720,7 +703,7 @@ def edit_company(company_id):
                         Rok_wspolpracy=rating_form.rok_wspolpracy.data,
                         Ocena=rating_form.ocena.data,
                         Komentarz=rating_form.komentarz.data,
-                        ID_FIRMY=company_id
+                        id_firmy=company_id
                     )
                     db.session.add(rating)
 
@@ -731,48 +714,48 @@ def edit_company(company_id):
                     # Cały kraj - upewnij się, że kraj to POL
                     if form.kraj.data == 'POL':
                         obszar = FirmyObszarDzialania(
-                            ID_FIRMY=company.ID_FIRMY,
-                            ID_KRAJ='POL',
-                            ID_WOJEWODZTWA='N/A',
-                            ID_POWIATY=0
+                            id_firmy=company.id_firmy,
+                            id_kraj='POL',
+                            id_wojewodztwa='N/A',
+                            id_powiaty=0
                         )
                         db.session.add(obszar)
             elif obszar_type == 'wojewodztwa':
                 # Tylko województwa - kraj powinien być N/A
                 for woj_id in form.wojewodztwa.data:
                     obszar = FirmyObszarDzialania(
-                        ID_FIRMY=company.ID_FIRMY,
-                        ID_KRAJ='N/A',
-                        ID_WOJEWODZTWA=woj_id,
-                        ID_POWIATY=0
+                        id_firmy=company.id_firmy,
+                        id_kraj='N/A',
+                        id_wojewodztwa=woj_id,
+                        id_powiaty=0
                     )
                     db.session.add(obszar)
             elif obszar_type == 'powiaty':
                 # # Powiaty (województwa są również zapisywane) - kraj pusty
                 # for woj_id in form.wojewodztwa.data:
                 #     obszar = FirmyObszarDzialania(
-                #         ID_FIRMY=company.ID_FIRMY,
-                #         ID_KRAJ='',
-                #         ID_WOJEWODZTWA=woj_id,
-                #         ID_POWIATY=0
+                #         id_firmy=company.id_firmy,
+                #         id_kraj='',
+                #         id_wojewodztwa=woj_id,
+                #         id_powiaty=0
                 #     )
                 #     db.session.add(obszar)
 
                 for pow_id in form.powiaty.data:
                     powiat = Powiaty.query.get(pow_id)
                     obszar = FirmyObszarDzialania(
-                        ID_FIRMY=company.ID_FIRMY,
-                        ID_KRAJ='N/A',
-                        ID_WOJEWODZTWA=powiat.ID_WOJEWODZTWA,
-                        ID_POWIATY=pow_id
+                        id_firmy=company.id_firmy,
+                        id_kraj='N/A',
+                        id_wojewodztwa=powiat.id_wojewodztwa,
+                        id_powiaty=pow_id
                     )
                     db.session.add(obszar)
 
             # Dodaj specjalności
             for spec_id in form.specjalnosci.data:
                 spec = FirmySpecjalnosci(
-                    ID_FIRMY=company_id,
-                    ID_SPECJALNOSCI=spec_id
+                    id_firmy=company_id,
+                    id_specjalnosci=spec_id
                 )
                 db.session.add(spec)
 
@@ -794,13 +777,13 @@ def delete_company(company_id):
     company = Firmy.query.get_or_404(company_id)
     try:
         # Usuwanie wszystkich powiązanych rekordów
-        Adresy.query.filter_by(ID_FIRMY=company_id).delete()
-        Email.query.filter_by(ID_FIRMY=company_id).delete()
-        Telefon.query.filter_by(ID_FIRMY=company_id).delete()
-        Osoby.query.filter_by(ID_FIRMY=company_id).delete()
-        Oceny.query.filter_by(ID_FIRMY=company_id).delete()
-        FirmyObszarDzialania.query.filter_by(ID_FIRMY=company_id).delete()
-        FirmySpecjalnosci.query.filter_by(ID_FIRMY=company_id).delete()
+        Adresy.query.filter_by(id_firmy=company_id).delete()
+        Email.query.filter_by(id_firmy=company_id).delete()
+        Telefon.query.filter_by(id_firmy=company_id).delete()
+        Osoby.query.filter_by(id_firmy=company_id).delete()
+        Oceny.query.filter_by(id_firmy=company_id).delete()
+        FirmyObszarDzialania.query.filter_by(id_firmy=company_id).delete()
+        FirmySpecjalnosci.query.filter_by(id_firmy=company_id).delete()
         # Usuwanie firmy
         db.session.delete(company)
         db.session.commit()
@@ -823,12 +806,12 @@ def new_specialty():
     if form.validate_on_submit():
         try:
             # Sprawdzamy, czy specjalność już istnieje (case-insensitive)
-            existing_spec = Specjalnosci.query.filter(func.lower(Specjalnosci.Specjalnosc) == func.lower(form.name.data)).first()
+            existing_spec = Specjalnosci.query.filter(func.lower(Specjalnosci.specjalnosc) == func.lower(form.name.data)).first()
             if existing_spec:
                 flash('Specjalność o tej nazwie już istnieje.', 'warning')
             else:
-                max_id = db.session.query(func.max(Specjalnosci.ID_SPECJALNOSCI)).scalar() or 0
-                new_spec = Specjalnosci(ID_SPECJALNOSCI=max_id + 1, Specjalnosc=form.name.data)
+                max_id = db.session.query(func.max(Specjalnosci.id_specjalnosci)).scalar() or 0
+                new_spec = Specjalnosci(id_specjalnosci=max_id + 1, specjalnosc=form.name.data)
                 db.session.add(new_spec)
                 db.session.commit()
                 flash('Specjalność została dodana pomyślnie!', 'success')
@@ -845,17 +828,17 @@ def edit_specialty(id):
     form = SpecialtyForm(obj=specialty)
     if request.method == 'GET':
         # Explicitly set the form data for the 'name' field from the model attribute 'Specjalnosc'
-        form.name.data = specialty.Specjalnosc
+        form.name.data = specialty.specjalnosc
         return render_template('simple_form.html', form=form, title='Edytuj Specjalność', back_url=url_for('main.list_specialties'))
     else: # POST request
         if form.validate_on_submit():
             try:
                 # Sprawdzamy, czy inna specjalność o tej nazwie już istnieje (case-insensitive)
-                existing_spec = Specjalnosci.query.filter(func.lower(Specjalnosci.Specjalnosc) == func.lower(form.name.data), Specjalnosci.ID_SPECJALNOSCI != id).first()
+                existing_spec = Specjalnosci.query.filter(func.lower(Specjalnosci.specjalnosc) == func.lower(form.name.data), Specjalnosci.id_specjalnosci != id).first()
                 if existing_spec:
                     flash('Specjalność o tej nazwie już istnieje.', 'warning')
                 else:
-                    specialty.Specjalnosc = form.name.data
+                    specialty.specjalnosc = form.name.data
                     db.session.commit()
                     flash('Specjalność została zaktualizowana pomyślnie!', 'success')
                     return redirect(url_for('main.list_specialties'))
@@ -889,12 +872,12 @@ def new_address_type():
     if form.validate_on_submit():
         try:
             # Sprawdzamy, czy typ adresu już istnieje (case-insensitive)
-            existing_type = AdresyTyp.query.filter(func.lower(AdresyTyp.Typ_adresu) == func.lower(form.name.data)).first()
+            existing_type = AdresyTyp.query.filter(func.lower(AdresyTyp.typ_adresu) == func.lower(form.name.data)).first()
             if existing_type:
                 flash('Typ adresu o tej nazwie już istnieje.', 'warning')
             else:
-                max_id = db.session.query(func.max(AdresyTyp.ID_ADRESY_TYP)).scalar() or 0
-                new_type = AdresyTyp(ID_ADRESY_TYP=max_id + 1, Typ_adresu=form.name.data)
+                max_id = db.session.query(func.max(AdresyTyp.id_adresy_typ)).scalar() or 0
+                new_type = AdresyTyp(id_adresy_typ=max_id + 1, typ_adresu=form.name.data)
                 db.session.add(new_type)
                 db.session.commit()
                 flash('Typ adresu został dodany pomyślnie!', 'success')
@@ -911,18 +894,18 @@ def edit_address_type(id):
     address_type = AdresyTyp.query.get_or_404(id)
     form = AddressTypeForm(obj=address_type)
     if request.method == 'GET':
-         # Explicitly set the form data for the 'name' field from the model attribute 'Typ_adresu'
-        form.name.data = address_type.Typ_adresu
+         # Explicitly set the form data for the 'name' field from the model attribute 'typ_adresu'
+        form.name.data = address_type.typ_adresu
         return render_template('simple_form.html', form=form, title='Edytuj Typ Adresu', back_url=url_for('main.list_address_types'))
     else: # POST request
         if form.validate_on_submit():
             try:
                 # Sprawdzamy, czy inny typ adresu o tej nazwie już istnieje (case-insensitive)
-                existing_type = AdresyTyp.query.filter(func.lower(AdresyTyp.Typ_adresu) == func.lower(form.name.data), AdresyTyp.ID_ADRESY_TYP != id).first()
+                existing_type = AdresyTyp.query.filter(func.lower(AdresyTyp.typ_adresu) == func.lower(form.name.data), AdresyTyp.id_adresy_typ != id).first()
                 if existing_type:
                     flash('Typ adresu o tej nazwie już istnieje.', 'warning')
                 else:
-                    address_type.Typ_adresu = form.name.data
+                    address_type.typ_adresu = form.name.data
                     db.session.commit()
                     flash('Typ adresu został zaktualizowany pomyślnie!', 'success')
                     return redirect(url_for('main.list_address_types'))
@@ -956,12 +939,12 @@ def new_email_type():
     if form.validate_on_submit():
         try:
             # Sprawdzamy, czy typ emaila już istnieje (case-insensitive)
-            existing_type = EmailTyp.query.filter(func.lower(EmailTyp.Typ_emaila) == func.lower(form.name.data)).first()
+            existing_type = EmailTyp.query.filter(func.lower(EmailTyp.typ_emaila) == func.lower(form.name.data)).first()
             if existing_type:
                 flash('Typ emaila o tej nazwie już istnieje.', 'warning')
             else:
-                max_id = db.session.query(func.max(EmailTyp.ID_EMAIL_TYP)).scalar() or 0
-                new_type = EmailTyp(ID_EMAIL_TYP=max_id + 1, Typ_emaila=form.name.data)
+                max_id = db.session.query(func.max(EmailTyp.id_email_typ)).scalar() or 0
+                new_type = EmailTyp(id_email_typ=max_id + 1, typ_emaila=form.name.data)
                 db.session.add(new_type)
                 db.session.commit()
                 flash('Typ emaila został dodany pomyślnie!', 'success')
@@ -978,17 +961,17 @@ def edit_email_type(id):
     form = EmailTypeForm(obj=email_type)
     if request.method == 'GET':
         # Explicitly set the form data for the 'name' field from the model attribute 'Typ_emaila'
-        form.name.data = email_type.Typ_emaila
+        form.name.data = email_type.typ_emaila
         return render_template('simple_form.html', form=form, title='Edytuj Typ E-maila', back_url=url_for('main.list_email_types'))
     else: # POST request
         if form.validate_on_submit():
             try:
                 # Sprawdzamy, czy inny typ emaila o tej nazwie już istnieje (case-insensitive)
-                existing_type = EmailTyp.query.filter(func.lower(EmailTyp.Typ_emaila) == func.lower(form.name.data), EmailTyp.ID_EMAIL_TYP != id).first()
+                existing_type = EmailTyp.query.filter(func.lower(EmailTyp.typ_emaila) == func.lower(form.name.data), EmailTyp.id_email_typ != id).first()
                 if existing_type:
                     flash('Typ emaila o tej nazwie już istnieje.', 'warning')
                 else:
-                    email_type.Typ_emaila = form.name.data
+                    email_type.typ_emaila = form.name.data
                     db.session.commit()
                     flash('Typ emaila został zaktualizowany pomyślnie!', 'success')
                     return redirect(url_for('main.list_email_types'))
@@ -1022,12 +1005,12 @@ def new_phone_type():
     if form.validate_on_submit():
         try:
             # Sprawdzamy, czy typ telefonu już istnieje (case-insensitive)
-            existing_type = TelefonTyp.query.filter(func.lower(TelefonTyp.Typ_telefonu) == func.lower(form.name.data)).first()
+            existing_type = TelefonTyp.query.filter(func.lower(TelefonTyp.typ_telefonu) == func.lower(form.name.data)).first()
             if existing_type:
                 flash('Typ telefonu o tej nazwie już istnieje.', 'warning')
             else:
-                max_id = db.session.query(func.max(TelefonTyp.ID_TELEFON_TYP)).scalar() or 0
-                new_type = TelefonTyp(ID_TELEFON_TYP=max_id + 1, Typ_telefonu=form.name.data)
+                max_id = db.session.query(func.max(TelefonTyp.id_telefon_typ)).scalar() or 0
+                new_type = TelefonTyp(id_telefon_typ=max_id + 1, typ_telefonu=form.name.data)
                 db.session.add(new_type)
                 db.session.commit()
                 flash('Typ telefonu został dodany pomyślnie!', 'success')
@@ -1044,17 +1027,17 @@ def edit_phone_type(id):
     form = PhoneTypeForm(obj=phone_type)
     if request.method == 'GET':
         # Explicitly set the form data for the 'name' field from the model attribute 'Typ_telefonu'
-        form.name.data = phone_type.Typ_telefonu
+        form.name.data = phone_type.typ_telefonu
         return render_template('simple_form.html', form=form, title='Edytuj Typ Telefonu', back_url=url_for('main.list_phone_types'))
     else: # POST request
         if form.validate_on_submit():
             try:
                 # Sprawdzamy, czy inny typ telefonu o tej nazwie już istnieje (case-insensitive)
-                existing_type = TelefonTyp.query.filter(func.lower(TelefonTyp.Typ_telefonu) == func.lower(form.name.data), TelefonTyp.ID_TELEFON_TYP != id).first()
+                existing_type = TelefonTyp.query.filter(func.lower(TelefonTyp.typ_telefonu) == func.lower(form.name.data), TelefonTyp.id_telefon_typ != id).first()
                 if existing_type:
                     flash('Typ telefonu o tej nazwie już istnieje.', 'warning')
                 else:
-                    phone_type.Typ_telefonu = form.name.data
+                    phone_type.typ_telefonu = form.name.data
                     db.session.commit()
                     flash('Typ telefonu został zaktualizowany pomyślnie!', 'success')
                     return redirect(url_for('main.list_phone_types'))
@@ -1088,13 +1071,13 @@ def new_company_type():
     if form.validate_on_submit():
         try:
             # Check if company type already exists (case-insensitive)
-            existing_type = FirmyTyp.query.filter(func.lower(FirmyTyp.Typ_firmy) == func.lower(form.name.data)).first()
+            existing_type = FirmyTyp.query.filter(func.lower(FirmyTyp.typ_firmy) == func.lower(form.name.data)).first()
             if existing_type:
                 flash('Typ firmy o tej nazwie już istnieje.', 'warning')
             else:
                 # Użyj auto-increment dla ID
-                max_id = db.session.query(db.func.max(FirmyTyp.ID_FIRMY_TYP)).scalar() or 0
-                new_type = FirmyTyp(ID_FIRMY_TYP=max_id + 1, Typ_firmy=form.name.data)
+                max_id = db.session.query(db.func.max(FirmyTyp.id_firmy_typ)).scalar() or 0
+                new_type = FirmyTyp(id_firmy_typ=max_id + 1, typ_firmy=form.name.data)
                 db.session.add(new_type)
                 db.session.commit()
                 flash('Typ firmy został dodany pomyślnie!', 'success')
@@ -1111,17 +1094,17 @@ def edit_company_type(id):
     form = CompanyTypeForm(obj=company_type)
     if request.method == 'GET':
          # Explicitly set the form data for the 'name' field from the model attribute 'Typ_firmy'
-        form.name.data = company_type.Typ_firmy
+        form.name.data = company_type.typ_firmy
         return render_template('simple_form.html', form=form, title='Edytuj Typ Firmy', back_url=url_for('main.list_company_types'))
     else: # POST request
         if form.validate_on_submit():
             try:
                 # Check if another company type with this name already exists (case-insensitive)
-                existing_type = FirmyTyp.query.filter(func.lower(FirmyTyp.Typ_firmy) == func.lower(form.name.data), FirmyTyp.ID_FIRMY_TYP != id).first()
+                existing_type = FirmyTyp.query.filter(func.lower(FirmyTyp.typ_firmy) == func.lower(form.name.data), FirmyTyp.id_firmy_typ != id).first()
                 if existing_type:
                      flash('Typ firmy o tej nazwie już istnieje.', 'warning')
                 else:
-                    company_type.Typ_firmy = form.name.data
+                    company_type.typ_firmy = form.name.data
                     db.session.commit()
                     flash('Typ firmy został zaktualizowany pomyślnie!', 'success')
                     return redirect(url_for('main.list_company_types'))
@@ -1154,12 +1137,12 @@ def new_person():
     if form.validate_on_submit():
         try:
             new_person = Osoby(
-                Imie=form.Imie.data,
-                Nazwisko=form.Nazwisko.data,
-                Stanowisko=form.Stanowisko.data,
+                Imie=form.imie.data,
+                Nazwisko=form.nazwisko.data,
+                Stanowisko=form.stanowisko.data,
                 e_mail=form.e_mail.data,
                 telefon=form.telefon.data,
-                ID_FIRMY=form.ID_FIRMY.data
+                id_firmy=form.id_firmy.data
             )
             db.session.add(new_person)
             db.session.commit()
@@ -1179,12 +1162,12 @@ def edit_person(id):
     if form.validate_on_submit():
         try:
             # Używaj zaktualizowanych nazw pól z formularza
-            person.Imie = form.Imie.data
-            person.Nazwisko = form.Nazwisko.data
-            person.Stanowisko = form.Stanowisko.data
+            person.imie = form.imie.data
+            person.nazwisko = form.nazwisko.data
+            person.stanowisko = form.stanowisko.data
             person.e_mail = form.e_mail.data # Poprawna nazwa
             person.telefon = form.telefon.data # Poprawna nazwa
-            person.ID_FIRMY = form.ID_FIRMY.data # Poprawna nazwa dla pola SelectField
+            person.id_firmy = form.id_firmy.data # Poprawna nazwa dla pola SelectField
             db.session.commit()
             flash('Osoba kontaktowa została zaktualizowana pomyślnie!', 'success')
             return redirect(url_for('main.list_persons'))
@@ -1222,12 +1205,12 @@ def new_rating():
     if form.validate_on_submit():
         try:
             new_rating = Oceny(
-                Osoba_oceniajaca=form.Osoba_oceniajaca.data,
-                Budowa_Dzial=form.Budowa_Dzial.data,
+                Osoba_oceniajaca=form.osoba_oceniajaca.data,
+                Budowa_Dzial=form.budowa_dzial.data,
                 Rok_wspolpracy=form.Rok_wspolpracy.data,
                 Ocena=form.Ocena.data,
-                Komentarz=form.Komentarz.data,
-                ID_FIRMY=form.ID_FIRMY.data
+                Komentarz=form.komentarz.data,
+                id_firmy=form.id_firmy.data
             )
             db.session.add(new_rating)
             db.session.commit()
@@ -1244,12 +1227,12 @@ def edit_rating(id):
     form = SimpleRatingForm(obj=rating)
     if form.validate_on_submit():
         try:
-            rating.Osoba_oceniajaca = form.Osoba_oceniajaca.data
-            rating.Budowa_Dzial = form.Budowa_Dzial.data
+            rating.osoba_oceniajaca = form.osoba_oceniajaca.data
+            rating.budowa_dzial = form.budowa_dzial.data
             rating.Rok_wspolpracy = form.Rok_wspolpracy.data
             rating.Ocena = form.Ocena.data
-            rating.Komentarz = form.Komentarz.data
-            rating.ID_FIRMY = form.ID_FIRMY.data
+            rating.komentarz = form.komentarz.data
+            rating.id_firmy = form.id_firmy.data
             db.session.commit()
             flash('Ocena została zaktualizowana pomyślnie!', 'success')
             return redirect(url_for('main.list_ratings'))
@@ -1291,86 +1274,86 @@ def export_companies_html():
         # UWAGA: Ta część jest nieefektywna dla dużych baz danych, ale skopiowana z oryginału
         firmy_results = Firmy.query.all()
         for firma in firmy_results:
-            if (normalized_search in normalize_text(firma.Nazwa_Firmy).lower() or
-                normalized_search in normalize_text(firma.Strona_www).lower() or
-                normalized_search in normalize_text(firma.Uwagi).lower()):
-                matching_company_ids.add(firma.ID_FIRMY)
+            if (normalized_search in normalize_text(firma.nazwa_firmy).lower() or
+                normalized_search in normalize_text(firma.strona_www).lower() or
+                normalized_search in normalize_text(firma.uwagi).lower()):
+                matching_company_ids.add(firma.id_firmy)
 
         adres_results = Adresy.query.all()
         for adres in adres_results:
-            if (normalized_search in normalize_text(adres.Kod).lower() or
-                normalized_search in normalize_text(adres.Miejscowosc).lower() or
-                normalized_search in normalize_text(adres.Ulica_Miejscowosc).lower()):
-                if adres.ID_FIRMY:
-                    matching_company_ids.add(adres.ID_FIRMY)
+            if (normalized_search in normalize_text(adres.kod).lower() or
+                normalized_search in normalize_text(adres.miejscowosc).lower() or
+                normalized_search in normalize_text(adres.ulica_miejscowosc).lower()):
+                if adres.id_firmy:
+                    matching_company_ids.add(adres.id_firmy)
 
         email_results = Email.query.all()
         for email in email_results:
             if normalized_search in normalize_text(email.e_mail).lower():
-                if email.ID_FIRMY:
-                    matching_company_ids.add(email.ID_FIRMY)
+                if email.id_firmy:
+                    matching_company_ids.add(email.id_firmy)
 
         telefon_results = Telefon.query.all()
         for telefon in telefon_results:
             if normalized_search in normalize_text(telefon.telefon).lower():
-                if telefon.ID_FIRMY:
-                    matching_company_ids.add(telefon.ID_FIRMY)
+                if telefon.id_firmy:
+                    matching_company_ids.add(telefon.id_firmy)
 
         osoby_results = Osoby.query.all()
         for osoba in osoby_results:
-            if (normalized_search in normalize_text(osoba.Imie).lower() or
-                normalized_search in normalize_text(osoba.Nazwisko).lower() or
-                normalized_search in normalize_text(osoba.Stanowisko).lower() or
+            if (normalized_search in normalize_text(osoba.imie).lower() or
+                normalized_search in normalize_text(osoba.nazwisko).lower() or
+                normalized_search in normalize_text(osoba.stanowisko).lower() or
                 normalized_search in normalize_text(osoba.e_mail).lower() or
                 normalized_search in normalize_text(osoba.telefon).lower()):
-                if osoba.ID_FIRMY:
-                    matching_company_ids.add(osoba.ID_FIRMY)
+                if osoba.id_firmy:
+                    matching_company_ids.add(osoba.id_firmy)
 
         oceny_results = Oceny.query.all()
         for ocena in oceny_results:
-            if (normalized_search in normalize_text(ocena.Osoba_oceniajaca).lower() or
-                normalized_search in normalize_text(ocena.Budowa_Dzial).lower() or
-                normalized_search in normalize_text(ocena.Komentarz).lower()):
-                if ocena.ID_FIRMY:
-                    matching_company_ids.add(ocena.ID_FIRMY)
+            if (normalized_search in normalize_text(ocena.osoba_oceniajaca).lower() or
+                normalized_search in normalize_text(ocena.budowa_dzial).lower() or
+                normalized_search in normalize_text(ocena.komentarz).lower()):
+                if ocena.id_firmy:
+                    matching_company_ids.add(ocena.id_firmy)
 
         specjalnosci_results = Specjalnosci.query.all()
         for spec in specjalnosci_results:
-            if normalized_search in normalize_text(spec.Specjalnosc).lower():
-                firmy_spec = FirmySpecjalnosci.query.filter_by(ID_SPECJALNOSCI=spec.ID_SPECJALNOSCI).all()
+            if normalized_search in normalize_text(spec.specjalnosc).lower():
+                firmy_spec = FirmySpecjalnosci.query.filter_by(id_specjalnosci=spec.id_specjalnosci).all()
                 for fs in firmy_spec:
-                    matching_company_ids.add(fs.ID_FIRMY)
+                    matching_company_ids.add(fs.id_firmy)
 
         firmy_typ_results = FirmyTyp.query.all()
         for typ in firmy_typ_results:
-            if normalized_search in normalize_text(typ.Typ_firmy).lower():
-                firmy_by_typ = Firmy.query.filter_by(ID_FIRMY_TYP=typ.ID_FIRMY_TYP).all()
+            if normalized_search in normalize_text(typ.typ_firmy).lower():
+                firmy_by_typ = Firmy.query.filter_by(id_firmy_typ=typ.id_firmy_typ).all()
                 for firma in firmy_by_typ:
-                    matching_company_ids.add(firma.ID_FIRMY)
+                    matching_company_ids.add(firma.id_firmy)
 
         wojewodztwa_results = Wojewodztwa.query.all()
         for woj in wojewodztwa_results:
             if normalized_search in normalize_text(woj.Wojewodztwo).lower():
-                firmy_woj = FirmyObszarDzialania.query.filter_by(ID_WOJEWODZTWA=woj.ID_WOJEWODZTWA).all()
+                firmy_woj = FirmyObszarDzialania.query.filter_by(id_wojewodztwa=woj.id_wojewodztwa).all()
                 for fw in firmy_woj:
-                    matching_company_ids.add(fw.ID_FIRMY)
+                    matching_company_ids.add(fw.id_firmy)
 
         powiaty_results = Powiaty.query.all()
         for pow in powiaty_results:
-            if normalized_search in normalize_text(pow.Powiat).lower():
-                firmy_pow = FirmyObszarDzialania.query.filter_by(ID_POWIATY=pow.ID_POWIATY).all()
+            if normalized_search in normalize_text(pow.powiat).lower():
+                firmy_pow = FirmyObszarDzialania.query.filter_by(id_powiaty=pow.id_powiaty).all()
                 for fp in firmy_pow:
-                    matching_company_ids.add(fp.ID_FIRMY)
+                    matching_company_ids.add(fp.id_firmy)
 
         kraje_results = Kraj.query.all() # Assuming Kraj model exists and has 'POL' ID
         for kraj in kraje_results:
-             if normalized_search in normalize_text(kraj.Kraj).lower():
-                firmy_kraj = FirmyObszarDzialania.query.filter_by(ID_KRAJ=kraj.ID_KRAJ).all()
+             if normalized_search in normalize_text(kraj.kraj).lower():
+                firmy_kraj = FirmyObszarDzialania.query.filter_by(id_kraj=kraj.id_kraj).all()
                 for fk in firmy_kraj:
-                    matching_company_ids.add(fk.ID_FIRMY)
+                    matching_company_ids.add(fk.id_firmy)
 
         if matching_company_ids:
-            query = query.filter(Firmy.ID_FIRMY.in_(matching_company_ids))
+            query = query.filter(Firmy.id_firmy.in_(matching_company_ids))
         else:
             query = query.filter(False) # No results match search criteria
         # --- End of duplicated search logic ---
@@ -1380,7 +1363,7 @@ def export_companies_html():
     if specialties:
         # Apply the filter to the current query state
         query = query.join(FirmySpecjalnosci)\
-                     .filter(FirmySpecjalnosci.ID_SPECJALNOSCI.in_(specialties))
+                     .filter(FirmySpecjalnosci.id_specjalnosci.in_(specialties))
 
     # Handle area filter
     wojewodztwo = request.args.get('wojewodztwo')
@@ -1388,29 +1371,25 @@ def export_companies_html():
 
     if powiat:
         # Replicate powiat logic
-        nationwide_companies = db.session.query(Firmy.ID_FIRMY)\
+        nationwide_companies = db.session.query(Firmy.id_firmy)\
                                  .join(FirmyObszarDzialania)\
-                                 .filter(FirmyObszarDzialania.ID_KRAJ == 'POL')
+                                 .filter(FirmyObszarDzialania.id_kraj == 'POL')
 
-        powiat_data = Powiaty.query.filter_by(ID_POWIATY=powiat).first()
+        powiat_data = Powiaty.query.filter_by(id_powiaty=powiat).first()
 
         if powiat_data:
-            wojewodztwo_id = powiat_data.ID_WOJEWODZTWA
+            wojewodztwo_id = powiat_data.id_wojewodztwa
 
-            powiat_companies = db.session.query(Firmy.ID_FIRMY)\
+            powiat_companies = db.session.query(Firmy.id_firmy)\
                                  .join(FirmyObszarDzialania)\
-                                 .filter(FirmyObszarDzialania.ID_POWIATY == powiat)
+                                 .filter(FirmyObszarDzialania.id_powiaty == powiat)
 
-            wojewodztwo_empty_powiat_companies = db.session.query(Firmy.ID_FIRMY)\
+            wojewodztwo_empty_powiat_companies = db.session.query(Firmy.id_firmy)\
                                      .join(FirmyObszarDzialania)\
                                      .filter(
                                          and_(
-                                             FirmyObszarDzialania.ID_WOJEWODZTWA == wojewodztwo_id,
-                                             or_(
-                                                 FirmyObszarDzialania.ID_POWIATY == 0,
-                                                 FirmyObszarDzialania.ID_POWIATY.is_(None),
-                                                 FirmyObszarDzialania.ID_POWIATY == ""
-                                             )
+                                             FirmyObszarDzialania.id_wojewodztwa == wojewodztwo_id,
+                                             FirmyObszarDzialania.id_powiaty == 0
                                          )
                                      )
 
@@ -1422,46 +1401,34 @@ def export_companies_html():
         else:
              combined_companies_ids_subquery = nationwide_companies.subquery()
 
-        query = query.filter(Firmy.ID_FIRMY.in_(combined_companies_ids_subquery))
+        query = query.filter(Firmy.id_firmy.in_(combined_companies_ids_subquery))
 
     elif wojewodztwo and not powiat:
         # Replicate wojewodztwo logic
-        nationwide_companies = db.session.query(Firmy.ID_FIRMY)\
+        nationwide_companies = db.session.query(Firmy.id_firmy)\
                                  .join(FirmyObszarDzialania)\
-                                 .filter(FirmyObszarDzialania.ID_KRAJ == 'POL')
+                                 .filter(FirmyObszarDzialania.id_kraj == 'POL')
 
-        wojewodztwo_companies = db.session.query(Firmy.ID_FIRMY)\
+        wojewodztwo_companies = db.session.query(Firmy.id_firmy)\
                                  .join(FirmyObszarDzialania)\
-                                 .filter(FirmyObszarDzialania.ID_WOJEWODZTWA == wojewodztwo)\
-                                 .filter(
-                                     or_(
-                                         FirmyObszarDzialania.ID_POWIATY == 0,
-                                         FirmyObszarDzialania.ID_POWIATY.is_(None),
-                                         FirmyObszarDzialania.ID_POWIATY == ""
-                                     )
-                                 )\
+                                 .filter(FirmyObszarDzialania.id_wojewodztwa == wojewodztwo)\
+                                 .filter(FirmyObszarDzialania.id_powiaty == 0)\
                                  .except_(
-                                     db.session.query(Firmy.ID_FIRMY)\
+                                     db.session.query(Firmy.id_firmy)\
                                      .join(FirmyObszarDzialania)\
-                                     .filter(FirmyObszarDzialania.ID_WOJEWODZTWA == wojewodztwo)\
-                                     .filter(
-                                         and_(
-                                             FirmyObszarDzialania.ID_POWIATY != 0,
-                                             FirmyObszarDzialania.ID_POWIATY.is_not(None),
-                                             FirmyObszarDzialania.ID_POWIATY != ""
-                                         )
-                                     )
+                                     .filter(FirmyObszarDzialania.id_wojewodztwa == wojewodztwo)\
+                                     .filter(FirmyObszarDzialania.id_powiaty != 0)
                                  )
 
         combined_companies_ids_subquery = nationwide_companies.union(wojewodztwo_companies).subquery()
-        query = query.filter(Firmy.ID_FIRMY.in_(combined_companies_ids_subquery))
+        query = query.filter(Firmy.id_firmy.in_(combined_companies_ids_subquery))
 
 
     # Handle company type filter
     company_types = [ct for ct in request.args.getlist('company_types') if ct.strip()]
     if company_types:
         # Apply the filter to the current query state
-        query = query.filter(Firmy.ID_FIRMY_TYP.in_(company_types))
+        query = query.filter(Firmy.id_firmy_typ.in_(company_types))
 
 
     # EXECUTE THE FINAL FILTERED QUERY
@@ -1469,51 +1436,51 @@ def export_companies_html():
 
     # --- Fetch ALL related data for the filtered companies ---
     # Potrzebujemy wszystkich szczegółów, tak jak dla PDF.
-    company_ids = [c.ID_FIRMY for c in filtered_companies]
+    company_ids = [c.id_firmy for c in filtered_companies]
 
     # Fetch related data efficiently in batches
     related_data = {}
     if company_ids: # Only query if there are companies
-        related_data['adresy'] = db.session.query(Adresy).filter(Adresy.ID_FIRMY.in_(company_ids)).all()
-        related_data['emails'] = db.session.query(Email).filter(Email.ID_FIRMY.in_(company_ids)).all()
-        related_data['telefony'] = db.session.query(Telefon).filter(Telefon.ID_FIRMY.in_(company_ids)).all()
-        related_data['osoby'] = db.session.query(Osoby).filter(Osoby.ID_FIRMY.in_(company_ids)).all()
-        related_data['oceny'] = db.session.query(Oceny).filter(Oceny.ID_FIRMY.in_(company_ids)).all()
-        related_data['obszary'] = db.session.query(FirmyObszarDzialania).filter(FirmyObszarDzialania.ID_FIRMY.in_(company_ids)).all()
-        related_data['specjalnosci'] = db.session.query(FirmySpecjalnosci).filter(FirmySpecjalnosci.ID_FIRMY.in_(company_ids)).all()
+        related_data['adresy'] = db.session.query(Adresy).filter(Adresy.id_firmy.in_(company_ids)).all()
+        related_data['emails'] = db.session.query(Email).filter(Email.id_firmy.in_(company_ids)).all()
+        related_data['telefony'] = db.session.query(Telefon).filter(Telefon.id_firmy.in_(company_ids)).all()
+        related_data['osoby'] = db.session.query(Osoby).filter(Osoby.id_firmy.in_(company_ids)).all()
+        related_data['oceny'] = db.session.query(Oceny).filter(Oceny.id_firmy.in_(company_ids)).all()
+        related_data['obszary'] = db.session.query(FirmyObszarDzialania).filter(FirmyObszarDzialania.id_firmy.in_(company_ids)).all()
+        related_data['specjalnosci'] = db.session.query(FirmySpecjalnosci).filter(FirmySpecjalnosci.id_firmy.in_(company_ids)).all()
 
         # Potrzebujemy szczegółów dla tabel powiązanych przez ID (Specjalnosci, Wojewodztwa, Powiaty, Kraj)
-        specialty_ids = list(set([fs.ID_SPECJALNOSCI for fs in related_data.get('specjalnosci', []) if fs.ID_SPECJALNOSCI]))
+        specialty_ids = list(set([fs.id_specjalnosci for fs in related_data.get('specjalnosci', []) if fs.id_specjalnosci]))
         if specialty_ids:
-             related_data['specialty_details'] = {s.ID_SPECJALNOSCI: s for s in db.session.query(Specjalnosci).filter(Specjalnosci.ID_SPECJALNOSCI.in_(specialty_ids)).all()}
+             related_data['specialty_details'] = {s.id_specjalnosci: s for s in db.session.query(Specjalnosci).filter(Specjalnosci.id_specjalnosci.in_(specialty_ids)).all()}
         else:
              related_data['specialty_details'] = {}
 
-        woj_ids = list(set([fo.ID_WOJEWODZTWA for fo in related_data.get('obszary', []) if fo.ID_WOJEWODZTWA]))
-        powiat_ids = list(set([fo.ID_POWIATY for fo in related_data.get('obszary', []) if fo.ID_POWIATY]))
+        woj_ids = list(set([fo.id_wojewodztwa for fo in related_data.get('obszary', []) if fo.id_wojewodztwa]))
+        powiat_ids = list(set([fo.id_powiaty for fo in related_data.get('obszary', []) if fo.id_powiaty]))
         if woj_ids:
-            related_data['wojewodztwa_details'] = {w.ID_WOJEWODZTWA: w for w in db.session.query(Wojewodztwa).filter(Wojewodztwa.ID_WOJEWODZTWA.in_(woj_ids)).all()}
+            related_data['wojewodztwa_details'] = {w.id_wojewodztwa: w for w in db.session.query(Wojewodztwa).filter(Wojewodztwa.id_wojewodztwa.in_(woj_ids)).all()}
         else:
              related_data['wojewodztwa_details'] = {}
         if powiat_ids:
-            related_data['powiaty_details'] = {p.ID_POWIATY: p for p in db.session.query(Powiaty).filter(Powiaty.ID_POWIATY.in_(powiat_ids)).all()}
+            related_data['powiaty_details'] = {p.id_powiaty: p for p in db.session.query(Powiaty).filter(Powiaty.id_powiaty.in_(powiat_ids)).all()}
         else:
              related_data['powiaty_details'] = {}
         # Zakładamy, że Kraj 'POL' jest stały lub można go pobrać jeśli potrzebne nazwy krajów innych niż Polska
 
 
     # Organizacja danych powiązanych wg ID firmy dla łatwego dostępu w szablonie
-    organized_related_data = {company.ID_FIRMY: {} for company in filtered_companies}
+    organized_related_data = {company.id_firmy: {} for company in filtered_companies}
     for data_type, items in related_data.items():
          if '_details' in data_type: # Przechowuj szczegóły lookup'ów oddzielnie
              organized_related_data[data_type] = items
          else:
             for item in items:
-                if item.ID_FIRMY not in organized_related_data:
-                     organized_related_data[item.ID_FIRMY] = {}
-                if data_type not in organized_related_data[item.ID_FIRMY]:
-                     organized_related_data[item.ID_FIRMY][data_type] = []
-                organized_related_data[item.ID_FIRMY][data_type].append(item)
+                if item.id_firmy not in organized_related_data:
+                     organized_related_data[item.id_firmy] = {}
+                if data_type not in organized_related_data[item.id_firmy]:
+                     organized_related_data[item.id_firmy][data_type] = []
+                organized_related_data[item.id_firmy][data_type].append(item)
 
 
     # Renderuj szablon HTML do wydruku
