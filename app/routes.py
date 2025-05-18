@@ -243,32 +243,32 @@ def company_details(company_id):
     company = Firmy.query.get_or_404(company_id)
 
     # Calculate average rating
-    avg_rating = db.session.query(func.avg(Oceny.Ocena))\
-                          .filter(Oceny.ID_FIRMY == company_id)\
+    avg_rating = db.session.query(func.avg(Oceny.ocena))\
+                          .filter(Oceny.id_firmy == company_id)\
                           .scalar() or 0
     avg_rating = round(avg_rating, 1)
 
     # Get area of operation
     nationwide = db.session.query(FirmyObszarDzialania)\
-                          .filter(FirmyObszarDzialania.ID_FIRMY == company_id,
-                                  FirmyObszarDzialania.ID_KRAJ == 'POL')\
+                          .filter(FirmyObszarDzialania.id_firmy == company_id,
+                                  FirmyObszarDzialania.id_kraj == 'POL')\
                           .first() is not None
 
     wojewodztwa = db.session.query(Wojewodztwa)\
                            .join(FirmyObszarDzialania)\
-                           .filter(FirmyObszarDzialania.ID_FIRMY == company_id)\
+                           .filter(FirmyObszarDzialania.id_firmy == company_id)\
                            .all()
 
-    powiaty = db.session.query(Powiaty, Wojewodztwa.ID_WOJEWODZTWA)\
-                       .join(FirmyObszarDzialania, Powiaty.ID_POWIATY == FirmyObszarDzialania.ID_POWIATY)\
-                       .join(Wojewodztwa, Powiaty.ID_WOJEWODZTWA == Wojewodztwa.ID_WOJEWODZTWA)\
-                       .filter(FirmyObszarDzialania.ID_FIRMY == company_id)\
+    powiaty = db.session.query(Powiaty, Wojewodztwa.id_wojewodztwa)\
+                       .join(FirmyObszarDzialania, Powiaty.id_powiaty == FirmyObszarDzialania.id_powiaty)\
+                       .join(Wojewodztwa, Powiaty.id_wojewodztwa == Wojewodztwa.id_wojewodztwa)\
+                       .filter(FirmyObszarDzialania.id_firmy == company_id)\
                        .all()
 
     # Get company specialties
     specialties = db.session.query(Specjalnosci)\
                            .join(FirmySpecjalnosci)\
-                           .filter(FirmySpecjalnosci.ID_FIRMY == company_id)\
+                           .filter(FirmySpecjalnosci.id_firmy == company_id)\
                            .all()
 
     return render_template('company_details.html',
