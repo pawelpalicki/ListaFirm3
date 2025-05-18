@@ -7,7 +7,7 @@
             <div class="card-header">
                 <h5 class="card-title">Filtrowanie</h5>
             </div>
-            
+
             <div class="card-body">
                 <form id="filter-form" method="get">
                     <div class="mb-3">
@@ -15,62 +15,62 @@
                         <input type="text" class="form-control" id="search" name="search"
                                value="{{ request.args.get('search', '') }}" placeholder="Wpisz tekst...">
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="specialties" class="form-label">Specjalności</label>
                         <select multiple class="form-select" id="specialties" name="specialties" size="6" style="width: 100%">
                             {% for specialty in all_specialties %}
-                            <option value="{{ specialty.ID_SPECJALNOSCI }}"
-                                    {% if specialty.ID_SPECJALNOSCI|string in request.args.getlist('specialties') %}selected{% endif %}>
-                                 {{ specialty.Specjalnosc }}
+                            <option value="{{ specialty.id_specjalnosci }}"
+                                    {% if specialty.id_specjalnosci|string in request.args.getlist('specialties') %}selected{% endif %}>
+                                 {{ specialty.specjalnosc }}
                             </option>
                             {% endfor %}
                         </select>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="wojewodztwo" class="form-label">Województwo</label>
                         <select class="form-select" id="wojewodztwo" name="wojewodztwo">
                             <option value="">Wybierz województwo</option>
                             {% for woj in all_wojewodztwa %}
-                            <option value="{{ woj.ID_WOJEWODZTWA }}"
-                                    {% if woj.ID_WOJEWODZTWA == request.args.get('wojewodztwo') %}selected{% endif %}>
-                                 {{ woj.Wojewodztwo }}
+                            <option value="{{ woj.id_wojewodztwa }}"
+                                    {% if woj.id_wojewodztwa == request.args.get('wojewodztwo') %}selected{% endif %}>
+                                 {{ woj.wojewodztwo }}
                             </option>
                             {% endfor %}
                         </select>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="powiat" class="form-label">Powiat</label>
                         <select class="form-select" id="powiat" name="powiat">
                             <option value="">Wybierz najpierw województwo</option>
                             {% if request.args.get('wojewodztwo') %}
                                 {% for pow in all_powiaty %}
-                                    {% if pow.ID_WOJEWODZTWA == request.args.get('wojewodztwo') %}
-                                    <option value="{{ pow.ID_POWIATY }}"
-                                            {% if pow.ID_POWIATY|string == request.args.get('powiat') %}selected{% endif %}>
-                                         {{ pow.Powiat }}
+                                    {% if pow.id_wojewodztwa == request.args.get('wojewodztwo') %}
+                                    <option value="{{ pow.id_powiaty }}"
+                                            {% if pow.id_powiaty|string == request.args.get('powiat') %}selected{% endif %}>
+                                         {{ pow.powiat }}
                                     </option>
                                     {% endif %}
                                 {% endfor %}
                             {% endif %}
                         </select>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="company_types" class="form-label">Typ firmy</label>
                         <select class="form-select" id="company_types" name="company_types">
                             <option value="">Wybierz typ firmy</option>
                             {% for type in all_company_types %}
-                            <option value="{{ type.ID_FIRMY_TYP|int }}"
-                                    {% if type.ID_FIRMY_TYP in request.args.getlist('company_types') %}selected{% endif %}>
-                                 {{ type.Typ_firmy }}
+                            <option value="{{ type.id_firmy_typ|int }}"
+                                    {% if type.id_firmy_typ in request.args.getlist('company_types') %}selected{% endif %}>
+                                 {{ type.typ_firmy }}
                             </option>
                             {% endfor %}
                         </select>
                     </div>
-                    
+
                     <div class="d-grid gap-2 mt-4">
                         <button type="submit" class="btn btn-primary">
                             <i class="bi bi-funnel-fill"></i>
@@ -101,7 +101,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="card-body">
                 {% if companies %}
                 <div class="table-responsive">
@@ -114,11 +114,11 @@
                         </thead>
                         <tbody>
                             {% for company in companies %}
-                            <tr class="company-row" data-company-id="{{ company.ID_FIRMY }}">
-                                <td>{{ company.ID_FIRMY }}</td>
-                                <td>{{ company.Nazwa_Firmy }}</td>
+                            <tr class="company-row" data-company-id="{{ company.id_firmy }}">
+                                <td>{{ company.id_firmy }}</td>
+                                <td>{{ company.nazwa_firmy }}</td>
                             </tr>
-                            <tr id="details-{{ company.ID_FIRMY }}" class="company-details d-none">
+                            <tr id="details-{{ company.id_firmy }}" class="company-details d-none">
                                 <td colspan="3">
                                     <div class="loading-spinner text-center my-3">
                                         <div class="spinner-border text-primary" role="status">
@@ -147,69 +147,69 @@
             <h5 class="mb-0 align-middle">Filtrowanie</h5> 
             <button id="close-mobile-filter" class="btn-close" type="button" aria-label="Close"></button>
         </div>
-        
+
         <form id="filter-form-mobile" method="get">
             <div class="mb-3">
                 <label for="search-mobile" class="form-label">Wyszukiwanie</label>
                 <input type="text" class="form-control" id="search-mobile" name="search"
                        value="{{ request.args.get('search', '') }}" placeholder="Wpisz tekst...">
             </div>
-            
+
             <div class="mb-3">
                 <label for="specialties-mobile" class="form-label">Specjalności</label>
                 <select multiple class="form-select" id="specialties-mobile" name="specialties" size="6" style="width: 100%">
                     {% for specialty in all_specialties %}
-                    <option value="{{ specialty.ID_SPECJALNOSCI }}"
-                            {% if specialty.ID_SPECJALNOSCI|string in request.args.getlist('specialties') %}selected{% endif %}>
-                         {{ specialty.Specjalnosc }}
+                    <option value="{{ specialty.id_specjalnosci }}"
+                            {% if specialty.id_specjalnosci|string in request.args.getlist('specialties') %}selected{% endif %}>
+                         {{ specialty.specjalnosc }}
                     </option>
                     {% endfor %}
                 </select>
             </div>
-            
+
             <div class="mb-3">
                 <label for="wojewodztwo-mobile" class="form-label">Województwo</label>
                 <select class="form-select" id="wojewodztwo-mobile" name="wojewodztwo">
                     <option value="">Wybierz województwo</option>
                     {% for woj in all_wojewodztwa %}
-                    <option value="{{ woj.ID_WOJEWODZTWA }}"
-                            {% if woj.ID_WOJEWODZTWA == request.args.get('wojewodztwo') %}selected{% endif %}>
-                         {{ woj.Wojewodztwo }}
+                    <option value="{{ woj.id_wojewodztwa }}"
+                            {% if woj.id_wojewodztwa == request.args.get('wojewodztwo') %}selected{% endif %}>
+                         {{ woj.wojewodztwo }}
                     </option>
                     {% endfor %}
                 </select>
             </div>
-            
+
             <div class="mb-3">
                 <label for="powiat-mobile" class="form-label">Powiat</label>
                 <select class="form-select" id="powiat-mobile" name="powiat">
                     <option value="">Wybierz najpierw województwo</option>
                     {% if request.args.get('wojewodztwo') %}
                         {% for pow in all_powiaty %}
-                            {% if pow.ID_WOJEWODZTWA == request.args.get('wojewodztwo') %}
-                            <option value="{{ pow.ID_POWIATY }}"
-                                    {% if pow.ID_POWIATY|string == request.args.get('powiat') %}selected{% endif %}>
-                                 {{ pow.Powiat }}
+                            {% if pow.id_wojewodztwa == request.args.get('wojewodztwo') %}
+                            <option value="{{ pow.id_powiaty }}"
+                                    {% if pow.id_powiaty|string == request.args.get('powiat') %}selected{% endif %}>
+                                 {{ pow.powiat }}
                             </option>
                             {% endif %}
                         {% endfor %}
                     {% endif %}
                 </select>
             </div>
-            
+
             <div class="mb-3">
                 <label for="company_types_mobile" class="form-label">Typ firmy</label>
                 <select class="form-select" id="company_types_mobile" name="company_types">
                     <option value="">Wybierz typ firmy</option>
                     {% for type in all_company_types %}
-                    <option value="{{ type.ID_FIRMY_TYP }}"
-                            {% if type.ID_FIRMY_TYP in request.args.getlist('company_types') %}selected{% endif %}>
-                         {{ type.Typ_firmy }}
+                    <option value="{{ type.id_firmy_typ }}"
+                            {% if type.id_firmy_typ in request.args.getlist('company_types') %}selected{% endif %}>
+                         {{ type.typ_firmy }}
                     </option>
                     {% endfor %}
                 </select>
             </div>
-            
+
             <div class="d-grid gap-2">
                 <button type="submit" class="btn btn-primary">
                     <i class="bi bi-funnel-fill"></i>
