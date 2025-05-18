@@ -54,7 +54,7 @@
                     </div>
                     <div class="mb-3">
                          {{ form.ID_FIRMY.label(class="form-label") }}
-                         {{ form.ID_FIRMY(class="form-select";id="firmy_select") }}
+                         {{ form.ID_FIRMY(class="form-select", id="firmy_select") }}
                          {% for error in form.ID_FIRMY.errors %}
                              <span class="text-danger">{{ error }}</span>
                          {% endfor %}

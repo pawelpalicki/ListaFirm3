@@ -110,6 +110,21 @@ const Select2Config = {
             this.initMultiSelect('#powiaty', "Wybierz powiaty...");
         }
 
+        // Dodaj inicjalizację dla #firmy_select
+        if ($('#firmy_select').length) {
+            // Opcja 1: Z niestandardowym matcherem (tak jak teraz)
+            // this.initWithMatcher('#firmy_select');
+
+            // Opcja 2: Z placeholderem
+            // this.initWithPlaceholder('#firmy_select', "Wybierz firmę...");
+
+            // Opcja 3: Podstawowa inicjalizacja (bez matchera i placeholdera)
+            $('#firmy_select').select2({
+                ...this.defaultConfig,
+                allowClear: false // Wyłączenie clear button
+            });
+        }
+
         // // Inicjalizacja dla typowych selectów formularza
         // $('.form-select:not([data-select2-id])').each(function() {
         //     Select2Config.initSelect(this);
