@@ -526,7 +526,7 @@
             <div class="col-12 mb-2">
                 <label class="form-label" for="adresy-__prefix__-typ_adresu">Typ adresu</label>
                 <div class="input-group">
-                    <select class="form-select" id="adresy-__prefix__-typ_adresu" name="adresy-__prefix__-typ_adresu">
+                    <select class="form-select" id="adresy-__prefix__-typ_adresu" name="adresy-__prefix__-typ_adresu" data-coerce="int">
                         {% for value, label in form.address_type_choices %}
                         <option value="{{ value }}">{{ label }}</option>
                         {% endfor %}

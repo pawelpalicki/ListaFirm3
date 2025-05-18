@@ -4,7 +4,7 @@ class Firmy(db.Model):
     __tablename__ = 'FIRMY'
     ID_FIRMY = db.Column(db.Integer, primary_key=True)
     Nazwa_Firmy = db.Column(db.Text)
-    ID_FIRMY_TYP = db.Column(db.Text, db.ForeignKey('FIRMY_TYP.ID_FIRMY_TYP'))
+    ID_FIRMY_TYP = db.Column(db.Integer, db.ForeignKey('FIRMY_TYP.ID_FIRMY_TYP'))
     Strona_www = db.Column(db.Text)
     Uwagi = db.Column(db.Text)
     
@@ -19,7 +19,7 @@ class Firmy(db.Model):
 
 class FirmyTyp(db.Model):
     __tablename__ = 'FIRMY_TYP'
-    ID_FIRMY_TYP = db.Column(db.Text, primary_key=True)
+    ID_FIRMY_TYP = db.Column(db.Integer, primary_key=True)
     Typ_firmy = db.Column(db.Text)
     
     firmy = db.relationship('Firmy', backref='typ_firmy', lazy='dynamic')

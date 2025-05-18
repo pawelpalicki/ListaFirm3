@@ -42,7 +42,7 @@ class RatingForm(FlaskForm):
 
 class CompanyForm(FlaskForm):
     nazwa_firmy = StringField('Nazwa firmy', validators=[DataRequired()])
-    typ_firmy = SelectField('Typ firmy')
+    typ_firmy = SelectField('Typ firmy', coerce=int)
     strona_www = StringField('Strona WWW', validators=[Optional()])
     uwagi = TextAreaField('Uwagi')
 
@@ -87,7 +87,7 @@ class CompanyForm(FlaskForm):
         from app import db
 
         # Załaduj opcje i zapisz je jako atrybuty instancji
-        self.company_type_choices = [(t.ID_FIRMY_TYP, t.Typ_firmy) for t in FirmyTyp.query.order_by(FirmyTyp.Typ_firmy).all()]
+        self.company_type_choices = [(int(t.ID_FIRMY_TYP), t.Typ_firmy) for t in FirmyTyp.query.order_by(FirmyTyp.Typ_firmy).all()]
         self.typ_firmy.choices = self.company_type_choices
 
         self.address_type_choices = [(t.ID_ADRESY_TYP, t.Typ_adresu) for t in AdresyTyp.query.order_by(AdresyTyp.Typ_adresu).all()]

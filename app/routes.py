@@ -366,10 +366,8 @@ def add_firma_typ():
             return jsonify({'error': 'Ten typ firmy już istnieje', 'id': existing.ID_FIRMY_TYP}), 400
 
         # Dodajemy nowy typ firmy
-        # Dla ID_FIRMY_TYP możemy stworzyć nowy identyfikator tekstowy
-        import uuid
-        new_id = str(uuid.uuid4())[:8].upper()  # Skrócony UUID jako identyfikator
-        new_typ = FirmyTyp(ID_FIRMY_TYP=new_id, Typ_firmy=data['name'])
+        max_id = db.session.query(db.func.max(FirmyTyp.ID_FIRMY_TYP)).scalar() or 0
+        new_typ = FirmyTyp(ID_FIRMY_TYP=max_id + 1, Typ_firmy=data['name'])
         db.session.add(new_typ)
         db.session.commit()
 
@@ -1094,10 +1092,9 @@ def new_company_type():
             if existing_type:
                 flash('Typ firmy o tej nazwie już istnieje.', 'warning')
             else:
-                # Generate a unique ID for FirmyTyp (using UUID snippet from previous try)
-                import uuid
-                new_id = str(uuid.uuid4())[:8].upper() # Skrócony UUID jako identyfikator
-                new_type = FirmyTyp(ID_FIRMY_TYP=new_id, Typ_firmy=form.name.data)
+                # Użyj auto-increment dla ID
+                max_id = db.session.query(db.func.max(FirmyTyp.ID_FIRMY_TYP)).scalar() or 0
+                new_type = FirmyTyp(ID_FIRMY_TYP=max_id + 1, Typ_firmy=form.name.data)
                 db.session.add(new_type)
                 db.session.commit()
                 flash('Typ firmy został dodany pomyślnie!', 'success')
@@ -1107,7 +1104,7 @@ def new_company_type():
             flash(f'Wystąpił błąd podczas dodawania typu firmy: {e}', 'danger')
     return render_template('simple_form.html', form=form, title='Dodaj Typ Firmy', back_url=url_for('main.list_company_types'))
 
-@main.route('/company_types/<string:id>/edit', methods=['GET', 'POST'])
+@main.route('/company_types/<int:id>/edit', methods=['GET', 'POST'])
 def edit_company_type(id):
     from app.forms import CompanyTypeForm # Local import
     company_type = FirmyTyp.query.get_or_404(id)
@@ -1133,7 +1130,7 @@ def edit_company_type(id):
                 flash(f'Wystąpił błąd podczas aktualizacji typu firmy: {e}', 'danger')
         return render_template('simple_form.html', form=form, title='Edytuj Typ Firmy', back_url=url_for('main.list_company_types'))
 
-@main.route('/company_types/<string:id>/delete', methods=['POST'])
+@main.route('/company_types/<int:id>/delete', methods=['POST'])
 def delete_company_type(id):
     company_type = FirmyTyp.query.get_or_404(id)
     try:

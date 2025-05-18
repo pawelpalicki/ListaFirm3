@@ -63,7 +63,7 @@
                         <select class="form-select" id="company_types" name="company_types">
                             <option value="">Wybierz typ firmy</option>
                             {% for type in all_company_types %}
-                            <option value="{{ type.ID_FIRMY_TYP }}"
+                            <option value="{{ type.ID_FIRMY_TYP|int }}"
                                     {% if type.ID_FIRMY_TYP in request.args.getlist('company_types') %}selected{% endif %}>
                                  {{ type.Typ_firmy }}
                             </option>
