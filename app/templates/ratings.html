@@ -38,12 +38,12 @@
                         <tbody id="ratings-table">
                             {% for item in items %}
                             <tr class="rating-row">
-                                <td data-label="ID">{{ item.OCENY_ID }}</td> {# Dodany data-label #}
-                                <td data-label="Osoba oceniająca" class="rating-person">{{ item.Osoba_oceniajaca }}</td> {# Dodany data-label #}
-                                <td data-label="Budowa/Dział" class="rating-place">{{ item.Budowa_Dzial }}</td> {# Dodany data-label #}
-                                <td data-label="Rok współpracy" class="rating-year">{{ item.Rok_wspolpracy }}</td> {# Dodany data-label #}
-                                <td data-label="Ocena (1-5)" class="rating-score">{{ item.Ocena }}</td> {# Dodany data-label #}
-                                <td data-label="Komentarz" class="rating-comment">{{ item.Komentarz }}</td> {# Dodany data-label #}
+                                <td data-label="ID">{{ item.oceny_id }}</td> {# Dodany data-label #}
+                                <td data-label="Osoba oceniająca" class="rating-person">{{ item.osoba_oceniajaca }}</td> {# Dodany data-label #}
+                                <td data-label="Budowa/Dział" class="rating-place">{{ item.budowa_dzial }}</td> {# Dodany data-label #}
+                                <td data-label="Rok współpracy" class="rating-year">{{ item.rok_wspolpracy }}</td> {# Dodany data-label #}
+                                <td data-label="Ocena (1-5)" class="rating-score">{{ item.ocena }}</td> {# Dodany data-label #}
+                                <td data-label="Komentarz" class="rating-comment">{{ item.komentarz }}</td> {# Dodany data-label #}
                                 <td data-label="Firma" class="rating-company">{% if item.firma %}{{ item.firma.Nazwa_Firmy }}{% else %}Brak firmy{% endif %}</td> {# Dodany data-label #}
                                 <td data-label="Akcje"> {# Dodany data-label #}
                                     <a href="{{ url_for('main.edit_rating', id=item.OCENY_ID) }}" class="btn btn-sm btn-primary action-btn">

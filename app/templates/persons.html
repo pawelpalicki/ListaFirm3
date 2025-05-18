@@ -38,14 +38,14 @@
                         <tbody id="persons-table">
                             {% for item in items %}
                             <tr class="person-row">
-                                <td data-label="ID">{{ item.ID_OSOBY }}</td> {# Poprawiony komentarz #}
-                                <td data-label="Imię" class="person-name">{{ item.Imie }}</td> {# Poprawiony komentarz #}
-                                <td data-label="Nazwisko" class="person-surname">{{ item.Nazwisko }}</td> {# Poprawiony komentarz #}
-                                <td data-label="Stanowisko" class="person-position">{{ item.Stanowisko }}</td> {# Poprawiony komentarz #}
-                                <td data-label="Email" class="person-email">{{ item.e_mail }}</td> {# Poprawiony komentarz #}
-                                <td data-label="Telefon" class="person-phone">{{ item.telefon }}</td> {# Poprawiony komentarz #}
-                                <td data-label="Firma" class="person-company">{% if item.firma %}{{ item.firma.Nazwa_Firmy }}{% else %}Brak firmy{% endif %}</td> {# Poprawiony komentarz #}
-                                <td data-label="Akcje"> {# Poprawiony komentarz #}
+                                <td data-label="ID">{{ item.id_osoby }}</td>
+                                <td data-label="Imię" class="person-name">{{ item.imie }}</td>
+                                <td data-label="Nazwisko" class="person-surname">{{ item.nazwisko }}</td>
+                                <td data-label="Stanowisko" class="person-position">{{ item.stanowisko }}</td>
+                                <td data-label="Email" class="person-email">{{ item.e_mail }}</td>
+                                <td data-label="Telefon" class="person-phone">{{ item.telefon }}</td>
+                                <td data-label="Firma" class="person-company">{% if item.firma %}{{ item.firma.Nazwa_Firmy }}{% else %}Brak firmy{% endif %}</td>
+                                <td data-label="Akcje">
                                     <a href="{{ url_for('main.edit_person', id=item.ID_OSOBY) }}" class="btn btn-sm btn-primary action-btn">
                                         <i class="bi bi-pencil-square"></i> <span class="btn-text">Edytuj</span>
                                     </a>
