@@ -3,7 +3,7 @@ from app import db
 
 class Firmy(db.Model):
     __tablename__ = 'firmy'
-    id_firmy = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id_firmy = db.Column(db.Integer, primary_key=True)
     nazwa_firmy = db.Column(db.Text)
     id_firmy_typ = db.Column(db.Integer, db.ForeignKey('firmy_typ.id_firmy_typ'))
     strona_www = db.Column(db.Text)

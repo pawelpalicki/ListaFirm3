@@ -391,8 +391,11 @@ def new_company():
     if request.method == 'POST':
         if form.validate_on_submit():
             print("Formularz przeszedł walidację")
+            # Get next company ID
+            max_id = db.session.query(db.func.max(Firmy.id_firmy)).scalar() or 0
             # Create new company
             company = Firmy(
+                id_firmy=max_id + 1,
                 nazwa_firmy=form.nazwa_firmy.data,
                 id_firmy_typ=form.typ_firmy.data,
                 strona_www=form.strona_www.data,
