@@ -116,9 +116,9 @@ class CompanyForm(FlaskForm):
 
 class SimplePersonForm(FlaskForm):
     # Użyj nazw atrybutów z modelu Osoby
-    Imie = StringField('Imię', validators=[DataRequired()])
-    Nazwisko = StringField('Nazwisko', validators=[DataRequired()])
-    Stanowisko = StringField('Stanowisko')
+    imie = StringField('Imię', validators=[DataRequired()])
+    nazwisko = StringField('Nazwisko', validators=[DataRequired()])
+    stanowisko = StringField('Stanowisko')
     e_mail = StringField('E-mail', validators=[Optional(), Email()]) 
     telefon = StringField('Telefon') 
     id_firmy = SelectField('Firma', coerce=int, validators=[DataRequired()])
@@ -136,11 +136,11 @@ class SimplePersonForm(FlaskForm):
 
 class SimpleRatingForm(FlaskForm):
     # Użyj nazw atrybutów z modelu Osoby
-    Osoba_oceniajaca = StringField('Osoba oceniająca', validators=[DataRequired()])
-    Budowa_Dzial = StringField('Budowa/Dział', validators=[DataRequired()])
-    Rok_wspolpracy = IntegerField('Rok współpracy', validators=[DataRequired()])
-    Ocena = IntegerField('Ocena (1-5)', validators=[DataRequired(), NumberRange(min=1, max=5)])
-    Komentarz = TextAreaField('Komentarz')
+    osoba_oceniajaca = StringField('Osoba oceniająca', validators=[DataRequired()])
+    budowa_dzial = StringField('Budowa/Dział', validators=[DataRequired()])
+    rok_wspolpracy = IntegerField('Rok współpracy', validators=[DataRequired()])
+    ocena = IntegerField('Ocena (1-5)', validators=[DataRequired(), NumberRange(min=1, max=5)])
+    komentarz = TextAreaField('Komentarz')
     id_firmy = SelectField('Firma', coerce=int, validators=[DataRequired()])
     submit = SubmitField('Zapisz')
 

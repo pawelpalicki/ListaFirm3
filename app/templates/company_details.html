@@ -12,11 +12,11 @@
                 </div>
                 <div class="card-body">
                     <p><strong>Typ firmy:</strong> {{ company.typ_firmy.typ_firmy }}</p>
-                    {% if company.Strona_www %}
-                    <p><strong>Strona WWW:</strong> <a href="{{ company.Strona_www }}" target="_blank">{{ company.Strona_www }}</a></p>
+                    {% if company.strona_www %}
+                    <p><strong>Strona WWW:</strong> <a href="{{ company.strona_www }}" target="_blank">{{ company.strona_www }}</a></p>
                     {% endif %}
-                    {% if company.Uwagi %}
-                    <p><strong>Uwagi:</strong> {{ company.Uwagi }}</p>
+                    {% if company.uwagi %}
+                    <p><strong>Uwagi:</strong> {{ company.uwagi }}</p>
                     {% endif %}
                 </div>
             </div>
@@ -31,7 +31,7 @@
                         {% for adres in company.adresy %}
                         <li class="list-group-item">
                             <p class="mb-1"><strong>{{ adres.typ_adresu.typ_adresu }}</strong></p>
-                            <p class="mb-0">{{ adres.Kod }} {{ adres.Miejscowosc }}, {{ adres.ulica_miejscowosc }}</p>
+                            <p class="mb-0">{{ adres.kod }} {{ adres.miejscowosc }}, {{ adres.ulica_miejscowosc }}</p>
                         </li>
                         {% endfor %}
                     </ul>

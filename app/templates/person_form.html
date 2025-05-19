@@ -18,44 +18,44 @@
                 <form method="POST">
                     {{ form.hidden_tag() }}
                     <div class="mb-3">
-                        {{ form.Imie.label(class="form-label") }}      {# Zmieniono na Imie #}
-                        {{ form.Imie(class="form-control") }}         {# Zmieniono na Imie #}
-                        {% for error in form.Imie.errors %}           {# Zmieniono na Imie #}
+                        {{ form.imie.label(class="form-label") }} 
+                        {{ form.imie(class="form-control") }} 
+                        {% for error in form.imie.errors %} 
                             <span class="text-danger">{{ error }}</span>
                         {% endfor %}
                     </div>
                     <div class="mb-3">
-                        {{ form.Nazwisko.label(class="form-label") }}  {# Zmieniono na Nazwisko #}
-                        {{ form.Nazwisko(class="form-control") }}     {# Zmieniono na Nazwisko #}
-                        {% for error in form.Nazwisko.errors %}       {# Zmieniono na Nazwisko #}
+                        {{ form.nazwisko.label(class="form-label") }}
+                        {{ form.nazwisko(class="form-control") }}
+                        {% for error in form.nazwisko.errors %}
                             <span class="text-danger">{{ error }}</span>
                         {% endfor %}
                     </div>
                      <div class="mb-3">
-                        {{ form.Stanowisko.label(class="form-label") }} {# Zmieniono na Stanowisko #}
-                        {{ form.Stanowisko(class="form-control") }}    {# Zmieniono na Stanowisko #}
-                        {% for error in form.Stanowisko.errors %}      {# Zmieniono na Stanowisko #}
+                        {{ form.stanowisko.label(class="form-label") }}
+                        {{ form.stanowisko(class="form-control") }}
+                        {% for error in form.stanowisko.errors %}
                             <span class="text-danger">{{ error }}</span>
                         {% endfor %}
                     </div>
                      <div class="mb-3">
-                        {{ form.e_mail.label(class="form-label") }}    {# Zmieniono na e_mail #}
-                        {{ form.e_mail(class="form-control") }}       {# Zmieniono na e_mail #}
-                        {% for error in form.e_mail.errors %}         {# Zmieniono na e_mail #}
+                        {{ form.e_mail.label(class="form-label") }}
+                        {{ form.e_mail(class="form-control") }}
+                        {% for error in form.e_mail.errors %}
                             <span class="text-danger">{{ error }}</span>
                         {% endfor %}
                     </div>
                      <div class="mb-3">
-                        {{ form.telefon.label(class="form-label") }}   {# Bez zmian #}
-                        {{ form.telefon(class="form-control") }}      {# Bez zmian #}
-                        {% for error in form.telefon.errors %}        {# Bez zmian #}
+                        {{ form.telefon.label(class="form-label") }}
+                        {{ form.telefon(class="form-control") }}
+                        {% for error in form.telefon.errors %}
                             <span class="text-danger">{{ error }}</span>
                         {% endfor %}
                     </div>
                     <div class="mb-3">
-                         {{ form.id_firmy.label(class="form-label") }}  {# Zmieniono na id_firmy #}
+                         {{ form.id_firmy.label(class="form-label") }}
                          {{ form.id_firmy(class="form-select", id="firmy_select") }}
-                         {% for error in form.id_firmy.errors %}       {# Zmieniono na id_firmy #}
+                         {% for error in form.id_firmy.errors %}
                              <span class="text-danger">{{ error }}</span>
                          {% endfor %}
                      </div>

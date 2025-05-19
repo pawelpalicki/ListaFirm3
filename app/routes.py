@@ -4,7 +4,7 @@ from app.models import Firmy, FirmyTyp, Adresy, AdresyTyp, Email, EmailTyp, Tele
 from app import db
 from unidecode import unidecode
 from app.forms import CompanyForm, SimplePersonForm, SimpleRatingForm, SpecialtyForm, AddressTypeForm, EmailTypeForm, PhoneTypeForm, CompanyTypeForm
-from sqlalchemy.exc import SQLAlchemyError # Ważne: Importujemy SQLAlchemyError
+from sqlalchemy.exc import SQLAlchemyError
 
 main = Blueprint('main', __name__)
 
@@ -100,7 +100,7 @@ def index():
         # Wyszukiwanie po obszarze działania (województwa, powiaty, kraj)
         wojewodztwa_results = Wojewodztwa.query.all()
         for woj in wojewodztwa_results:
-            if normalized_search in normalize_text(woj.Wojewodztwo).lower():
+            if normalized_search in normalize_text(woj.wojewodztwo).lower():
                 firmy_woj = FirmyObszarDzialania.query.filter_by(id_wojewodztwa=woj.id_wojewodztwa).all()
                 for fw in firmy_woj:
                     matching_company_ids.add(fw.id_firmy)
@@ -239,7 +239,8 @@ def company_details(company_id):
 
     wojewodztwa = db.session.query(Wojewodztwa)\
                            .join(FirmyObszarDzialania)\
-                           .filter(FirmyObszarDzialania.id_firmy == company_id)\
+                           .filter(FirmyObszarDzialania.id_firmy == company_id,
+                                     Wojewodztwa.wojewodztwo != 'Nie dotyczy / Brak danych')\
                            .all()
 
     powiaty = db.session.query(Powiaty, Wojewodztwa.id_wojewodztwa)\
@@ -1333,7 +1334,7 @@ def export_companies_html():
 
         wojewodztwa_results = Wojewodztwa.query.all()
         for woj in wojewodztwa_results:
-            if normalized_search in normalize_text(woj.Wojewodztwo).lower():
+            if normalized_search in normalize_text(woj.wojewodztwo).lower():
                 firmy_woj = FirmyObszarDzialania.query.filter_by(id_wojewodztwa=woj.id_wojewodztwa).all()
                 for fw in firmy_woj:
                     matching_company_ids.add(fw.id_firmy)
@@ -1494,3 +1495,4 @@ def normalize_text(text):
     text = str(text)
     normalized = unidecode(text).lower()
     return ''.join(c for c in normalized if c.isalnum() or c.isspace())
+

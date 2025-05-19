@@ -18,37 +18,37 @@
                 <form method="POST">
                     {{ form.hidden_tag() }}
                     <div class="mb-3">
-                        {{ form.Osoba_oceniajaca.label(class="form-label") }}
-                        {{ form.Osoba_oceniajaca(class="form-control") }}
-                        {% for error in form.Osoba_oceniajaca.errors %}
+                        {{ form.osoba_oceniajaca.label(class="form-label") }}
+                        {{ form.osoba_oceniajaca(class="form-control") }}
+                        {% for error in form.osoba_oceniajaca.errors %}
                             <span class="text-danger">{{ error }}</span>
                         {% endfor %}
                     </div>
                      <div class="mb-3">
-                        {{ form.Budowa_Dzial.label(class="form-label") }}
-                        {{ form.Budowa_Dzial(class="form-control") }}
-                        {% for error in form.Budowa_Dzial.errors %}
+                        {{ form.budowa_dzial.label(class="form-label") }}
+                        {{ form.budowa_dzial(class="form-control") }}
+                        {% for error in form.budowa_dzial.errors %}
                             <span class="text-danger">{{ error }}</span>
                         {% endfor %}
                     </div>
                      <div class="mb-3">
-                        {{ form.Rok_wspolpracy.label(class="form-label") }}
-                        {{ form.Rok_wspolpracy(class="form-control", type="number") }}
-                        {% for error in form.Rok_wspolpracy.errors %}
+                        {{ form.rok_wspolpracy.label(class="form-label") }}
+                        {{ form.rok_wspolpracy(class="form-control", type="number") }}
+                        {% for error in form.rok_wspolpracy.errors %}
                             <span class="text-danger">{{ error }}</span>
                         {% endfor %}
                     </div>
                      <div class="mb-3">
-                        {{ form.Ocena.label(class="form-label") }}
-                        {{ form.Ocena(class="form-control", type="number") }}
-                        {% for error in form.Ocena.errors %}
+                        {{ form.ocena.label(class="form-label") }}
+                        {{ form.ocena(class="form-control", type="number") }}
+                        {% for error in form.ocena.errors %}
                             <span class="text-danger">{{ error }}</span>
                         {% endfor %}
                     </div>
                      <div class="mb-3">
-                        {{ form.Komentarz.label(class="form-label") }}
-                        {{ form.Komentarz(class="form-control") }}
-                        {% for error in form.Komentarz.errors %}
+                        {{ form.komentarz.label(class="form-label") }}
+                        {{ form.komentarz(class="form-control") }}
+                        {% for error in form.komentarz.errors %}
                             <span class="text-danger">{{ error }}</span>
                         {% endfor %}
                     </div>

@@ -3,8 +3,8 @@
 {% block content %}
 <div class="company-form-content">
     {% if company %}
-    <h2>Edycja firmy: {{ company.Nazwa_Firmy }}</h2>
-    <form method="POST" action="{{ url_for('main.edit_company', company_id=company.ID_FIRMY) }}">
+    <h2>Edycja firmy: {{ company.nazwa_firmy }}</h2>
+    <form method="POST" action="{{ url_for('main.edit_company', company_id=company.id_firmy) }}">
     {% else %}
     <h2>Edycja firmy</h2>
     <form method="POST">
@@ -172,7 +172,7 @@
             <label class="form-label">Województwa</label>
             <select id="wojewodztwa-select" class="form-select" multiple>
                 {% for woj in wojewodztwa %}
-                <option value="{{ woj.ID_WOJEWODZTWA }}">{{ woj.Wojewodztwo }}</option>
+                <option value="{{ woj.id_wojewodztwa }}">{{ woj.wojewodztwo }}</option>
                 {% endfor %}
             </select>
             <button type="button" id="dodaj-wojewodztwo" class="btn btn-secondary mt-2">Dodaj województwo</button>
@@ -202,7 +202,7 @@
 
            <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
             {% if company %}
-            <a href="{{ url_for('main.company_details', company_id=company.ID_FIRMY) }}" class="btn btn-secondary">Powrót</a>
+            <a href="{{ url_for('main.company_details', company_id=company.id_firmy) }}" class="btn btn-secondary">Powrót</a>
             {% else %}
             <!-- Zmień to na poprawny endpoint, np. 'main.company_list' lub 'main.index' -->
             <a href="{{ url_for('main.company_details', company_id=0) }}" class="btn btn-secondary">Powrót</a>

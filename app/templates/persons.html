@@ -44,7 +44,7 @@
                                 <td data-label="Stanowisko" class="person-position">{{ item.stanowisko }}</td>
                                 <td data-label="Email" class="person-email">{{ item.e_mail }}</td>
                                 <td data-label="Telefon" class="person-phone">{{ item.telefon }}</td>
-                                <td data-label="Firma" class="person-company">{% if item.firma %}{{ item.firma.Nazwa_Firmy }}{% else %}Brak firmy{% endif %}</td>
+                                <td data-label="Firma" class="person-company">{% if item.firma %}{{ item.firma.nazwa_firmy }}{% else %}Brak firmy{% endif %}</td>
                                 <td data-label="Akcje">
                                     <a href="{{ url_for('main.edit_person', id=item.id_osoby) }}" class="btn btn-sm btn-primary action-btn">
                                         <i class="bi bi-pencil-square"></i> <span class="btn-text">Edytuj</span>
