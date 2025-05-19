@@ -625,7 +625,7 @@ def edit_company(company_id):
             form.wojewodztwa.data = [w for w in wojewodztwa_ids if w]  # Pomiń puste wartości
 
             # Zbierz ID powiatów
-            powiaty_ids = [o.id_powiaty for o in obszary if o.id_powiaty and o.id_powiaty > 0]
+            powiaty_ids = [o.id_powiaty for o for o in obszary if o.id_powiaty and o.id_powiaty > 0]
             form.powiaty.data = powiaty_ids
 
         # Pobierz specjalności
@@ -650,16 +650,14 @@ def edit_company(company_id):
                 Oceny.query.filter_by(id_firmy=company_id).delete()
                 FirmyObszarDzialania.query.filter_by(id_firmy=company_id).delete()
                 FirmySpecjalnosci.query.filter_by(id_firmy=company_id).delete()
-                
+
                 db.session.flush()
 
                 # Dodaj nowe adresy
                 for address_form in form.adresy:
                     if address_form.miejscowosc.data:  # Dodaj tylko jeśli miejscowość jest podana
-                        # Get next id_adresy
-                        max_id = db.session.query(db.func.max(Adresy.id_adresy)).scalar() or 0
+                    # Get next id_adresy
                         address = Adresy(
-                            id_adresy=max_id + 1,
                             kod=address_form.kod.data,
                             miejscowosc=address_form.miejscowosc.data,
                             ulica_miejscowosc=address_form.ulica_miejscowosc.data,
@@ -1501,4 +1499,3 @@ def normalize_text(text):
     text = str(text)
     normalized = unidecode(text).lower()
     return ''.join(c for c in normalized if c.isalnum() or c.isspace())
-
