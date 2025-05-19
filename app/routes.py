@@ -641,26 +641,32 @@ def edit_company(company_id):
             company.strona_www = form.strona_www.data
             company.uwagi = form.uwagi.data
 
-            # Usuń istniejące adresy, emaile, telefony, osoby, oceny, obszary, specjalności
-            Adresy.query.filter_by(id_firmy=company_id).delete()
-            Email.query.filter_by(id_firmy=company_id).delete()
-            Telefon.query.filter_by(id_firmy=company_id).delete()
-            Osoby.query.filter_by(id_firmy=company_id).delete()
-            Oceny.query.filter_by(id_firmy=company_id).delete()
-            FirmyObszarDzialania.query.filter_by(id_firmy=company_id).delete()
-            FirmySpecjalnosci.query.filter_by(id_firmy=company_id).delete()
+            with db.session.no_autoflush:
+                # Usuń istniejące adresy, emaile, telefony, osoby, oceny, obszary, specjalności
+                Adresy.query.filter_by(id_firmy=company_id).delete()
+                Email.query.filter_by(id_firmy=company_id).delete()
+                Telefon.query.filter_by(id_firmy=company_id).delete()
+                Osoby.query.filter_by(id_firmy=company_id).delete()
+                Oceny.query.filter_by(id_firmy=company_id).delete()
+                FirmyObszarDzialania.query.filter_by(id_firmy=company_id).delete()
+                FirmySpecjalnosci.query.filter_by(id_firmy=company_id).delete()
+                
+                db.session.flush()
 
-            # Dodaj nowe adresy
-            for address_form in form.adresy:
-                if address_form.miejscowosc.data:  # Dodaj tylko jeśli miejscowość jest podana
-                    address = Adresy(
-                        kod=address_form.kod.data,
-                        miejscowosc=address_form.miejscowosc.data,
-                        ulica_miejscowosc=address_form.ulica_miejscowosc.data,
-                        id_adresy_typ=address_form.typ_adresu.data,
-                        id_firmy=company_id
-                    )
-                    db.session.add(address)
+                # Dodaj nowe adresy
+                for address_form in form.adresy:
+                    if address_form.miejscowosc.data:  # Dodaj tylko jeśli miejscowość jest podana
+                        # Get next id_adresy
+                        max_id = db.session.query(db.func.max(Adresy.id_adresy)).scalar() or 0
+                        address = Adresy(
+                            id_adresy=max_id + 1,
+                            kod=address_form.kod.data,
+                            miejscowosc=address_form.miejscowosc.data,
+                            ulica_miejscowosc=address_form.ulica_miejscowosc.data,
+                            id_adresy_typ=address_form.typ_adresu.data,
+                            id_firmy=company_id
+                        )
+                        db.session.add(address)
 
             # Dodaj nowe emaile
             for email_form in form.emaile:
