@@ -660,7 +660,9 @@ def edit_company(company_id):
                 for address_form in form.adresy:
                     if address_form.miejscowosc.data:  # Dodaj tylko jeśli miejscowość jest podana
                     # Get next id_adresy
+                        max_id = db.session.query(db.func.max(Adresy.id_adresy)).scalar() or 0
                         address = Adresy(
+                            id_adresy=max_id + 1,
                             kod=address_form.kod.data,
                             miejscowosc=address_form.miejscowosc.data,
                             ulica_miejscowosc=address_form.ulica_miejscowosc.data,

@@ -34,7 +34,7 @@ class AdresyTyp(db.Model):
 
 class Adresy(db.Model):
     __tablename__ = 'adresy'
-    id_adresy = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id_adresy = db.Column(db.Integer, primary_key=True)
     kod = db.Column(db.Text)
     miejscowosc = db.Column(db.Text)
     ulica_miejscowosc = db.Column(db.Text)
