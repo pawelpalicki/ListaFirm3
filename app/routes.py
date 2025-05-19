@@ -625,7 +625,7 @@ def edit_company(company_id):
             form.wojewodztwa.data = [w for w in wojewodztwa_ids if w]  # Pomiń puste wartości
 
             # Zbierz ID powiatów
-            powiaty_ids = [o.id_powiaty for o for o in obszary if o.id_powiaty and o.id_powiaty > 0]
+            powiaty_ids = [o.id_powiaty for o in obszary if o.id_powiaty and o.id_powiaty > 0]
             form.powiaty.data = powiaty_ids
 
         # Pobierz specjalności
