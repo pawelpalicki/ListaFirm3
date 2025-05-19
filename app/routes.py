@@ -368,13 +368,13 @@ def add_specjalnosc():
 
     try:
         # Sprawdzamy, czy specjalność już istnieje
-        existing = Specjalnosci.query.filter_by(Specjalnosc=data['name']).first()
+        existing = Specjalnosci.query.filter_by(specjalnosc=data['name']).first()
         if existing:
             return jsonify({'error': 'Ta specjalność już istnieje', 'id': existing.id_specjalnosci}), 400
 
         # Dodajemy nową specjalność
         max_id = db.session.query(db.func.max(Specjalnosci.id_specjalnosci)).scalar() or 0
-        new_spec = Specjalnosci(id_specjalnosci=max_id + 1, Specjalnosc=data['name'])
+        new_spec = Specjalnosci(id_specjalnosci=max_id + 1, specjalnosc=data['name'])
         db.session.add(new_spec)
         db.session.commit()
 
@@ -395,8 +395,8 @@ def new_company():
             company = Firmy(
                 nazwa_firmy=form.nazwa_firmy.data,
                 id_firmy_typ=form.typ_firmy.data,
-                Strona_www=form.strona_www.data,
-                Uwagi=form.uwagi.data
+                strona_www=form.strona_www.data,
+                uwagi=form.uwagi.data
             )
             db.session.add(company)
             db.session.flush()  # Get the ID of the new company
@@ -405,9 +405,9 @@ def new_company():
             for address_form in form.adresy:
                 if address_form.miejscowosc.data:  # Only add if miejscowosc is provided
                     address = Adresy(
-                        Kod=address_form.kod.data,
-                        Miejscowosc=address_form.miejscowosc.data,
-                        Ulica_Miejscowosc=address_form.ulica_miejscowosc.data,
+                        kod=address_form.kod.data,
+                        miejscowosc=address_form.miejscowosc.data,
+                        ulica_miejscowosc=address_form.ulica_miejscowosc.data,
                         id_adresy_typ=address_form.typ_adresu.data,
                         id_firmy=company.id_firmy
                     )
@@ -444,9 +444,9 @@ def new_company():
             for person_form in form.osoby:
                 if person_form.imie.data and person_form.nazwisko.data:  # Only add if name is provided
                     person = Osoby(
-                        Imie=person_form.imie.data,
-                        Nazwisko=person_form.nazwisko.data,
-                        Stanowisko=person_form.stanowisko.data,
+                        imie=person_form.imie.data,
+                        nazwisko=person_form.nazwisko.data,
+                        stanowisko=person_form.stanowisko.data,
                         e_mail=person_form.email.data,
                         telefon=person_form.telefon.data,
                         id_firmy=company.id_firmy
@@ -457,11 +457,11 @@ def new_company():
             for rating_form in form.oceny:
                 if rating_form.osoba_oceniajaca.data:  # Only add if osoba_oceniajaca is provided
                     rating = Oceny(
-                        Osoba_oceniajaca=rating_form.osoba_oceniajaca.data,
-                        Budowa_Dzial=rating_form.budowa_dzial.data,
-                        Rok_wspolpracy=rating_form.rok_wspolpracy.data,
-                        Ocena=rating_form.ocena.data,
-                        Komentarz=rating_form.komentarz.data,
+                        osoba_oceniajaca=rating_form.osoba_oceniajaca.data,
+                        budowa_dzial=rating_form.budowa_dzial.data,
+                        rok_wspolpracy=rating_form.rok_wspolpracy.data,
+                        ocena=rating_form.ocena.data,
+                        komentarz=rating_form.komentarz.data,
                         id_firmy=company.id_firmy
                     )
                     db.session.add(rating)
@@ -654,9 +654,9 @@ def edit_company(company_id):
             for address_form in form.adresy:
                 if address_form.miejscowosc.data:  # Dodaj tylko jeśli miejscowość jest podana
                     address = Adresy(
-                        Kod=address_form.kod.data,
-                        Miejscowosc=address_form.miejscowosc.data,
-                        Ulica_Miejscowosc=address_form.ulica_miejscowosc.data,
+                        kod=address_form.kod.data,
+                        miejscowosc=address_form.miejscowosc.data,
+                        ulica_miejscowosc=address_form.ulica_miejscowosc.data,
                         id_adresy_typ=address_form.typ_adresu.data,
                         id_firmy=company_id
                     )
@@ -686,9 +686,9 @@ def edit_company(company_id):
             for person_form in form.osoby:
                 if person_form.imie.data and person_form.nazwisko.data:  # Dodaj tylko jeśli imię i nazwisko są podane
                     person = Osoby(
-                        Imie=person_form.imie.data,
-                        Nazwisko=person_form.nazwisko.data,
-                        Stanowisko=person_form.stanowisko.data,
+                        imie=person_form.imie.data,
+                        nazwisko=person_form.nazwisko.data,
+                        stanowisko=person_form.stanowisko.data,
                         e_mail=person_form.email.data,
                         telefon=person_form.telefon.data,
                         id_firmy=company_id
@@ -699,11 +699,11 @@ def edit_company(company_id):
             for rating_form in form.oceny:
                 if rating_form.osoba_oceniajaca.data:  # Dodaj tylko jeśli osoba oceniająca jest podana
                     rating = Oceny(
-                        Osoba_oceniajaca=rating_form.osoba_oceniajaca.data,
-                        Budowa_Dzial=rating_form.budowa_dzial.data,
-                        Rok_wspolpracy=rating_form.rok_wspolpracy.data,
-                        Ocena=rating_form.ocena.data,
-                        Komentarz=rating_form.komentarz.data,
+                        osoba_oceniajaca=rating_form.osoba_oceniajaca.data,
+                        budowa_dzial=rating_form.budowa_dzial.data,
+                        rok_wspolpracy=rating_form.rok_wspolpracy.data,
+                        ocena=rating_form.ocena.data,
+                        komentarz=rating_form.komentarz.data,
                         id_firmy=company_id
                     )
                     db.session.add(rating)
