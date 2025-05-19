@@ -281,8 +281,7 @@ def add_adres_typ():
             return jsonify({'error': 'Ten typ adresu już istnieje', 'id': existing.id_adresy_typ}), 400
 
         # Dodajemy nowy typ adresu
-        max_id = db.session.query(db.func.max(AdresyTyp.id_adresy_typ)).scalar() or 0
-        new_typ = AdresyTyp(id_adresy_typ=max_id + 1, typ_adresu=data['name'])
+        new_typ = AdresyTyp(typ_adresu=data['name'])
         db.session.add(new_typ)
         db.session.commit()
 
@@ -304,8 +303,7 @@ def add_email_typ():
             return jsonify({'error': 'Ten typ emaila już istnieje', 'id': existing.id_email_typ}), 400
 
         # Dodajemy nowy typ emaila
-        max_id = db.session.query(db.func.max(EmailTyp.id_email_typ)).scalar() or 0
-        new_typ = EmailTyp(id_email_typ=max_id + 1, typ_emaila=data['name'])
+        new_typ = EmailTyp(typ_emaila=data['name'])
         db.session.add(new_typ)
         db.session.commit()
 
@@ -327,8 +325,7 @@ def add_telefon_typ():
             return jsonify({'error': 'Ten typ telefonu już istnieje', 'id': existing.id_telefon_typ}), 400
 
         # Dodajemy nowy typ telefonu
-        max_id = db.session.query(db.func.max(TelefonTyp.id_telefon_typ)).scalar() or 0
-        new_typ = TelefonTyp(id_telefon_typ=max_id + 1, typ_telefonu=data['name'])
+        new_typ = TelefonTyp(typ_telefonu=data['name'])
         db.session.add(new_typ)
         db.session.commit()
 
@@ -350,8 +347,7 @@ def add_firma_typ():
             return jsonify({'error': 'Ten typ firmy już istnieje', 'id': existing.id_firmy_typ}), 400
 
         # Dodajemy nowy typ firmy
-        max_id = db.session.query(db.func.max(FirmyTyp.id_firmy_typ)).scalar() or 0
-        new_typ = FirmyTyp(id_firmy_typ=max_id + 1, typ_firmy=data['name'])
+        new_typ = FirmyTyp(typ_firmy=data['name'])
         db.session.add(new_typ)
         db.session.commit()
 
@@ -373,8 +369,7 @@ def add_specjalnosc():
             return jsonify({'error': 'Ta specjalność już istnieje', 'id': existing.id_specjalnosci}), 400
 
         # Dodajemy nową specjalność
-        max_id = db.session.query(db.func.max(Specjalnosci.id_specjalnosci)).scalar() or 0
-        new_spec = Specjalnosci(id_specjalnosci=max_id + 1, specjalnosc=data['name'])
+        new_spec = Specjalnosci(specjalnosc=data['name'])
         db.session.add(new_spec)
         db.session.commit()
 
@@ -391,11 +386,8 @@ def new_company():
     if request.method == 'POST':
         if form.validate_on_submit():
             print("Formularz przeszedł walidację")
-            # Get next company ID
-            max_id = db.session.query(db.func.max(Firmy.id_firmy)).scalar() or 0
             # Create new company
             company = Firmy(
-                id_firmy=max_id + 1,
                 nazwa_firmy=form.nazwa_firmy.data,
                 id_firmy_typ=form.typ_firmy.data,
                 strona_www=form.strona_www.data,
@@ -596,8 +588,8 @@ def edit_company(company_id):
         for i, ocena in enumerate(oceny):
             form.oceny[i].osoba_oceniajaca.data = ocena.osoba_oceniajaca
             form.oceny[i].budowa_dzial.data = ocena.budowa_dzial
-            form.oceny[i].rok_wspolpracy.data = ocena.Rok_wspolpracy
-            form.oceny[i].ocena.data = ocena.Ocena
+            form.oceny[i].rok_wspolpracy.data = ocena.rok_wspolpracy
+            form.oceny[i].ocena.data = ocena.ocena
             form.oceny[i].komentarz.data = ocena.komentarz
 
         # Obszar działania
@@ -659,10 +651,7 @@ def edit_company(company_id):
                 # Dodaj nowe adresy
                 for address_form in form.adresy:
                     if address_form.miejscowosc.data:  # Dodaj tylko jeśli miejscowość jest podana
-                    # Get next id_adresy
-                        max_id = db.session.query(db.func.max(Adresy.id_adresy)).scalar() or 0
                         address = Adresy(
-                            id_adresy=max_id + 1,
                             kod=address_form.kod.data,
                             miejscowosc=address_form.miejscowosc.data,
                             ulica_miejscowosc=address_form.ulica_miejscowosc.data,
@@ -820,8 +809,7 @@ def new_specialty():
             if existing_spec:
                 flash('Specjalność o tej nazwie już istnieje.', 'warning')
             else:
-                max_id = db.session.query(func.max(Specjalnosci.id_specjalnosci)).scalar() or 0
-                new_spec = Specjalnosci(id_specjalnosci=max_id + 1, specjalnosc=form.name.data)
+                new_spec = Specjalnosci(specjalnosc=form.name.data)
                 db.session.add(new_spec)
                 db.session.commit()
                 flash('Specjalność została dodana pomyślnie!', 'success')
@@ -886,8 +874,7 @@ def new_address_type():
             if existing_type:
                 flash('Typ adresu o tej nazwie już istnieje.', 'warning')
             else:
-                max_id = db.session.query(func.max(AdresyTyp.id_adresy_typ)).scalar() or 0
-                new_type = AdresyTyp(id_adresy_typ=max_id + 1, typ_adresu=form.name.data)
+                new_type = AdresyTyp(typ_adresu=form.name.data)
                 db.session.add(new_type)
                 db.session.commit()
                 flash('Typ adresu został dodany pomyślnie!', 'success')
@@ -953,8 +940,7 @@ def new_email_type():
             if existing_type:
                 flash('Typ emaila o tej nazwie już istnieje.', 'warning')
             else:
-                max_id = db.session.query(func.max(EmailTyp.id_email_typ)).scalar() or 0
-                new_type = EmailTyp(id_email_typ=max_id + 1, typ_emaila=form.name.data)
+                new_type = EmailTyp(typ_emaila=form.name.data)
                 db.session.add(new_type)
                 db.session.commit()
                 flash('Typ emaila został dodany pomyślnie!', 'success')
@@ -1019,8 +1005,7 @@ def new_phone_type():
             if existing_type:
                 flash('Typ telefonu o tej nazwie już istnieje.', 'warning')
             else:
-                max_id = db.session.query(func.max(TelefonTyp.id_telefon_typ)).scalar() or 0
-                new_type = TelefonTyp(id_telefon_typ=max_id + 1, typ_telefonu=form.name.data)
+                new_type = TelefonTyp(typ_telefonu=form.name.data)
                 db.session.add(new_type)
                 db.session.commit()
                 flash('Typ telefonu został dodany pomyślnie!', 'success')
@@ -1085,9 +1070,7 @@ def new_company_type():
             if existing_type:
                 flash('Typ firmy o tej nazwie już istnieje.', 'warning')
             else:
-                # Użyj auto-increment dla ID
-                max_id = db.session.query(db.func.max(FirmyTyp.id_firmy_typ)).scalar() or 0
-                new_type = FirmyTyp(id_firmy_typ=max_id + 1, typ_firmy=form.name.data)
+                new_type = FirmyTyp(typ_firmy=form.name.data)
                 db.session.add(new_type)
                 db.session.commit()
                 flash('Typ firmy został dodany pomyślnie!', 'success')
@@ -1147,9 +1130,9 @@ def new_person():
     if form.validate_on_submit():
         try:
             new_person = Osoby(
-                Imie=form.imie.data,
-                Nazwisko=form.nazwisko.data,
-                Stanowisko=form.stanowisko.data,
+                imie=form.imie.data,
+                nazwisko=form.nazwisko.data,
+                stanowisko=form.stanowisko.data,
                 e_mail=form.e_mail.data,
                 telefon=form.telefon.data,
                 id_firmy=form.id_firmy.data
@@ -1215,11 +1198,11 @@ def new_rating():
     if form.validate_on_submit():
         try:
             new_rating = Oceny(
-                Osoba_oceniajaca=form.osoba_oceniajaca.data,
-                Budowa_Dzial=form.budowa_dzial.data,
-                Rok_wspolpracy=form.Rok_wspolpracy.data,
-                Ocena=form.Ocena.data,
-                Komentarz=form.komentarz.data,
+                osoba_oceniajaca=form.osoba_oceniajaca.data,
+                budowa_dzial=form.budowa_dzial.data,
+                rok_wspolpracy=form.rok_wspolpracy.data,
+                ocena=form.ocena.data,
+                komentarz=form.komentarz.data,
                 id_firmy=form.id_firmy.data
             )
             db.session.add(new_rating)
@@ -1239,8 +1222,8 @@ def edit_rating(id):
         try:
             rating.osoba_oceniajaca = form.osoba_oceniajaca.data
             rating.budowa_dzial = form.budowa_dzial.data
-            rating.Rok_wspolpracy = form.Rok_wspolpracy.data
-            rating.Ocena = form.Ocena.data
+            rating.rok_wspolpracy = form.rok_wspolpracy.data
+            rating.ocena = form.ocena.data
             rating.komentarz = form.komentarz.data
             rating.id_firmy = form.id_firmy.data
             db.session.commit()

@@ -20,21 +20,21 @@ class Firmy(db.Model):
 
 class FirmyTyp(db.Model):
     __tablename__ = 'firmy_typ'
-    id_firmy_typ = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id_firmy_typ = db.Column(db.Integer, primary_key=True)
     typ_firmy = db.Column(db.Text)
     
     firmy = db.relationship('Firmy', backref='typ_firmy', lazy='dynamic')
 
 class AdresyTyp(db.Model):
     __tablename__ = 'adresy_typ'
-    id_adresy_typ = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id_adresy_typ = db.Column(db.Integer, primary_key=True)
     typ_adresu = db.Column(db.Text)
     
     adresy = db.relationship('Adresy', backref='typ_adresu', lazy='dynamic')
 
 class Adresy(db.Model):
     __tablename__ = 'adresy'
-    id_adresy = db.Column(db.Integer, primary_key=True)
+    id_adresy = db.Column(db.Integer, primary_key=True, autoincrement=True)
     kod = db.Column(db.Text)
     miejscowosc = db.Column(db.Text)
     ulica_miejscowosc = db.Column(db.Text)
@@ -43,35 +43,35 @@ class Adresy(db.Model):
 
 class EmailTyp(db.Model):
     __tablename__ = 'email_typ'
-    id_email_typ = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id_email_typ = db.Column(db.Integer, primary_key=True)
     typ_emaila = db.Column(db.Text)
     
     emails = db.relationship('Email', backref='typ_emaila', lazy='dynamic')
 
 class Email(db.Model):
     __tablename__ = 'email'
-    id_email = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id_email = db.Column(db.Integer, primary_key=True)
     e_mail = db.Column(db.Text)
     id_email_typ = db.Column(db.Integer, db.ForeignKey('email_typ.id_email_typ'))
     id_firmy = db.Column(db.Integer, db.ForeignKey('firmy.id_firmy'))
 
 class TelefonTyp(db.Model):
     __tablename__ = 'telefon_typ'
-    id_telefon_typ = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id_telefon_typ = db.Column(db.Integer, primary_key=True)
     typ_telefonu = db.Column(db.Text)
     
     telefony = db.relationship('Telefon', backref='typ_telefonu', lazy='dynamic')
 
 class Telefon(db.Model):
     __tablename__ = 'telefon'
-    id_telefon = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id_telefon = db.Column(db.Integer, primary_key=True)
     telefon = db.Column(db.Text)
     id_telefon_typ = db.Column(db.Integer, db.ForeignKey('telefon_typ.id_telefon_typ'))
     id_firmy = db.Column(db.Integer, db.ForeignKey('firmy.id_firmy'))
 
 class Specjalnosci(db.Model):
     __tablename__ = 'specjalnosci'
-    id_specjalnosci = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id_specjalnosci = db.Column(db.Integer, primary_key=True)
     specjalnosc = db.Column(db.Text)
     
     firmy_specjalnosci = db.relationship('FirmySpecjalnosci', backref='specjalnosc', lazy='dynamic')
@@ -113,7 +113,7 @@ class FirmyObszarDzialania(db.Model):
 
 class Osoby(db.Model):
     __tablename__ = 'osoby'
-    id_osoby = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id_osoby = db.Column(db.Integer, primary_key=True)
     imie = db.Column(db.Text)
     nazwisko = db.Column(db.Text)
     stanowisko = db.Column(db.Text)
@@ -123,7 +123,7 @@ class Osoby(db.Model):
 
 class Oceny(db.Model):
     __tablename__ = 'oceny'
-    oceny_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    oceny_id = db.Column(db.Integer, primary_key=True)
     osoba_oceniajaca = db.Column(db.Text)
     budowa_dzial = db.Column(db.Text)
     rok_wspolpracy = db.Column(db.Integer)
