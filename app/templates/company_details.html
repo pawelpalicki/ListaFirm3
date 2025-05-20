@@ -13,7 +13,11 @@
                 <div class="card-body">
                     <p><strong>Typ firmy:</strong> {{ company.typ_firmy.typ_firmy }}</p>
                     {% if company.strona_www %}
-                    <p><strong>Strona WWW:</strong> <a href="{{ company.strona_www }}" target="_blank">{{ company.strona_www }}</a></p>
+                        <p><strong>Strona WWW:</strong> 
+                            <a href="{{ company.strona_www | fix_url }}" target="_blank" rel="noopener noreferrer">
+                                {{ company.strona_www }}
+                            </a>
+                        </p>
                     {% endif %}
                     {% if company.uwagi %}
                     <p><strong>Uwagi:</strong> {{ company.uwagi }}</p>

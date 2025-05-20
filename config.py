@@ -5,7 +5,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 load_dotenv()
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-key-should-be-changed'
+    SECRET_KEY = os.environ.get('SECRET_KEY') 
     database_url = os.environ.get('DATABASE_URL')
     if database_url:
         SQLALCHEMY_DATABASE_URI = database_url.replace('postgres://', 'postgresql://')
