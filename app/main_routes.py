@@ -1,12 +1,38 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, Response
+from flask_login import current_user # Importujemy tylko 'current_user' (do użycia w szablonach/logice)
+
+# WAŻNA UWAGA: Pozostałe Twoje importy są tutaj prawidłowe i powinny pozostać!
+# Nie przenoś ich do __init__.py ani nie usuwaj.
 from sqlalchemy import or_, and_, func
 from app.models import Firmy, FirmyTyp, Adresy, AdresyTyp, Email, EmailTyp, Telefon, TelefonTyp, Specjalnosci, FirmySpecjalnosci, Kraj, Wojewodztwa, Powiaty, FirmyObszarDzialania, Osoby, Oceny
-from app import db
+from app import db # Importujesz 'db' z zainicjalizowanej aplikacji
 from unidecode import unidecode
 from app.forms import CompanyForm, SimplePersonForm, SimpleRatingForm, SpecialtyForm, AddressTypeForm, EmailTypeForm, PhoneTypeForm, CompanyTypeForm
 from sqlalchemy.exc import SQLAlchemyError
 
 main = Blueprint('main', __name__)
+
+# --- GLOBALNA AUTORYZACJA DLA BLUEPRINTU 'main' ---
+@main.before_request
+def require_login_for_main_blueprint():
+    # Sprawdź, czy użytkownik nie jest zalogowany.
+    if not current_user.is_authenticated:
+        # Sprawdź, czy aktualny endpoint należy do blueprintu 'auth'
+        # (czyli jest to strona logowania/wylogowania)
+        # lub jest to plik statyczny (np. CSS, JS, obrazki).
+        # Te strony muszą być dostępne publicznie.
+        if request.endpoint and (
+            request.endpoint == 'auth.login' or
+            request.endpoint == 'auth.logout' or
+            request.endpoint == 'static'
+        ):
+            return # Pozwól na dostęp do tych endpointów bez logowania.
+
+        # Dla wszystkich innych endpointów w tym blueprincie,
+        # jeśli użytkownik nie jest zalogowany, przekieruj go na stronę logowania.
+        # Flask-Login automatycznie doda parametr 'next' do URL-a.
+        flash("Musisz się zalogować, aby uzyskać dostęp do tej strony.", "warning")
+        return redirect(url_for('auth.login', next=request.url))
 
 @main.route('/')
 def index():
