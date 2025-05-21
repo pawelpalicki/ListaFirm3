@@ -1,9 +1,19 @@
-/* ===== GLOBALNE STYLE ===== */
+/* ===== GLOBALNE STYLE (aktualizacja zmiennych i body) ===== */
 :root {
     --btn-primary-color: #0d6efd;
     --btn-secondary-color: #6c757d;
     --btn-success-color: #198754;
     --card-border-color: rgba(0, 0, 0, 0.1);
+
+    /* Nowe zmienne dla paska nawigacyjnego */
+    --navbar-bg-start: #ffffff;
+    --navbar-bg-end: #f8f9fa; /* Bootstrap 'bg-light' color */
+    --navbar-border-color: #dee2e6; /* Bootstrap 'border-color' */
+    --navbar-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --navbar-link-color: #343a40; /* Ciemniejszy dla lepszego kontrastu na jasnym tle */
+    --navbar-link-hover-color: #007bff; /* Główny kolor akcentu (Bootstrap primary) */
+    --navbar-link-active-color: #0056b3; /* Ciemniejszy odcień primary dla aktywnego linku */
+    --navbar-brand-color: #004085; /* Ciemnoniebieski dla brandu, np. wzięty z alert-info Bootstrapa */
 }
 
 body {
@@ -12,13 +22,106 @@ body {
 }
 
 
-/* ===== NAVBAR ===== */
-
-.nav-link {
-    color: ofwhite;
-    font-weight: 500;
-    text-align: right;
+/* NOWE STYLE PASKA NAWIGACYJNEGO */
+.custom-navbar-style {
+    background: linear-gradient(to bottom, var(--navbar-bg-start), var(--navbar-bg-end));
+    border-bottom: 1px solid var(--navbar-border-color);
+    box-shadow: var(--navbar-shadow);
+    padding-top: 0.75rem; /* Nieco więcej pionowego paddingu */
+    padding-bottom: 0.75rem;
 }
+
+.custom-navbar-style .navbar-brand {
+    color: var(--navbar-brand-color);
+    font-size: 1.35rem; /* Nieco większa czcionka dla brandu */
+    font-weight: 600; /* Pogrubienie zgodne z fw-bold w HTML */
+}
+
+.custom-navbar-style .navbar-brand .bi {
+    color: var(--navbar-brand-color); /* Ikona w kolorze brandu */
+    font-size: 1.5rem; /* Rozmiar ikony */
+    vertical-align: text-bottom; /* Lepsze wyrównanie ikony z tekstem */
+    margin-right: 0.3rem; /* Niewielki odstęp od tekstu */
+}
+
+.custom-navbar-style .nav-link {
+    color: var(--navbar-link-color);
+    font-weight: 500;
+    padding: 0.5rem 0.85rem; /* Dopasowany padding */
+    margin: 0 0.2rem;      /* Niewielki odstęp między elementami */
+    border-radius: 0.375rem; /* Zaokrąglenie dla efektu hover */
+    transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+
+.custom-navbar-style .nav-link:hover,
+.custom-navbar-style .nav-link:focus { /* :focus dla dostępności */
+    color: var(--navbar-link-hover-color);
+    background-color: rgba(0, 123, 255, 0.06); /* Bardzo subtelne tło przy hover */
+}
+
+/* Możesz dodać klasę 'active' do linku bieżącej strony w swoim backendzie/JS */
+.custom-navbar-style .nav-link.active {
+    color: var(--navbar-link-active-color);
+    font-weight: 600; /* Lub 700 dla jeszcze większego wyróżnienia */
+    background-color: rgba(0, 123, 255, 0.08);
+}
+
+.custom-navbar-style .dropdown-menu {
+    border-radius: 0.375rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--navbar-border-color);
+    margin-top: 0.5rem; /* Odstęp od paska nawigacji */
+}
+
+.custom-navbar-style .dropdown-item {
+    color: var(--navbar-link-color);
+    padding: 0.6rem 1.2rem; /* Nieco większy padding w dropdownie */
+    transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+
+.custom-navbar-style .dropdown-item:hover,
+.custom-navbar-style .dropdown-item:focus {
+    color: var(--navbar-link-hover-color);
+    background-color: rgba(0, 123, 255, 0.08);
+}
+
+.custom-navbar-style .dropdown-item:active { /* Gdy element jest kliknięty */
+    background-color: var(--navbar-link-hover-color);
+    color: #fff;
+}
+
+/* Stylizacja przycisków Zaloguj/Wyloguj */
+.custom-navbar-style .btn-sm { /* Upewnij się, że przyciski mają odpowiedni rozmiar */
+    padding: 0.3rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+.custom-navbar-style .btn-primary {
+    background-color: var(--navbar-link-hover-color);
+    border-color: var(--navbar-link-hover-color);
+    color: #fff;
+}
+.custom-navbar-style .btn-primary:hover {
+    background-color: var(--navbar-link-active-color);
+    border-color: var(--navbar-link-active-color);
+}
+
+.custom-navbar-style .btn-outline-secondary {
+    color: var(--navbar-link-color);
+    border-color: #ced4da; /* Neutralna ramka */
+}
+.custom-navbar-style .btn-outline-secondary:hover {
+    background-color: #e9ecef; /* Jasne tło przy najechaniu */
+    color: var(--navbar-link-active-color);
+    border-color: #ced4da;
+}
+
+/* Poprawka dla navbar-toggler (ikona hamburgera) */
+.custom-navbar-style .navbar-toggler {
+    border-color: rgba(0,0,0,0.1);
+}
+/* Można dostosować kolor ikony togglera, jeśli domyślny nie pasuje */
+/* .custom-navbar-style .navbar-toggler-icon { ... } */
 
 
 /* ===== KOLUMNY ===== */

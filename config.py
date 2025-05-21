@@ -1,9 +1,9 @@
 import os
-# from dotenv import load_dotenv  <-- USUŃ TĘ LINIĘ
+# from dotenv import load_dotenv 
 from datetime import timedelta
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-# load_dotenv()  <-- USUŃ TĘ LINIĘ
+# load_dotenv() 
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'jakis_domyslny_klucz_na_wypadek_braku_env'
