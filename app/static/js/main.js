@@ -86,8 +86,8 @@ $(document).ready(function() {
             // Show details row and load content
             detailsRow.removeClass('d-none');
 
-            // Load details via AJAX
-            $.get(`/company/${companyId}`, function(data) {
+            // Load details via AJAX with an 'ajax' query parameter
+            $.get(`/company/${companyId}?ajax=true`, function(data) { // Added ?ajax=true
                 const parser = new DOMParser();
                 const htmlDoc = parser.parseFromString(data, 'text/html');
                 const content = htmlDoc.querySelector('.company-details-content').innerHTML;

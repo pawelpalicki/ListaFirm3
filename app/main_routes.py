@@ -253,20 +253,20 @@ def company_details(company_id):
 
     # Calculate average rating
     avg_rating = db.session.query(func.avg(Oceny.ocena))\
-                          .filter(Oceny.id_firmy == company_id)\
-                          .scalar() or 0
+                            .filter(Oceny.id_firmy == company_id)\
+                            .scalar() or 0
     avg_rating = round(avg_rating, 1)
 
     # Get area of operation
     nationwide = db.session.query(FirmyObszarDzialania)\
-                          .filter(FirmyObszarDzialania.id_firmy == company_id,
-                                  FirmyObszarDzialania.id_kraj == 'POL')\
-                          .first() is not None
+                            .filter(FirmyObszarDzialania.id_firmy == company_id,
+                                    FirmyObszarDzialania.id_kraj == 'POL')\
+                            .first() is not None
 
     wojewodztwa = db.session.query(Wojewodztwa)\
                            .join(FirmyObszarDzialania)\
                            .filter(FirmyObszarDzialania.id_firmy == company_id,
-                                     Wojewodztwa.wojewodztwo != 'Nie dotyczy / Brak danych')\
+                                   Wojewodztwa.wojewodztwo != 'Nie dotyczy / Brak danych')\
                            .all()
 
     powiaty = db.session.query(Powiaty, Wojewodztwa.id_wojewodztwa)\
@@ -277,17 +277,21 @@ def company_details(company_id):
 
     # Get company specialties
     specialties = db.session.query(Specjalnosci)\
-                           .join(FirmySpecjalnosci)\
-                           .filter(FirmySpecjalnosci.id_firmy == company_id)\
-                           .all()
+                            .join(FirmySpecjalnosci)\
+                            .filter(FirmySpecjalnosci.id_firmy == company_id)\
+                            .all()
+
+    # Determine if it's an AJAX request
+    is_ajax = request.args.get('ajax', False) # Check for 'ajax=true' in query parameters
 
     return render_template('company_details.html',
-                          company=company,
-                          avg_rating=avg_rating,
-                          nationwide=nationwide,
-                          wojewodztwa=wojewodztwa,
-                          powiaty=powiaty,
-                          specialties=specialties)
+                            company=company,
+                            avg_rating=avg_rating,
+                            nationwide=nationwide,
+                            wojewodztwa=wojewodztwa,
+                            powiaty=powiaty,
+                            specialties=specialties,
+                            standalone=not is_ajax) # Set standalone to False if it's an AJAX request
 
 @main.route('/api/powiaty/<wojewodztwo_id>')
 def get_powiaty(wojewodztwo_id):
