@@ -181,7 +181,7 @@
                                 <th>Stanowisko</th>
                                 <th>Email</th>
                                 <th>Telefon</th>
-                            </tr>id_firmy
+                            </tr>
                         </thead>
                         <tbody>
                             {% for osoba in related_data[company.id_firmy].osoby %}
@@ -233,28 +233,40 @@
                 {% endif %}
 
                 {% if company.id_firmy in related_data and related_data[company.id_firmy].obszary %}
-                     <div class="section-title">Obszar działania:</div>
-                     <ul>
+                    <div class="section-title">Obszar działania:</div>
+                    <ul>
                         {% for fo in related_data[company.id_firmy].obszary %}
-                            {% if fo.id_kraj == 'POL' and not fo.id_wojewodztwa and not fo.id_powiaty %}
+                            {# Zmienna pomocnicza do śledzenia, czy coś już zostało wyświetlone w bieżącej linii #}
+                            {% set displayed_elements = [] %}
+
+                            {# Warunek dla "Cały kraj" #}
+                            {# Sprawdzamy, czy kraj to Polska ORAZ czy województwo to 'N/A' ORAZ czy powiat to 0 #}
+                            {% if fo.id_kraj == 'POL' and fo.id_wojewodztwa == 'N/A' and fo.id_powiaty == 0 %}
                                 <li>Cały kraj</li>
                             {% else %}
                                 <li>
-                                    {% if fo.id_wojewodztwa and fo.id_wojewodztwa in related_data.wojewodztwa_details %}
+                                    {# Logika wyświetlania powiatów: jeśli powiat jest zdefiniowany i nie jest 0 #}
+                                    {% if fo.id_powiaty and fo.id_powiaty != 0 and fo.id_powiaty in related_data.powiaty_details %}
+                                        {{ related_data.powiaty_details[fo.id_powiaty].powiat }} ({{ related_data.powiaty_details[fo.id_powiaty].id_wojewodztwa }})
+                                        {% set _ = displayed_elements.append(true) %}
+                                    {# Logika wyświetlania województwa: tylko jeśli nie wyświetlono powiatu i województwo jest zdefiniowane i nie jest 'N/A' #}
+                                    {% elif fo.id_wojewodztwa and fo.id_wojewodztwa != 'N/A' and fo.id_wojewodztwa in related_data.wojewodztwa_details %}
                                         {{ related_data.wojewodztwa_details[fo.id_wojewodztwa].wojewodztwo }}
+                                        {% set _ = displayed_elements.append(true) %}
                                     {% endif %}
-                                    {% if fo.id_powiaty and fo.id_powiaty in related_data.powiaty_details %}
-                                        , {{ related_data.powiaty_details[fo.id_powiaty].powiat }}
+
+                                    {# Obsługa krajów zagranicznych - tylko jeśli istnieje i nie jest 'POL' ani 'N/A' #}
+                                    {% if fo.id_kraj and fo.id_kraj != 'POL' and fo.id_kraj != 'N/A' %}
+                                        {# Dodajemy przecinek tylko jeśli coś już zostało wyświetlone (województwo/powiat) #}
+                                        {% if displayed_elements %}, {% endif %}
+                                        Kraj: {{ fo.id_kraj }}
+                                        {% set _ = displayed_elements.append(true) %}
                                     {% endif %}
-                                     {% if fo.id_kraj and fo.id_kraj != 'POL' %} {# Handle foreign countries if needed #}
-                                         , Kraj: {{ fo.id_kraj }}
-                                     {% endif %}
                                 </li>
                             {% endif %}
                         {% endfor %}
                     </ul>
                 {% endif %}
-
             </div>
         {% endfor %}
     {% else %}
