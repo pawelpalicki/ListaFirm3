@@ -362,6 +362,70 @@ body.dark-mode .custom-navbar-style .dropdown-item:focus {
     background-image: var(--navbar-toggler-icon);
 }
 
+/* === Dark Mode Fixes - May 2024 (czy kiedykolwiek to czytasz :D) === */
+
+/* 1. Zapewnienie koloru tekstu w komórkach tabeli na stronie głównej */
+body.dark-mode .responsive-table td,
+body.dark-mode .responsive-table th {
+    color: var(--table-text-color);
+}
+
+/* 2. Poprawka efektu hover dla wierszy tabeli na stronie głównej */
+body.dark-mode .responsive-table tr:hover td {
+    background-color: var(--table-hover-bg);
+}
+body.dark-mode .company-row:hover { /* Dla wierszy z klasą .company-row */
+    background-color: var(--table-hover-bg);
+}
+
+/* 3. Poprawki dla .list-group w trybie ciemnym */
+body.dark-mode .list-group-item {
+    background-color: var(--card-bg);
+    border-color: var(--card-border-color);
+    color: var(--text-color);
+}
+body.dark-mode a.list-group-item:hover,
+body.dark-mode button.list-group-item:hover {
+    background-color: var(--table-hover-bg);
+    color: var(--text-color);
+}
+body.dark-mode a.list-group-item.active,
+body.dark-mode button.list-group-item.active {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #ffffff;
+}
+
+/* 4. Poprawki dla harmonijek (accordions) w trybie ciemnym */
+body.dark-mode .accordion-item {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border-color);
+}
+body.dark-mode .accordion-button {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+body.dark-mode .accordion-button:focus {
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb, 13, 110, 253), 0.25);
+}
+body.dark-mode .accordion-button:not(.collapsed) {
+    background-color: var(--input-bg);
+    color: var(--primary-color);
+    box-shadow: inset 0 -1px 0 var(--card-border-color);
+}
+body.dark-mode .accordion-button::after {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+body.dark-mode .accordion-body {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+/* 5. Poprawka dla .text-muted w trybie ciemnym */
+body.dark-mode .text-muted {
+    color: var(--btn-outline-secondary-text) !important; /* Może wymagać !important */
+}
+Ważna u
 
 /* ===== KOLUMNY ===== */
 /* Styles for .left-column are mostly structural. The card within uses card variables. */
