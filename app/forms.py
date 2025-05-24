@@ -1,8 +1,9 @@
 from flask_wtf import FlaskForm
+from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SelectField, SelectMultipleField, IntegerField, FormField, FieldList, SubmitField, RadioField
-from wtforms.validators import DataRequired, Email, Optional, NumberRange
-from wtforms.widgets import ListWidget, CheckboxInput, Select
-from flask_wtf.file import FileField, FileAllowed
+from wtforms.validators import DataRequired, Email, Optional, NumberRange # Removed URL, StopValidation
+from wtforms.widgets import Select # Removed ListWidget, CheckboxInput
+# FileField, FileAllowed were removed as they are unused
 
 
 # Zamiast tworzenia własnych widgetów, użyjmy atrybutów HTML i klas CSS
@@ -94,8 +95,6 @@ class CompanyForm(FlaskForm):
         # Ustaw opcje dla istniejących wpisów ORAZ dla pola szablonu (jeśli WTForms go udostępnia - ale my użyjemy self.address_type_choices)
         for adres_entry in self.adresy:
             adres_entry.typ_adresu.choices = self.address_type_choices
-        # if hasattr(self.adresy, 'template'): # Sprawdzenie, czy WTForms udostępnia szablon - zazwyczaj nie
-        #     self.adresy.template.typ_adresu.choices = self.address_type_choices
 
         self.email_type_choices = [(t.id_email_typ, t.typ_emaila) for t in EmailTyp.query.order_by(EmailTyp.typ_emaila).all()]
         for email_entry in self.emaile:

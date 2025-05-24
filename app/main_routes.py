@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, Response
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify # Removed Response
 from flask_login import current_user # Importujemy tylko 'current_user' (do użycia w szablonach/logice)
 
 # WAŻNA UWAGA: Pozostałe Twoje importy są tutaj prawidłowe i powinny pozostać!
@@ -6,9 +6,10 @@ from flask_login import current_user # Importujemy tylko 'current_user' (do uży
 from sqlalchemy import or_, and_, func
 from app.models import Firmy, FirmyTyp, Adresy, AdresyTyp, Email, EmailTyp, Telefon, TelefonTyp, Specjalnosci, FirmySpecjalnosci, Kraj, Wojewodztwa, Powiaty, FirmyObszarDzialania, Osoby, Oceny
 from app import db # Importujesz 'db' z zainicjalizowanej aplikacji
-from unidecode import unidecode
-from app.forms import CompanyForm, SimplePersonForm, SimpleRatingForm, SpecialtyForm, AddressTypeForm, EmailTypeForm, PhoneTypeForm, CompanyTypeForm
+# unidecode is now used in app.utils
+from app.forms import CompanyForm # Removed unused forms
 from sqlalchemy.exc import SQLAlchemyError
+from app.utils import normalize_text # Import normalize_text
 
 main = Blueprint('main', __name__)
 
@@ -34,204 +35,188 @@ def require_login_for_main_blueprint():
         flash("Musisz się zalogować, aby uzyskać dostęp do tej strony.", "warning")
         return redirect(url_for('auth.login', next=request.url))
 
-@main.route('/')
-def index():
+def _get_filtered_companies_query(search_query=None, specialties_list=None, wojewodztwo_id=None, powiat_id=None, company_types_list=None):
     query = Firmy.query
 
-    # Handle search filter
-    search = request.args.get('search', '')
-    if search:
-        # Normalizacja tekstu wyszukiwania - usuwanie znaków specjalnych
-        normalized_search = ''.join(c for c in search if c.isalnum() or c.isspace())
-
-        # Lista do przechowywania ID firm, które pasują do kryteriów wyszukiwania
+    if search_query:
+        normalized_search = normalize_text(search_query) # Use imported normalize_text
+        # Using .contains for broader matching, similar to %term%
+        # Using func.lower for case-insensitive search at DB level where possible
+        
         matching_company_ids = set()
 
-        # Funkcja normalizująca tekst
-        def normalize_text(text):
-            if text is None:
-                return ""
-            # Usuwanie znaków specjalnych i normalizacja do ASCII
-            text = str(text)
-            normalized = unidecode(text).lower()  # konwersja do ASCII i małych liter
-            return ''.join(c for c in normalized if c.isalnum() or c.isspace())
+        # Search in Firmy
+        firmy_q = db.session.query(Firmy.id_firmy).filter(
+            or_(
+                func.lower(Firmy.nazwa_firmy).contains(normalized_search),
+                func.lower(Firmy.strona_www).contains(normalized_search),
+                func.lower(Firmy.uwagi).contains(normalized_search)
+            )
+        )
+        for firma in firmy_q.all():
+            matching_company_ids.add(firma.id_firmy)
 
-        # Wyszukiwanie w tabeli FIRMY
-        firmy_results = Firmy.query.all()
-        for firma in firmy_results:
-            if (normalized_search in normalize_text(firma.nazwa_firmy).lower() or
-                normalized_search in normalize_text(firma.strona_www).lower() or
-                normalized_search in normalize_text(firma.uwagi).lower()):
-                matching_company_ids.add(firma.id_firmy)
+        # Search in Adresy
+        adresy_q = db.session.query(Adresy.id_firmy).filter(
+            Adresy.id_firmy.isnot(None) & # Ensure id_firmy is not NULL
+            or_(
+                func.lower(Adresy.kod).contains(normalized_search),
+                func.lower(Adresy.miejscowosc).contains(normalized_search),
+                func.lower(Adresy.ulica_miejscowosc).contains(normalized_search)
+            )
+        )
+        for adres in adresy_q.all():
+            matching_company_ids.add(adres.id_firmy)
+        
+        # Search in Email
+        email_q = db.session.query(Email.id_firmy).filter(
+            Email.id_firmy.isnot(None) &
+            func.lower(Email.e_mail).contains(normalized_search)
+        )
+        for email in email_q.all():
+            matching_company_ids.add(email.id_firmy)
 
-        # Wyszukiwanie w tabeli ADRESY
-        adres_results = Adresy.query.all()
-        for adres in adres_results:
-            if (normalized_search in normalize_text(adres.kod).lower() or
-                normalized_search in normalize_text(adres.miejscowosc).lower() or
-                normalized_search in normalize_text(adres.ulica_miejscowosc).lower()):
-                if adres.id_firmy:
-                    matching_company_ids.add(adres.id_firmy)
+        # Search in Telefon
+        telefon_q = db.session.query(Telefon.id_firmy).filter(
+            Telefon.id_firmy.isnot(None) &
+            func.lower(Telefon.telefon).contains(normalized_search)
+        )
+        for telefon in telefon_q.all():
+            matching_company_ids.add(telefon.id_firmy)
 
-        # Wyszukiwanie w tabeli EMAIL
-        email_results = Email.query.all()
-        for email in email_results:
-            if normalized_search in normalize_text(email.e_mail).lower():
-                if email.id_firmy:
-                    matching_company_ids.add(email.id_firmy)
+        # Search in Osoby
+        osoby_q = db.session.query(Osoby.id_firmy).filter(
+            Osoby.id_firmy.isnot(None) &
+            or_(
+                func.lower(Osoby.imie).contains(normalized_search),
+                func.lower(Osoby.nazwisko).contains(normalized_search),
+                func.lower(Osoby.stanowisko).contains(normalized_search),
+                func.lower(Osoby.e_mail).contains(normalized_search),
+                func.lower(Osoby.telefon).contains(normalized_search)
+            )
+        )
+        for osoba in osoby_q.all():
+            matching_company_ids.add(osoba.id_firmy)
 
-        # Wyszukiwanie w tabeli TELEFON
-        telefon_results = Telefon.query.all()
-        for telefon in telefon_results:
-            if normalized_search in normalize_text(telefon.telefon).lower():
-                if telefon.id_firmy:
-                    matching_company_ids.add(telefon.id_firmy)
+        # Search in Oceny
+        oceny_q = db.session.query(Oceny.id_firmy).filter(
+            Oceny.id_firmy.isnot(None) &
+            or_(
+                func.lower(Oceny.osoba_oceniajaca).contains(normalized_search),
+                func.lower(Oceny.budowa_dzial).contains(normalized_search),
+                func.lower(Oceny.komentarz).contains(normalized_search)
+            )
+        )
+        for ocena in oceny_q.all():
+            matching_company_ids.add(ocena.id_firmy)
 
-        # Wyszukiwanie w tabeli OSOBY
-        osoby_results = Osoby.query.all()
-        for osoba in osoby_results:
-            if (normalized_search in normalize_text(osoba.imie).lower() or
-                normalized_search in normalize_text(osoba.nazwisko).lower() or
-                normalized_search in normalize_text(osoba.stanowisko).lower() or
-                normalized_search in normalize_text(osoba.e_mail).lower() or
-                normalized_search in normalize_text(osoba.telefon).lower()):
-                if osoba.id_firmy:
-                    matching_company_ids.add(osoba.id_firmy)
+        # Search in Specjalnosci (via FirmySpecjalnosci)
+        spec_q = db.session.query(FirmySpecjalnosci.id_firmy).join(Specjalnosci).filter(
+            func.lower(Specjalnosci.specjalnosc).contains(normalized_search)
+        )
+        for spec in spec_q.all():
+            matching_company_ids.add(spec.id_firmy)
 
-        # Wyszukiwanie w tabeli OCENY
-        oceny_results = Oceny.query.all()
-        for ocena in oceny_results:
-            if (normalized_search in normalize_text(ocena.osoba_oceniajaca).lower() or
-                normalized_search in normalize_text(ocena.budowa_dzial).lower() or
-                normalized_search in normalize_text(ocena.komentarz).lower()):
-                if ocena.id_firmy:
-                    matching_company_ids.add(ocena.id_firmy)
+        # Search in FirmyTyp (directly on Firmy or by joining FirmyTyp)
+        ft_q = db.session.query(Firmy.id_firmy).join(FirmyTyp).filter(
+            func.lower(FirmyTyp.typ_firmy).contains(normalized_search)
+        )
+        for ft in ft_q.all():
+            matching_company_ids.add(ft.id_firmy)
+        
+        # Search in Wojewodztwa, Powiaty, Kraj (via FirmyObszarDzialania)
+        fod_woj_q = db.session.query(FirmyObszarDzialania.id_firmy).join(Wojewodztwa).filter(
+            func.lower(Wojewodztwa.wojewodztwo).contains(normalized_search)
+        )
+        for fod in fod_woj_q.all():
+            matching_company_ids.add(fod.id_firmy)
 
-        # Wyszukiwanie w tabeli SPECJALNOSCI (przez relację)
-        specjalnosci_results = Specjalnosci.query.all()
-        for spec in specjalnosci_results:
-            if normalized_search in normalize_text(spec.specjalnosc).lower():
-                firmy_spec = FirmySpecjalnosci.query.filter_by(id_specjalnosci=spec.id_specjalnosci).all()
-                for fs in firmy_spec:
-                    matching_company_ids.add(fs.id_firmy)
+        fod_pow_q = db.session.query(FirmyObszarDzialania.id_firmy).join(Powiaty).filter(
+            func.lower(Powiaty.powiat).contains(normalized_search)
+        )
+        for fod in fod_pow_q.all():
+            matching_company_ids.add(fod.id_firmy)
 
-        # Wyszukiwanie po typie firmy
-        firmy_typ_results = FirmyTyp.query.all()
-        for typ in firmy_typ_results:
-            if normalized_search in normalize_text(typ.typ_firmy).lower():
-                firmy_by_typ = Firmy.query.filter_by(id_firmy_typ=typ.id_firmy_typ).all()
-                for firma in firmy_by_typ:
-                    matching_company_ids.add(firma.id_firmy)
-
-        # Wyszukiwanie po obszarze działania (województwa, powiaty, kraj)
-        wojewodztwa_results = Wojewodztwa.query.all()
-        for woj in wojewodztwa_results:
-            if normalized_search in normalize_text(woj.wojewodztwo).lower():
-                firmy_woj = FirmyObszarDzialania.query.filter_by(id_wojewodztwa=woj.id_wojewodztwa).all()
-                for fw in firmy_woj:
-                    matching_company_ids.add(fw.id_firmy)
-
-        powiaty_results = Powiaty.query.all()
-        for pow in powiaty_results:
-            if normalized_search in normalize_text(pow.powiat).lower():
-                firmy_pow = FirmyObszarDzialania.query.filter_by(id_powiaty=pow.id_powiaty).all()
-                for fp in firmy_pow:
-                    matching_company_ids.add(fp.id_firmy)
-
-        kraje_results = Kraj.query.all()
-        for kraj in kraje_results:
-            if normalized_search in normalize_text(kraj.kraj).lower():
-                firmy_kraj = FirmyObszarDzialania.query.filter_by(id_kraj=kraj.id_kraj).all()
-                for fk in firmy_kraj:
-                    matching_company_ids.add(fk.id_firmy)
-
-        # Filtrowanie głównego zapytania, aby zawierało tylko firmy pasujące do wyszukiwania
+        fod_kraj_q = db.session.query(FirmyObszarDzialania.id_firmy).join(Kraj).filter(
+            func.lower(Kraj.kraj).contains(normalized_search)
+        )
+        for fod in fod_kraj_q.all():
+            matching_company_ids.add(fod.id_firmy)
+            
         if matching_company_ids:
-            query = query.filter(Firmy.id_firmy.in_(matching_company_ids))
+            query = query.filter(Firmy.id_firmy.in_(list(matching_company_ids)))
         else:
-            # Jeśli nie znaleziono dopasowań, zwróć pustą listę
+            # If search term is provided but no matches, return no results
             query = query.filter(False)
 
-    # Handle specialty filter
-    specialties = request.args.getlist('specialties')
-    if specialties:
+
+    if specialties_list:
         query = query.join(FirmySpecjalnosci)\
-                    .filter(FirmySpecjalnosci.id_specjalnosci.in_(specialties))
+                     .filter(FirmySpecjalnosci.id_specjalnosci.in_(specialties_list))
 
-    # Handle area filter
-    wojewodztwo = request.args.get('wojewodztwo')
-    powiat = request.args.get('powiat')
-
-    if powiat:
-        # Include companies with nationwide service
-        nationwide_companies = db.session.query(Firmy.id_firmy)\
-                                .join(FirmyObszarDzialania)\
-                                .filter(FirmyObszarDzialania.id_kraj == 'POL')
-
-        # Get powiat data to find its wojewodztwo
-        powiat_data = Powiaty.query.filter_by(id_powiaty=powiat).first()
-
+    if powiat_id:
+        nationwide_companies_subquery = db.session.query(Firmy.id_firmy)\
+                                          .join(FirmyObszarDzialania)\
+                                          .filter(FirmyObszarDzialania.id_kraj == 'POL')
+        powiat_data = Powiaty.query.filter_by(id_powiaty=powiat_id).first()
         if powiat_data:
-            wojewodztwo_id = powiat_data.id_wojewodztwa
-
-            # Companies serving the specific powiat
-            powiat_companies = db.session.query(Firmy.id_firmy)\
-                                .join(FirmyObszarDzialania)\
-                                .filter(FirmyObszarDzialania.id_powiaty == powiat)
-
-            # Companies serving the whole wojewodztwo (with empty powiat fields)
-            wojewodztwo_empty_powiat_companies = db.session.query(Firmy.id_firmy)\
-                                    .join(FirmyObszarDzialania)\
-                                    .filter(
-                                        and_(
-                                            FirmyObszarDzialania.id_wojewodztwa == wojewodztwo_id,
-                                            FirmyObszarDzialania.id_powiaty == 0
-                                        )
-                                    )
-
-            # Combine all relevant companies
-            combined_companies = nationwide_companies.union(
-                powiat_companies, 
-                wojewodztwo_empty_powiat_companies
+            wojewodztwo_id_for_powiat = powiat_data.id_wojewodztwa
+            powiat_companies_subquery = db.session.query(Firmy.id_firmy)\
+                                             .join(FirmyObszarDzialania)\
+                                             .filter(FirmyObszarDzialania.id_powiaty == powiat_id)
+            wojewodztwo_empty_powiat_companies_subquery = db.session.query(Firmy.id_firmy)\
+                                                              .join(FirmyObszarDzialania)\
+                                                              .filter(
+                                                                  and_(
+                                                                      FirmyObszarDzialania.id_wojewodztwa == wojewodztwo_id_for_powiat,
+                                                                      FirmyObszarDzialania.id_powiaty == 0
+                                                                  )
+                                                              )
+            combined_ids_subquery = nationwide_companies_subquery.union(
+                powiat_companies_subquery, 
+                wojewodztwo_empty_powiat_companies_subquery
             ).subquery()
         else:
-            # If powiat not found, only include nationwide companies
-            combined_companies = nationwide_companies.subquery()
+            combined_ids_subquery = nationwide_companies_subquery.subquery()
+        query = query.filter(Firmy.id_firmy.in_(combined_ids_subquery))
 
-        # Apply filter to the main query
-        query = query.filter(Firmy.id_firmy.in_(combined_companies))
+    elif wojewodztwo_id and not powiat_id: # Only wojewodztwo_id is present
+        nationwide_companies_subquery = db.session.query(Firmy.id_firmy)\
+                                          .join(FirmyObszarDzialania)\
+                                          .filter(FirmyObszarDzialania.id_kraj == 'POL')
+        wojewodztwo_companies_subquery = db.session.query(Firmy.id_firmy)\
+                                           .join(FirmyObszarDzialania)\
+                                           .filter(FirmyObszarDzialania.id_wojewodztwa == wojewodztwo_id)\
+                                           .filter(FirmyObszarDzialania.id_powiaty == 0)\
+                                           .except_(
+                                               db.session.query(Firmy.id_firmy)\
+                                               .join(FirmyObszarDzialania)\
+                                               .filter(FirmyObszarDzialania.id_wojewodztwa == wojewodztwo_id)\
+                                               .filter(FirmyObszarDzialania.id_powiaty != 0)
+                                           )
+        combined_ids_subquery = nationwide_companies_subquery.union(wojewodztwo_companies_subquery).subquery()
+        query = query.filter(Firmy.id_firmy.in_(combined_ids_subquery))
 
-    elif wojewodztwo and not powiat:
-        # Firmy o zasięgu ogólnokrajowym
-        nationwide_companies = db.session.query(Firmy.id_firmy)\
-                                .join(FirmyObszarDzialania)\
-                                .filter(FirmyObszarDzialania.id_kraj == 'POL')
+    if company_types_list:
+        query = query.filter(Firmy.id_firmy_typ.in_(company_types_list))
+        
+    return query
 
-        # Firmy działające tylko na poziomie województwa (bez przypisanych powiatów)
-        wojewodztwo_companies = db.session.query(Firmy.id_firmy)\
-                                .join(FirmyObszarDzialania)\
-                                .filter(FirmyObszarDzialania.id_wojewodztwa == wojewodztwo)\
-                                .filter(FirmyObszarDzialania.id_powiaty == 0)\
-                                .except_(
-                                    # Wykluczenie firm, które mają jakikolwiek wpis z przypisanym powiatem
-                                    db.session.query(Firmy.id_firmy)\
-                                    .join(FirmyObszarDzialania)\
-                                    .filter(FirmyObszarDzialania.id_wojewodztwa == wojewodztwo)\
-                                    .filter(FirmyObszarDzialania.id_powiaty != 0))
-
-        # Połączenie zbiorów
-        combined_companies = nationwide_companies.union(wojewodztwo_companies).subquery()
-
-        # Filtrowanie głównego zapytania
-        query = query.filter(Firmy.id_firmy.in_(combined_companies))
-
-
-    # Handle company type filter
+@main.route('/')
+def index():
+    search_term = request.args.get('search', '')
+    specialties = request.args.getlist('specialties')
+    wojewodztwo = request.args.get('wojewodztwo')
+    powiat = request.args.get('powiat')
     company_types = [ct for ct in request.args.getlist('company_types') if ct.strip()]
-    if company_types:
-        query = query.filter(Firmy.id_firmy_typ.in_(company_types))
 
-
+    query = _get_filtered_companies_query(
+        search_query=search_term,
+        specialties_list=specialties,
+        wojewodztwo_id=wojewodztwo,
+        powiat_id=powiat,
+        company_types_list=company_types
+    )
     companies = query.all()
 
     # Get all data needed for filters
@@ -245,7 +230,13 @@ def index():
                            all_specialties=all_specialties,
                            all_wojewodztwa=all_wojewodztwa,
                            all_powiaty=all_powiaty,
-                           all_company_types=all_company_types)
+                           all_company_types=all_company_types,
+                           search_term=search_term, # Pass search term back to template
+                           selected_specialties=specialties,
+                           selected_wojewodztwo=wojewodztwo,
+                           selected_powiat=powiat,
+                           selected_company_types=company_types
+                           )
 
 @main.route('/company/<int:company_id>')
 def company_details(company_id):
@@ -410,7 +401,6 @@ def add_specjalnosc():
 
 @main.route('/company/new', methods=['GET', 'POST'])
 def new_company():
-    from app.forms import CompanyForm
     form = CompanyForm()
 
     if request.method == 'POST':
@@ -515,16 +505,6 @@ def new_company():
                     )
                     db.session.add(obszar)
             elif obszar_type == 'powiaty':
-                # # Powiaty (województwa są również zapisywane) - kraj pusty
-                # for woj_id in form.wojewodztwa.data:
-                #     obszar = FirmyObszarDzialania(
-                #         id_firmy=company.id_firmy,
-                #         id_kraj='',
-                #         id_wojewodztwa=woj_id,
-                #         id_powiaty=''
-                #     )
-                #     db.session.add(obszar)
-
                 for pow_id in form.powiaty.data:
                     powiat = Powiaty.query.get(pow_id)
                     obszar = FirmyObszarDzialania(
@@ -557,8 +537,6 @@ def new_company():
 
 @main.route('/company/<int:company_id>/edit', methods=['GET', 'POST'])
 def edit_company(company_id):
-    from app.forms import CompanyForm
-
     # Pobierz firmę z bazy danych lub zwróć 404 jeśli nie istnieje
     company = Firmy.query.get_or_404(company_id)
 
@@ -760,16 +738,6 @@ def edit_company(company_id):
                     )
                     db.session.add(obszar)
             elif obszar_type == 'powiaty':
-                # # Powiaty (województwa są również zapisywane) - kraj pusty
-                # for woj_id in form.wojewodztwa.data:
-                #     obszar = FirmyObszarDzialania(
-                #         id_firmy=company.id_firmy,
-                #         id_kraj='',
-                #         id_wojewodztwa=woj_id,
-                #         id_powiaty=0
-                #     )
-                #     db.session.add(obszar)
-
                 for pow_id in form.powiaty.data:
                     powiat = Powiaty.query.get(pow_id)
                     obszar = FirmyObszarDzialania(
@@ -823,638 +791,24 @@ def delete_company(company_id):
         flash(f'Wystąpił błąd podczas usuwania firmy: {str(e)}', 'danger')
         return jsonify({'success': False, 'error': str(e)}), 500
 
-@main.route('/specialties')
-def list_specialties():
-    specialties = Specjalnosci.query.all()
-    return render_template('specialties.html', items=specialties, title='Specjalności')
-
-@main.route('/specialties/new', methods=['GET', 'POST'])
-def new_specialty():
-    from app.forms import SpecialtyForm # Local import
-    form = SpecialtyForm()
-    if form.validate_on_submit():
-        try:
-            # Sprawdzamy, czy specjalność już istnieje (case-insensitive)
-            existing_spec = Specjalnosci.query.filter(func.lower(Specjalnosci.specjalnosc) == func.lower(form.name.data)).first()
-            if existing_spec:
-                flash('Specjalność o tej nazwie już istnieje.', 'warning')
-            else:
-                new_spec = Specjalnosci(specjalnosc=form.name.data)
-                db.session.add(new_spec)
-                db.session.commit()
-                flash('Specjalność została dodana pomyślnie!', 'success')
-                return redirect(url_for('main.list_specialties'))
-        except SQLAlchemyError as e:
-            db.session.rollback()
-            flash(f'Wystąpił błąd podczas dodawania specjalności: {e}', 'danger')
-    return render_template('simple_form.html', form=form, title='Dodaj Specjalność', back_url=url_for('main.list_specialties'))
-
-@main.route('/specialties/<int:id>/edit', methods=['GET', 'POST'])
-def edit_specialty(id):
-    from app.forms import SpecialtyForm # Local import
-    specialty = Specjalnosci.query.get_or_404(id)
-    form = SpecialtyForm(obj=specialty)
-    if request.method == 'GET':
-        # Explicitly set the form data for the 'name' field from the model attribute 'Specjalnosc'
-        form.name.data = specialty.specjalnosc
-        return render_template('simple_form.html', form=form, title='Edytuj Specjalność', back_url=url_for('main.list_specialties'))
-    else: # POST request
-        if form.validate_on_submit():
-            try:
-                # Sprawdzamy, czy inna specjalność o tej nazwie już istnieje (case-insensitive)
-                existing_spec = Specjalnosci.query.filter(func.lower(Specjalnosci.specjalnosc) == func.lower(form.name.data), Specjalnosci.id_specjalnosci != id).first()
-                if existing_spec:
-                    flash('Specjalność o tej nazwie już istnieje.', 'warning')
-                else:
-                    specialty.specjalnosc = form.name.data
-                    db.session.commit()
-                    flash('Specjalność została zaktualizowana pomyślnie!', 'success')
-                    return redirect(url_for('main.list_specialties'))
-            except SQLAlchemyError as e:
-                db.session.rollback()
-                flash(f'Wystąpił błąd podczas aktualizacji specjalności: {e}', 'danger')
-        return render_template('simple_form.html', form=form, title='Edytuj Specjalność', back_url=url_for('main.list_specialties'))
-
-@main.route('/specialties/<int:id>/delete', methods=['POST'])
-def delete_specialty(id):
-    specialty = Specjalnosci.query.get_or_404(id)
-    try:
-        db.session.delete(specialty)
-        db.session.commit()
-        flash('Specjalność została usunięta pomyślnie!', 'success')
-    except SQLAlchemyError as e:
-        db.session.rollback()
-        flash(f'Wystąpił błąd podczas usuwania specjalności: {e}', 'danger')
-    return redirect(url_for('main.list_specialties'))
-
-
-@main.route('/address_types')
-def list_address_types():
-    address_types = AdresyTyp.query.all()
-    return render_template('address_types.html', items=address_types, title='Typy Adresów')
-
-@main.route('/address_types/new', methods=['GET', 'POST'])
-def new_address_type():
-    from app.forms import AddressTypeForm # Local import
-    form = AddressTypeForm()
-    if form.validate_on_submit():
-        try:
-            # Sprawdzamy, czy typ adresu już istnieje (case-insensitive)
-            existing_type = AdresyTyp.query.filter(func.lower(AdresyTyp.typ_adresu) == func.lower(form.name.data)).first()
-            if existing_type:
-                flash('Typ adresu o tej nazwie już istnieje.', 'warning')
-            else:
-                new_type = AdresyTyp(typ_adresu=form.name.data)
-                db.session.add(new_type)
-                db.session.commit()
-                flash('Typ adresu został dodany pomyślnie!', 'success')
-                return redirect(url_for('main.list_address_types'))
-        except SQLAlchemyError as e:
-            db.session.rollback()
-            flash(f'Wystąpił błąd podczas dodawania typu adresu: {e}', 'danger')
-    return render_template('simple_form.html', form=form, title='Dodaj Typ Adresu', back_url=url_for('main.list_address_types'))
-
-
-@main.route('/address_types/<int:id>/edit', methods=['GET', 'POST'])
-def edit_address_type(id):
-    from app.forms import AddressTypeForm # Local import
-    address_type = AdresyTyp.query.get_or_404(id)
-    form = AddressTypeForm(obj=address_type)
-    if request.method == 'GET':
-         # Explicitly set the form data for the 'name' field from the model attribute 'typ_adresu'
-        form.name.data = address_type.typ_adresu
-        return render_template('simple_form.html', form=form, title='Edytuj Typ Adresu', back_url=url_for('main.list_address_types'))
-    else: # POST request
-        if form.validate_on_submit():
-            try:
-                # Sprawdzamy, czy inny typ adresu o tej nazwie już istnieje (case-insensitive)
-                existing_type = AdresyTyp.query.filter(func.lower(AdresyTyp.typ_adresu) == func.lower(form.name.data), AdresyTyp.id_adresy_typ != id).first()
-                if existing_type:
-                    flash('Typ adresu o tej nazwie już istnieje.', 'warning')
-                else:
-                    address_type.typ_adresu = form.name.data
-                    db.session.commit()
-                    flash('Typ adresu został zaktualizowany pomyślnie!', 'success')
-                    return redirect(url_for('main.list_address_types'))
-            except SQLAlchemyError as e:
-                db.session.rollback()
-                flash(f'Wystąpił błąd podczas aktualizacji typu adresu: {e}', 'danger')
-        return render_template('simple_form.html', form=form, title='Edytuj Typ Adresu', back_url=url_for('main.list_address_types'))
-
-@main.route('/address_types/<int:id>/delete', methods=['POST'])
-def delete_address_type(id):
-    address_type = AdresyTyp.query.get_or_404(id)
-    try:
-        db.session.delete(address_type)
-        db.session.commit()
-        flash('Typ adresu został usunięty pomyślnie!', 'success')
-    except SQLAlchemyError as e:
-        db.session.rollback()
-        flash(f'Wystąpił błąd podczas usuwania typu adresu: {e}', 'danger')
-    return redirect(url_for('main.list_address_types'))
-
-
-@main.route('/email_types')
-def list_email_types():
-    email_types = EmailTyp.query.all()
-    return render_template('email_types.html', items=email_types, title='Typy E-maili')
-
-@main.route('/email_types/new', methods=['GET', 'POST'])
-def new_email_type():
-    from app.forms import EmailTypeForm # Local import
-    form = EmailTypeForm()
-    if form.validate_on_submit():
-        try:
-            # Sprawdzamy, czy typ emaila już istnieje (case-insensitive)
-            existing_type = EmailTyp.query.filter(func.lower(EmailTyp.typ_emaila) == func.lower(form.name.data)).first()
-            if existing_type:
-                flash('Typ emaila o tej nazwie już istnieje.', 'warning')
-            else:
-                new_type = EmailTyp(typ_emaila=form.name.data)
-                db.session.add(new_type)
-                db.session.commit()
-                flash('Typ emaila został dodany pomyślnie!', 'success')
-                return redirect(url_for('main.list_email_types'))
-        except SQLAlchemyError as e:
-            db.session.rollback()
-            flash(f'Wystąpił błąd podczas dodawania typu emaila: {e}', 'danger')
-    return render_template('simple_form.html', form=form, title='Dodaj Typ E-maila', back_url=url_for('main.list_email_types'))
-
-@main.route('/email_types/<int:id>/edit', methods=['GET', 'POST'])
-def edit_email_type(id):
-    from app.forms import EmailTypeForm # Local import
-    email_type = EmailTyp.query.get_or_404(id)
-    form = EmailTypeForm(obj=email_type)
-    if request.method == 'GET':
-        # Explicitly set the form data for the 'name' field from the model attribute 'Typ_emaila'
-        form.name.data = email_type.typ_emaila
-        return render_template('simple_form.html', form=form, title='Edytuj Typ E-maila', back_url=url_for('main.list_email_types'))
-    else: # POST request
-        if form.validate_on_submit():
-            try:
-                # Sprawdzamy, czy inny typ emaila o tej nazwie już istnieje (case-insensitive)
-                existing_type = EmailTyp.query.filter(func.lower(EmailTyp.typ_emaila) == func.lower(form.name.data), EmailTyp.id_email_typ != id).first()
-                if existing_type:
-                    flash('Typ emaila o tej nazwie już istnieje.', 'warning')
-                else:
-                    email_type.typ_emaila = form.name.data
-                    db.session.commit()
-                    flash('Typ emaila został zaktualizowany pomyślnie!', 'success')
-                    return redirect(url_for('main.list_email_types'))
-            except SQLAlchemyError as e:
-                db.session.rollback()
-                flash(f'Wystąpił błąd podczas aktualizacji typu emaila: {e}', 'danger')
-        return render_template('simple_form.html', form=form, title='Edytuj Typ E-maila', back_url=url_for('main.list_email_types'))
-
-@main.route('/email_types/<int:id>/delete', methods=['POST'])
-def delete_email_type(id):
-    email_type = EmailTyp.query.get_or_404(id)
-    try:
-        db.session.delete(email_type)
-        db.session.commit()
-        flash('Typ emaila został usunięty pomyślnie!', 'success')
-    except SQLAlchemyError as e:
-        db.session.rollback()
-        flash(f'Wystąpił błąd podczas usuwania typu emaila: {e}', 'danger')
-    return redirect(url_for('main.list_email_types'))
-
-
-@main.route('/phone_types')
-def list_phone_types():
-    phone_types = TelefonTyp.query.all()
-    return render_template('phone_types.html', items=phone_types, title='Typy Telefonów')
-
-@main.route('/phone_types/new', methods=['GET', 'POST'])
-def new_phone_type():
-    from app.forms import PhoneTypeForm # Local import
-    form = PhoneTypeForm()
-    if form.validate_on_submit():
-        try:
-            # Sprawdzamy, czy typ telefonu już istnieje (case-insensitive)
-            existing_type = TelefonTyp.query.filter(func.lower(TelefonTyp.typ_telefonu) == func.lower(form.name.data)).first()
-            if existing_type:
-                flash('Typ telefonu o tej nazwie już istnieje.', 'warning')
-            else:
-                new_type = TelefonTyp(typ_telefonu=form.name.data)
-                db.session.add(new_type)
-                db.session.commit()
-                flash('Typ telefonu został dodany pomyślnie!', 'success')
-                return redirect(url_for('main.list_phone_types'))
-        except SQLAlchemyError as e:
-            db.session.rollback()
-            flash(f'Wystąpił błąd podczas dodawania typu telefonu: {e}', 'danger')
-    return render_template('simple_form.html', form=form, title='Dodaj Typ Telefonu', back_url=url_for('main.list_phone_types'))
-
-@main.route('/phone_types/<int:id>/edit', methods=['GET', 'POST'])
-def edit_phone_type(id):
-    from app.forms import PhoneTypeForm # Local import
-    phone_type = TelefonTyp.query.get_or_404(id)
-    form = PhoneTypeForm(obj=phone_type)
-    if request.method == 'GET':
-        # Explicitly set the form data for the 'name' field from the model attribute 'Typ_telefonu'
-        form.name.data = phone_type.typ_telefonu
-        return render_template('simple_form.html', form=form, title='Edytuj Typ Telefonu', back_url=url_for('main.list_phone_types'))
-    else: # POST request
-        if form.validate_on_submit():
-            try:
-                # Sprawdzamy, czy inny typ telefonu o tej nazwie już istnieje (case-insensitive)
-                existing_type = TelefonTyp.query.filter(func.lower(TelefonTyp.typ_telefonu) == func.lower(form.name.data), TelefonTyp.id_telefon_typ != id).first()
-                if existing_type:
-                    flash('Typ telefonu o tej nazwie już istnieje.', 'warning')
-                else:
-                    phone_type.typ_telefonu = form.name.data
-                    db.session.commit()
-                    flash('Typ telefonu został zaktualizowany pomyślnie!', 'success')
-                    return redirect(url_for('main.list_phone_types'))
-            except SQLAlchemyError as e:
-                db.session.rollback()
-                flash(f'Wystąpił błąd podczas aktualizacji typu telefonu: {e}', 'danger')
-        return render_template('simple_form.html', form=form, title='Edytuj Typ Telefonu', back_url=url_for('main.list_phone_types'))
-
-@main.route('/phone_types/<int:id>/delete', methods=['POST'])
-def delete_phone_type(id):
-    phone_type = TelefonTyp.query.get_or_404(id)
-    try:
-        db.session.delete(phone_type)
-        db.session.commit()
-        flash('Typ telefonu został usunięty pomyślnie!', 'success')
-    except SQLAlchemyError as e:
-        db.session.rollback()
-        flash(f'Wystąpił błąd podczas usuwania typu telefonu: {e}', 'danger')
-    return redirect(url_for('main.list_phone_types'))
-
-# Routes for Company Types
-@main.route('/company_types')
-def list_company_types():
-    company_types = FirmyTyp.query.all()
-    return render_template('company_types.html', items=company_types, title='Typy Firm')
-
-@main.route('/company_types/new', methods=['GET', 'POST'])
-def new_company_type():
-    from app.forms import CompanyTypeForm # Local import
-    form = CompanyTypeForm()
-    if form.validate_on_submit():
-        try:
-            # Check if company type already exists (case-insensitive)
-            existing_type = FirmyTyp.query.filter(func.lower(FirmyTyp.typ_firmy) == func.lower(form.name.data)).first()
-            if existing_type:
-                flash('Typ firmy o tej nazwie już istnieje.', 'warning')
-            else:
-                new_type = FirmyTyp(typ_firmy=form.name.data)
-                db.session.add(new_type)
-                db.session.commit()
-                flash('Typ firmy został dodany pomyślnie!', 'success')
-                return redirect(url_for('main.list_company_types'))
-        except SQLAlchemyError as e:
-            db.session.rollback()
-            flash(f'Wystąpił błąd podczas dodawania typu firmy: {e}', 'danger')
-    return render_template('simple_form.html', form=form, title='Dodaj Typ Firmy', back_url=url_for('main.list_company_types'))
-
-@main.route('/company_types/<int:id>/edit', methods=['GET', 'POST'])
-def edit_company_type(id):
-    from app.forms import CompanyTypeForm # Local import
-    company_type = FirmyTyp.query.get_or_404(id)
-    form = CompanyTypeForm(obj=company_type)
-    if request.method == 'GET':
-         # Explicitly set the form data for the 'name' field from the model attribute 'Typ_firmy'
-        form.name.data = company_type.typ_firmy
-        return render_template('simple_form.html', form=form, title='Edytuj Typ Firmy', back_url=url_for('main.list_company_types'))
-    else: # POST request
-        if form.validate_on_submit():
-            try:
-                # Check if another company type with this name already exists (case-insensitive)
-                existing_type = FirmyTyp.query.filter(func.lower(FirmyTyp.typ_firmy) == func.lower(form.name.data), FirmyTyp.id_firmy_typ != id).first()
-                if existing_type:
-                     flash('Typ firmy o tej nazwie już istnieje.', 'warning')
-                else:
-                    company_type.typ_firmy = form.name.data
-                    db.session.commit()
-                    flash('Typ firmy został zaktualizowany pomyślnie!', 'success')
-                    return redirect(url_for('main.list_company_types'))
-            except SQLAlchemyError as e:
-                db.session.rollback()
-                flash(f'Wystąpił błąd podczas aktualizacji typu firmy: {e}', 'danger')
-        return render_template('simple_form.html', form=form, title='Edytuj Typ Firmy', back_url=url_for('main.list_company_types'))
-
-@main.route('/company_types/<int:id>/delete', methods=['POST'])
-def delete_company_type(id):
-    company_type = FirmyTyp.query.get_or_404(id)
-    try:
-        db.session.delete(company_type)
-        db.session.commit()
-        flash('Typ firmy został usunięty pomyślnie!', 'success')
-    except SQLAlchemyError as e:
-        db.session.rollback()
-        flash(f'Wystąpił błąd podczas usuwania typu firmy: {e}', 'danger')
-    return redirect(url_for('main.list_company_types'))
-
-# Routes for Persons
-@main.route('/persons')
-def list_persons():
-    persons = Osoby.query.all()
-    return render_template('persons.html', items=persons, title='Osoby Kontaktowe')
-
-@main.route('/persons/new', methods=['GET', 'POST'])
-def new_person():
-    form = SimplePersonForm()
-    if form.validate_on_submit():
-        try:
-            new_person = Osoby(
-                imie=form.imie.data,
-                nazwisko=form.nazwisko.data,
-                stanowisko=form.stanowisko.data,
-                e_mail=form.e_mail.data,
-                telefon=form.telefon.data,
-                id_firmy=form.id_firmy.data
-            )
-            db.session.add(new_person)
-            db.session.commit()
-            flash('Osoba kontaktowa została dodana pomyślnie!', 'success')
-            return redirect(url_for('main.list_persons'))
-        except SQLAlchemyError as e:
-            db.session.rollback()
-            flash(f'Wystąpił błąd podczas dodawania osoby kontaktowej: {e}', 'danger')
-    return render_template('person_form.html', form=form, title='Dodaj Osobę Kontaktową', back_url=url_for('main.list_persons'))
-
-@main.route('/persons/<int:id>/edit', methods=['GET', 'POST'])
-def edit_person(id):
-    person = Osoby.query.get_or_404(id)
-    # Użyj zaktualizowanej definicji formularza SimplePersonForm
-    form = SimplePersonForm(obj=person) # Teraz obj=person powinno poprawnie wypełnić WSZYSTKIE pola
-
-    if form.validate_on_submit():
-        try:
-            # Używaj zaktualizowanych nazw pól z formularza
-            person.imie = form.imie.data
-            person.nazwisko = form.nazwisko.data
-            person.stanowisko = form.stanowisko.data
-            person.e_mail = form.e_mail.data # Poprawna nazwa
-            person.telefon = form.telefon.data # Poprawna nazwa
-            person.id_firmy = form.id_firmy.data # Poprawna nazwa dla pola SelectField
-            db.session.commit()
-            flash('Osoba kontaktowa została zaktualizowana pomyślnie!', 'success')
-            return redirect(url_for('main.list_persons'))
-        except SQLAlchemyError as e:
-            db.session.rollback()
-            flash(f'Wystąpił błąd podczas aktualizacji osoby kontaktowej: {e}', 'danger')
-
-    # Przy GET lub błędzie walidacji, renderuj szablon.
-    # Formularz przekazany do szablonu będzie już wypełniony danymi z 'person' dzięki obj=person
-    return render_template('person_form.html', form=form, title='Edytuj Osobę Kontaktową', back_url=url_for('main.list_persons'))
-
-
-@main.route('/persons/<int:id>/delete', methods=['POST'])
-def delete_person(id):
-    person = Osoby.query.get_or_404(id)
-    try:
-        db.session.delete(person)
-        db.session.commit()
-        flash('Osoba kontaktowa została usunięta pomyślnie!', 'success')
-    except SQLAlchemyError as e:
-        db.session.rollback()
-        flash(f'Wystąpił błąd podczas usuwania osoby kontaktowej: {e}', 'danger')
-    return redirect(url_for('main.list_persons'))
-
-
-# Routes for Ratings
-@main.route('/ratings')
-def list_ratings():
-    ratings = Oceny.query.all()
-    return render_template('ratings.html', items=ratings, title='Oceny Współpracy')
-
-@main.route('/ratings/new', methods=['GET', 'POST'])
-def new_rating():
-    form = SimpleRatingForm()
-    if form.validate_on_submit():
-        try:
-            new_rating = Oceny(
-                osoba_oceniajaca=form.osoba_oceniajaca.data,
-                budowa_dzial=form.budowa_dzial.data,
-                rok_wspolpracy=form.rok_wspolpracy.data,
-                ocena=form.ocena.data,
-                komentarz=form.komentarz.data,
-                id_firmy=form.id_firmy.data
-            )
-            db.session.add(new_rating)
-            db.session.commit()
-            flash('Ocena została dodana pomyślnie!', 'success')
-            return redirect(url_for('main.list_ratings'))
-        except SQLAlchemyError as e:
-            db.session.rollback()
-            flash(f'Wystąpił błąd podczas dodawania oceny: {e}', 'danger')
-    return render_template('rating_form.html', form=form, title='Dodaj Ocenę Współpracy', back_url=url_for('main.list_ratings'))
-
-@main.route('/ratings/<int:id>/edit', methods=['GET', 'POST'])
-def edit_rating(id):
-    rating = Oceny.query.get_or_404(id)
-    form = SimpleRatingForm(obj=rating)
-    if form.validate_on_submit():
-        try:
-            rating.osoba_oceniajaca = form.osoba_oceniajaca.data
-            rating.budowa_dzial = form.budowa_dzial.data
-            rating.rok_wspolpracy = form.rok_wspolpracy.data
-            rating.ocena = form.ocena.data
-            rating.komentarz = form.komentarz.data
-            rating.id_firmy = form.id_firmy.data
-            db.session.commit()
-            flash('Ocena została zaktualizowana pomyślnie!', 'success')
-            return redirect(url_for('main.list_ratings'))
-        except SQLAlchemyError as e:
-            db.session.rollback()
-            flash(f'Wystąpił błąd podczas aktualizacji oceny: {e}', 'danger')
-    # On GET request or validation failure, the form will be pre-populated by obj=
-    return render_template('rating_form.html', form=form, title='Edytuj Ocenę Współpracy', back_url=url_for('main.list_ratings'))
-
-@main.route('/ratings/<int:id>/delete', methods=['POST'])
-def delete_rating(id):
-    rating = Oceny.query.get_or_404(id)
-    try:
-        db.session.delete(rating)
-        db.session.commit()
-        flash('Ocena została usunięta pomyślnie!', 'success')
-    except SQLAlchemyError as e:
-        db.session.rollback()
-        flash(f'Wystąpił błąd podczas usuwania oceny: {e}', 'danger')
-    return redirect(url_for('main.list_ratings'))
-
 @main.route('/export_companies_html')
 def export_companies_html():
     # Ta funkcja będzie generować stronę HTML do wydruku/zapisu
-    query = Firmy.query
-
-    # SKOPIUJ DOKŁADNIE LOGIKĘ FILTROWANIA ZE FUNKCJI index()
-    # Potrzebujemy zastosować TE SAME FILTRY, co na stronie głównej
-
-    # Handle search filter
-    search = request.args.get('search', '')
-    if search:
-        normalized_search = ''.join(c for c in search if c.isalnum() or c.isspace())
-        matching_company_ids = set()
-
-        # Replicate search logic across all relevant tables
-        # (This part is identical to your index function)
-        # --- Start of duplicated search logic ---
-        # UWAGA: Ta część jest nieefektywna dla dużych baz danych, ale skopiowana z oryginału
-        firmy_results = Firmy.query.all()
-        for firma in firmy_results:
-            if (normalized_search in normalize_text(firma.nazwa_firmy).lower() or
-                normalized_search in normalize_text(firma.strona_www).lower() or
-                normalized_search in normalize_text(firma.uwagi).lower()):
-                matching_company_ids.add(firma.id_firmy)
-
-        adres_results = Adresy.query.all()
-        for adres in adres_results:
-            if (normalized_search in normalize_text(adres.kod).lower() or
-                normalized_search in normalize_text(adres.miejscowosc).lower() or
-                normalized_search in normalize_text(adres.ulica_miejscowosc).lower()):
-                if adres.id_firmy:
-                    matching_company_ids.add(adres.id_firmy)
-
-        email_results = Email.query.all()
-        for email in email_results:
-            if normalized_search in normalize_text(email.e_mail).lower():
-                if email.id_firmy:
-                    matching_company_ids.add(email.id_firmy)
-
-        telefon_results = Telefon.query.all()
-        for telefon in telefon_results:
-            if normalized_search in normalize_text(telefon.telefon).lower():
-                if telefon.id_firmy:
-                    matching_company_ids.add(telefon.id_firmy)
-
-        osoby_results = Osoby.query.all()
-        for osoba in osoby_results:
-            if (normalized_search in normalize_text(osoba.imie).lower() or
-                normalized_search in normalize_text(osoba.nazwisko).lower() or
-                normalized_search in normalize_text(osoba.stanowisko).lower() or
-                normalized_search in normalize_text(osoba.e_mail).lower() or
-                normalized_search in normalize_text(osoba.telefon).lower()):
-                if osoba.id_firmy:
-                    matching_company_ids.add(osoba.id_firmy)
-
-        oceny_results = Oceny.query.all()
-        for ocena in oceny_results:
-            if (normalized_search in normalize_text(ocena.osoba_oceniajaca).lower() or
-                normalized_search in normalize_text(ocena.budowa_dzial).lower() or
-                normalized_search in normalize_text(ocena.komentarz).lower()):
-                if ocena.id_firmy:
-                    matching_company_ids.add(ocena.id_firmy)
-
-        specjalnosci_results = Specjalnosci.query.all()
-        for spec in specjalnosci_results:
-            if normalized_search in normalize_text(spec.specjalnosc).lower():
-                firmy_spec = FirmySpecjalnosci.query.filter_by(id_specjalnosci=spec.id_specjalnosci).all()
-                for fs in firmy_spec:
-                    matching_company_ids.add(fs.id_firmy)
-
-        firmy_typ_results = FirmyTyp.query.all()
-        for typ in firmy_typ_results:
-            if normalized_search in normalize_text(typ.typ_firmy).lower():
-                firmy_by_typ = Firmy.query.filter_by(id_firmy_typ=typ.id_firmy_typ).all()
-                for firma in firmy_by_typ:
-                    matching_company_ids.add(firma.id_firmy)
-
-        wojewodztwa_results = Wojewodztwa.query.all()
-        for woj in wojewodztwa_results:
-            if normalized_search in normalize_text(woj.wojewodztwo).lower():
-                firmy_woj = FirmyObszarDzialania.query.filter_by(id_wojewodztwa=woj.id_wojewodztwa).all()
-                for fw in firmy_woj:
-                    matching_company_ids.add(fw.id_firmy)
-
-        powiaty_results = Powiaty.query.all()
-        for pow in powiaty_results:
-            if normalized_search in normalize_text(pow.powiat).lower():
-                firmy_pow = FirmyObszarDzialania.query.filter_by(id_powiaty=pow.id_powiaty).all()
-                for fp in firmy_pow:
-                    matching_company_ids.add(fp.id_firmy)
-
-        kraje_results = Kraj.query.all() # Assuming Kraj model exists and has 'POL' ID
-        for kraj in kraje_results:
-             if normalized_search in normalize_text(kraj.kraj).lower():
-                firmy_kraj = FirmyObszarDzialania.query.filter_by(id_kraj=kraj.id_kraj).all()
-                for fk in firmy_kraj:
-                    matching_company_ids.add(fk.id_firmy)
-
-        if matching_company_ids:
-            query = query.filter(Firmy.id_firmy.in_(matching_company_ids))
-        else:
-            query = query.filter(False) # No results match search criteria
-        # --- End of duplicated search logic ---
-
-    # Handle specialty filter
+    # Get filter parameters from request arguments
+    search_term = request.args.get('search', '')
     specialties = request.args.getlist('specialties')
-    if specialties:
-        # Apply the filter to the current query state
-        query = query.join(FirmySpecjalnosci)\
-                     .filter(FirmySpecjalnosci.id_specjalnosci.in_(specialties))
-
-    # Handle area filter
     wojewodztwo = request.args.get('wojewodztwo')
     powiat = request.args.get('powiat')
-
-    if powiat:
-        # Replicate powiat logic
-        nationwide_companies = db.session.query(Firmy.id_firmy)\
-                                 .join(FirmyObszarDzialania)\
-                                 .filter(FirmyObszarDzialania.id_kraj == 'POL')
-
-        powiat_data = Powiaty.query.filter_by(id_powiaty=powiat).first()
-
-        if powiat_data:
-            wojewodztwo_id = powiat_data.id_wojewodztwa
-
-            powiat_companies = db.session.query(Firmy.id_firmy)\
-                                 .join(FirmyObszarDzialania)\
-                                 .filter(FirmyObszarDzialania.id_powiaty == powiat)
-
-            wojewodztwo_empty_powiat_companies = db.session.query(Firmy.id_firmy)\
-                                     .join(FirmyObszarDzialania)\
-                                     .filter(
-                                         and_(
-                                             FirmyObszarDzialania.id_wojewodztwa == wojewodztwo_id,
-                                             FirmyObszarDzialania.id_powiaty == 0
-                                         )
-                                     )
-
-            combined_companies_ids_subquery = nationwide_companies.union(
-                powiat_companies,
-                wojewodztwo_empty_powiat_companies
-            ).subquery()
-
-        else:
-             combined_companies_ids_subquery = nationwide_companies.subquery()
-
-        query = query.filter(Firmy.id_firmy.in_(combined_companies_ids_subquery))
-
-    elif wojewodztwo and not powiat:
-        # Replicate wojewodztwo logic
-        nationwide_companies = db.session.query(Firmy.id_firmy)\
-                                 .join(FirmyObszarDzialania)\
-                                 .filter(FirmyObszarDzialania.id_kraj == 'POL')
-
-        wojewodztwo_companies = db.session.query(Firmy.id_firmy)\
-                                 .join(FirmyObszarDzialania)\
-                                 .filter(FirmyObszarDzialania.id_wojewodztwa == wojewodztwo)\
-                                 .filter(FirmyObszarDzialania.id_powiaty == 0)\
-                                 .except_(
-                                     db.session.query(Firmy.id_firmy)\
-                                     .join(FirmyObszarDzialania)\
-                                     .filter(FirmyObszarDzialania.id_wojewodztwa == wojewodztwo)\
-                                     .filter(FirmyObszarDzialania.id_powiaty != 0)
-                                 )
-
-        combined_companies_ids_subquery = nationwide_companies.union(wojewodztwo_companies).subquery()
-        query = query.filter(Firmy.id_firmy.in_(combined_companies_ids_subquery))
-
-
-    # Handle company type filter
     company_types = [ct for ct in request.args.getlist('company_types') if ct.strip()]
-    if company_types:
-        # Apply the filter to the current query state
-        query = query.filter(Firmy.id_firmy_typ.in_(company_types))
 
-
-    # EXECUTE THE FINAL FILTERED QUERY
+    # Use the helper function to get the filtered query
+    query = _get_filtered_companies_query(
+        search_query=search_term,
+        specialties_list=specialties,
+        wojewodztwo_id=wojewodztwo,
+        powiat_id=powiat,
+        company_types_list=company_types
+    )
     filtered_companies = query.all()
 
     # --- Fetch ALL related data for the filtered companies ---
@@ -1510,10 +864,3 @@ def export_companies_html():
     return render_template('export_companies_html.html',
                            companies=filtered_companies,
                            related_data=organized_related_data) # Przekaż zorganizowane dane
-
-def normalize_text(text):
-    if text is None:
-        return ""
-    text = str(text)
-    normalized = unidecode(text).lower()
-    return ''.join(c for c in normalized if c.isalnum() or c.isspace())

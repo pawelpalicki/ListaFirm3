@@ -1,14 +1,15 @@
 import logging
-from flask import Flask, render_template, request, flash, redirect, url_for, session
+from flask import Flask, render_template # Removed request, flash, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import OperationalError
 from config import Config
 from flask_login import LoginManager, UserMixin # Importy dla Flask-Login
 from werkzeug.security import generate_password_hash, check_password_hash # Do haszowania haseł i weryfikacji
-from datetime import timedelta # Do ustawiania czasu życia sesji
+# from datetime import timedelta # Removed timedelta
 
 # Inicjalizacja rozszerzeń
 db = SQLAlchemy()
+
 login_manager = LoginManager() # Inicjalizacja LoginManager
 
 # --- Zarządzanie użytkownikami (dla celów demonstracyjnych: hardkodowane dane) ---
@@ -63,6 +64,7 @@ def create_app(config_class=Config):
     # Obsługa błędów bazy danych (zakładam, że już ją masz)
     @app.errorhandler(OperationalError)
     def handle_database_error(e):
+        # request object is available in Flask error handlers implicitly
         app.logger.error(f"🚨 BŁĄD BAZY DANYCH 🚨\nŚcieżka: {request.path}\nBłąd: {str(e)}")
         db.session.remove()
         return render_template('database_error.html'), 500
@@ -76,5 +78,28 @@ def create_app(config_class=Config):
     # Ten blueprint będzie w nowym katalogu app/routes/
     from app.routes import auth
     app.register_blueprint(auth)
+
+    # Rejestracja blueprintów CRUD
+    from app.routes.specialty_routes import specialty_bp
+    app.register_blueprint(specialty_bp)
+
+    from app.routes.addresstype_routes import addresstype_bp
+    app.register_blueprint(addresstype_bp)
+
+    from app.routes.emailtype_routes import emailtype_bp
+    app.register_blueprint(emailtype_bp)
+
+    from app.routes.phonetype_routes import phonetype_bp
+    app.register_blueprint(phonetype_bp)
+
+    from app.routes.companytype_routes import companytype_bp
+    app.register_blueprint(companytype_bp)
+
+    # Register Person and Rating blueprints
+    from app.routes.person_routes import person_bp
+    app.register_blueprint(person_bp)
+
+    from app.routes.rating_routes import rating_bp
+    app.register_blueprint(rating_bp)
 
     return app
