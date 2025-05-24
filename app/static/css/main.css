@@ -1,24 +1,249 @@
 /* ===== GLOBALNE STYLE (aktualizacja zmiennych i body) ===== */
 :root {
-    --btn-primary-color: #0d6efd;
-    --btn-secondary-color: #6c757d;
-    --btn-success-color: #198754;
-    --card-border-color: rgba(0, 0, 0, 0.1);
+    /* Light Theme (Default) */
+    --bg-color: #f8f9fa;
+    --text-color: #212529;
+    --link-color: #0d6efd;
+    --link-hover-color: #0a58ca;
 
-    /* Nowe zmienne dla paska nawigacyjnego */
+    --primary-color: #0d6efd; /* Bootstrap Primary */
+    --secondary-color: #6c757d; /* Bootstrap Secondary */
+    --success-color: #198754; /* Bootstrap Success */
+    --danger-color: #dc3545; /* Bootstrap Danger */
+    --warning-color: #ffc107; /* Bootstrap Warning */
+    --info-color: #0dcaf0; /* Bootstrap Info */
+    --light-color: #f8f9fa; /* Bootstrap Light */
+    --dark-color: #212529; /* Bootstrap Dark */
+
+    --btn-primary-bg: var(--primary-color);
+    --btn-primary-border: var(--primary-color);
+    --btn-primary-text: #ffffff;
+    --btn-secondary-bg: var(--secondary-color);
+    --btn-secondary-border: var(--secondary-color);
+    --btn-secondary-text: #ffffff;
+    --btn-success-bg: var(--success-color);
+    --btn-success-border: var(--success-color);
+    --btn-success-text: #ffffff;
+    --btn-danger-bg: var(--danger-color);
+    --btn-danger-border: var(--danger-color);
+    --btn-danger-text: #ffffff;
+    --btn-warning-bg: var(--warning-color);
+    --btn-warning-border: var(--warning-color);
+    --btn-warning-text: #000000;
+    --btn-info-bg: var(--info-color);
+    --btn-info-border: var(--info-color);
+    --btn-info-text: #000000;
+    --btn-light-bg: var(--light-color);
+    --btn-light-border: var(--light-color);
+    --btn-light-text: #000000;
+    --btn-dark-bg: var(--dark-color);
+    --btn-dark-border: var(--dark-color);
+    --btn-dark-text: #ffffff;
+    --btn-outline-secondary-text: var(--secondary-color);
+    --btn-outline-secondary-border: var(--secondary-color);
+    --btn-outline-secondary-hover-bg: var(--secondary-color);
+    --btn-outline-secondary-hover-text: #ffffff;
+
+
+    --card-bg: #ffffff;
+    --card-border-color: rgba(0, 0, 0, 0.125);
+    --card-header-bg: #f8f9fa;
+    --card-header-color: #212529;
+    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --card-nested-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
+
+    /* Navbar variables */
     --navbar-bg-start: #ffffff;
-    --navbar-bg-end: #f8f9fa; /* Bootstrap 'bg-light' color */
-    --navbar-border-color: #dee2e6; /* Bootstrap 'border-color' */
+    --navbar-bg-end: #f8f9fa;
+    --navbar-border-color: #dee2e6;
     --navbar-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    --navbar-link-color: #343a40; /* Ciemniejszy dla lepszego kontrastu na jasnym tle */
-    --navbar-link-hover-color: #007bff; /* Główny kolor akcentu (Bootstrap primary) */
-    --navbar-link-active-color: #0056b3; /* Ciemniejszy odcień primary dla aktywnego linku */
-    --navbar-brand-color: #004085; /* Ciemnoniebieski dla brandu, np. wzięty z alert-info Bootstrapa */
+    --navbar-link-color: #343a40;
+    --navbar-link-hover-color: var(--primary-color);
+    --navbar-link-active-color: #0056b3; /* Darker primary */
+    --navbar-brand-color: #004085;
+    --navbar-toggler-border-color: rgba(0,0,0,0.1);
+    --navbar-toggler-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+
+
+    /* Table variables */
+    --table-bg: transparent;
+    --table-border-color: #dee2e6;
+    --table-striped-bg: rgba(0, 0, 0, 0.05);
+    --table-hover-bg: rgba(0, 0, 0, 0.075);
+    --table-head-bg: #e9ecef;
+    --table-head-color: #495057;
+    --table-text-color: var(--text-color); /* For table cell text */
+
+    /* Form input variables */
+    --input-bg: #ffffff;
+    --input-border-color: #ced4da;
+    --input-text-color: #495057;
+    --input-focus-border-color: #86b7fe; /* Adjusted for BS5 */
+    --input-focus-box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    --input-placeholder-color: #6c757d;
+    --input-group-addon-bg: #e9ecef;
+    --input-group-addon-color: var(--text-color);
+
+
+    /* Select2 variables */
+    --select2-bg: var(--input-bg);
+    --select2-border-color: var(--input-border-color);
+    --select2-text-color: var(--input-text-color);
+    --select2-placeholder-color: var(--input-placeholder-color);
+    --select2-dropdown-bg: var(--bg-color);
+    --select2-results-option-hover-bg: #e9ecef;
+    --select2-results-option-selected-bg: var(--primary-color);
+    --select2-results-option-selected-text: #ffffff;
+    --select2-choice-bg: #e9ecef;
+    --select2-choice-text-color: #212529;
+    --select2-choice-remove-color: #6c757d;
+
+
+    /* Alert variables */
+    --alert-success-bg: #d1e7dd;
+    --alert-success-text: #0f5132;
+    --alert-success-border: #badbcc;
+    --alert-danger-bg: #f8d7da;
+    --alert-danger-text: #842029;
+    --alert-danger-border: #f5c2c7;
+    --alert-warning-bg: #fff3cd;
+    --alert-warning-text: #664d03;
+    --alert-warning-border: #ffecb5;
+    --alert-info-bg: #cff4fc;
+    --alert-info-text: #055160;
+    --alert-info-border: #b6effb;
+    --alert-close-btn-filter: none;
 }
 
+body.dark-mode {
+    --bg-color: #1a1d20; /* Slightly bluish dark grey */
+    --text-color: #e0e0e0;
+    --link-color: #64b5f6;
+    --link-hover-color: #90caf9;
+
+    --primary-color: #0d6efd; /* Keep primary color for consistency or choose a lighter shade */
+    --secondary-color: #545b62; /* Darker secondary */
+    --success-color: #198754;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #0dcaf0;
+    --light-color: #343a40; /* Darker light */
+    --dark-color: #f8f9fa;  /* Lighter dark */
+
+
+    --btn-primary-bg: var(--primary-color);
+    --btn-primary-border: var(--primary-color);
+    --btn-primary-text: #ffffff;
+    --btn-secondary-bg: var(--secondary-color);
+    --btn-secondary-border: var(--secondary-color);
+    --btn-secondary-text: #ffffff;
+    --btn-success-bg: var(--success-color);
+    --btn-success-border: var(--success-color);
+    --btn-success-text: #ffffff;
+    --btn-danger-bg: var(--danger-color);
+    --btn-danger-border: var(--danger-color);
+    --btn-danger-text: #ffffff;
+    --btn-warning-bg: var(--warning-color);
+    --btn-warning-border: var(--warning-color);
+    --btn-warning-text: #000000;
+    --btn-info-bg: var(--info-color);
+    --btn-info-border: var(--info-color);
+    --btn-info-text: #000000;
+    --btn-light-bg: var(--light-color);
+    --btn-light-border: var(--light-color);
+    --btn-light-text: #ffffff; /* Text on dark 'light' button */
+    --btn-dark-bg: var(--dark-color);
+    --btn-dark-border: var(--dark-color);
+    --btn-dark-text: #000000; /* Text on light 'dark' button */
+    --btn-outline-secondary-text: #adb5bd; /* Lighter text for outline */
+    --btn-outline-secondary-border: #adb5bd;
+    --btn-outline-secondary-hover-bg: #545b62;
+    --btn-outline-secondary-hover-text: #ffffff;
+
+    --card-bg: #212529; /* Bootstrap dark color */
+    --card-border-color: #454d55; /* Darker border */
+    --card-header-bg: #2b3035; /* Slightly lighter than card for header */
+    --card-header-color: var(--text-color);
+    --card-shadow: 0 2px 8px rgba(255, 255, 255, 0.05);
+    --card-nested-shadow: 0 1px 4px rgba(255, 255, 255, 0.05);
+
+    /* Navbar variables - Dark Mode */
+    --navbar-bg-start: #212529;
+    --navbar-bg-end: #1c1f23;
+    --navbar-border-color: #343a40;
+    --navbar-shadow: 0 2px 4px rgba(255, 255, 255, 0.03);
+    --navbar-link-color: rgba(255, 255, 255, 0.75);
+    --navbar-link-hover-color: #ffffff;
+    --navbar-link-active-color: #ffffff;
+    --navbar-brand-color: #ffffff;
+    --navbar-toggler-border-color: rgba(255,255,255,0.1);
+    --navbar-toggler-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+
+
+    /* Table variables - Dark Mode */
+    --table-bg: #212529;
+    --table-border-color: #454d55;
+    --table-striped-bg: #2c3034;
+    --table-hover-bg: #32383e;
+    --table-head-bg: #343a40;
+    --table-head-color: var(--text-color);
+    --table-text-color: var(--text-color);
+
+
+    /* Form input variables - Dark Mode */
+    --input-bg: #2b2b2b;
+    --input-border-color: #555555;
+    --input-text-color: var(--text-color);
+    --input-focus-border-color: #86b7fe;
+    --input-focus-box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    --input-placeholder-color: #888888;
+    --input-group-addon-bg: #343a40;
+    --input-group-addon-color: var(--text-color);
+
+
+    /* Select2 variables - Dark Mode */
+    --select2-bg: var(--input-bg);
+    --select2-border-color: var(--input-border-color);
+    --select2-text-color: var(--input-text-color);
+    --select2-placeholder-color: var(--input-placeholder-color);
+    --select2-dropdown-bg: #2b2b2b;
+    --select2-results-option-hover-bg: #343a40;
+    --select2-results-option-selected-bg: var(--primary-color);
+    --select2-results-option-selected-text: #ffffff;
+    --select2-choice-bg: #343a40;
+    --select2-choice-text-color: var(--text-color);
+    --select2-choice-remove-color: #aaaaaa;
+
+    /* Alert variables - Dark Mode */
+    --alert-success-bg: #0a3622;
+    --alert-success-text: #75b798;
+    --alert-success-border: #0f5132;
+    --alert-danger-bg: #58151c;
+    --alert-danger-text: #ea868f;
+    --alert-danger-border: #842029;
+    --alert-warning-bg: #4d3800;
+    --alert-warning-text: #ffda6a;
+    --alert-warning-border: #664d03;
+    --alert-info-bg: #032830;
+    --alert-info-text: #6edff6;
+    --alert-info-border: #055160;
+    --alert-close-btn-filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+
 body {
-    background-color: #f8f9fa;
+    background-color: var(--bg-color);
+    color: var(--text-color);
     position: relative;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+a {
+    color: var(--link-color);
+}
+a:hover {
+    color: var(--link-hover-color);
 }
 
 
@@ -27,139 +252,125 @@ body {
     background: linear-gradient(to bottom, var(--navbar-bg-start), var(--navbar-bg-end));
     border-bottom: 1px solid var(--navbar-border-color);
     box-shadow: var(--navbar-shadow);
-    padding-top: 0.75rem; /* Nieco więcej pionowego paddingu */
+    padding-top: 0.75rem;
     padding-bottom: 0.75rem;
 }
 
 .custom-navbar-style .navbar-brand {
     color: var(--navbar-brand-color);
-    font-size: 1.35rem; /* Nieco większa czcionka dla brandu */
-    font-weight: 600; /* Pogrubienie zgodne z fw-bold w HTML */
+    font-size: 1.35rem;
+    font-weight: 600;
 }
 
 .custom-navbar-style .navbar-brand .bi {
-    color: var(--navbar-brand-color); /* Ikona w kolorze brandu */
-    font-size: 1.5rem; /* Rozmiar ikony */
-    vertical-align: text-bottom; /* Lepsze wyrównanie ikony z tekstem */
-    margin-right: 0.3rem; /* Niewielki odstęp od tekstu */
+    color: var(--navbar-brand-color);
+    font-size: 1.5rem;
+    vertical-align: text-bottom;
+    margin-right: 0.3rem;
 }
 
 .custom-navbar-style .nav-link {
     color: var(--navbar-link-color);
     font-weight: 500;
-    padding: 0.5rem 0.85rem; /* Dopasowany padding */
-    margin: 0 0.2rem;      /* Niewielki odstęp między elementami */
-    border-radius: 0.375rem; /* Zaokrąglenie dla efektu hover */
+    padding: 0.5rem 0.85rem;
+    margin: 0 0.2rem;
+    border-radius: 0.375rem;
     transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
 }
 
 .custom-navbar-style .nav-link:hover,
-.custom-navbar-style .nav-link:focus { /* :focus dla dostępności */
+.custom-navbar-style .nav-link:focus {
     color: var(--navbar-link-hover-color);
-    background-color: rgba(0, 123, 255, 0.06); /* Bardzo subtelne tło przy hover */
+    background-color: rgba(var(--primary-color-rgb, 0, 123, 255), 0.06); /* Using primary color with alpha */
 }
 
-/* Możesz dodać klasę 'active' do linku bieżącej strony w swoim backendzie/JS */
 .custom-navbar-style .nav-link.active {
     color: var(--navbar-link-active-color);
-    font-weight: 600; /* Lub 700 dla jeszcze większego wyróżnienia */
-    background-color: rgba(0, 123, 255, 0.08);
+    font-weight: 600;
+    background-color: rgba(var(--primary-color-rgb, 0, 123, 255), 0.08); /* Using primary color with alpha */
 }
 
 .custom-navbar-style .dropdown-menu {
     border-radius: 0.375rem;
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15); /* Keep shadow or use a variable */
     border: 1px solid var(--navbar-border-color);
-    margin-top: 0.5rem; /* Odstęp od paska nawigacji */
+    margin-top: 0.5rem;
+    background-color: var(--card-bg); /* Use card bg for dropdown */
+}
+body.dark-mode .custom-navbar-style .dropdown-menu {
+    box-shadow: 0 0.5rem 1rem rgba(255, 255, 255, 0.05); /* Lighter shadow for dark mode */
 }
 
+
 .custom-navbar-style .dropdown-item {
-    color: var(--navbar-link-color);
-    padding: 0.6rem 1.2rem; /* Nieco większy padding w dropdownie */
+    color: var(--navbar-link-color); /* Should inherit from .nav-link or be text-color */
+    padding: 0.6rem 1.2rem;
     transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
 }
+body.dark-mode .custom-navbar-style .dropdown-item {
+    color: var(--text-color);
+}
+
 
 .custom-navbar-style .dropdown-item:hover,
 .custom-navbar-style .dropdown-item:focus {
     color: var(--navbar-link-hover-color);
-    background-color: rgba(0, 123, 255, 0.08);
+    background-color: rgba(var(--primary-color-rgb, 0, 123, 255), 0.08);
+}
+body.dark-mode .custom-navbar-style .dropdown-item:hover,
+body.dark-mode .custom-navbar-style .dropdown-item:focus {
+    color: var(--navbar-link-hover-color); /* Ensure hover color is from dark theme vars */
+    background-color: rgba(var(--primary-color-rgb, 13, 110, 253), 0.15); /* Slightly more prominent hover for dark */
 }
 
-.custom-navbar-style .dropdown-item:active { /* Gdy element jest kliknięty */
+
+.custom-navbar-style .dropdown-item:active {
     background-color: var(--navbar-link-hover-color);
-    color: #fff;
+    color: var(--btn-primary-text); /* Assuming hover color is primary and text on primary is white/light */
 }
 
-/* Stylizacja przycisków Zaloguj/Wyloguj */
-.custom-navbar-style .btn-sm { /* Upewnij się, że przyciski mają odpowiedni rozmiar */
+.custom-navbar-style .btn-sm {
     padding: 0.3rem 0.75rem;
     font-size: 0.875rem;
 }
 
 .custom-navbar-style .btn-primary {
-    background-color: var(--navbar-link-hover-color);
-    border-color: var(--navbar-link-hover-color);
-    color: #fff;
+    background-color: var(--btn-primary-bg);
+    border-color: var(--btn-primary-border);
+    color: var(--btn-primary-text);
 }
 .custom-navbar-style .btn-primary:hover {
-    background-color: var(--navbar-link-active-color);
-    border-color: var(--navbar-link-active-color);
+    /* Define hover state for primary button, e.g., darken background */
+    background-color: #0b5ed7; /* Darken(var(--btn-primary-bg), 10%) */
+    border-color: #0a58ca;   /* Darken(var(--btn-primary-border), 10%) */
 }
 
 .custom-navbar-style .btn-outline-secondary {
-    color: var(--navbar-link-color);
-    border-color: #ced4da; /* Neutralna ramka */
+    color: var(--btn-outline-secondary-text);
+    border-color: var(--btn-outline-secondary-border);
 }
 .custom-navbar-style .btn-outline-secondary:hover {
-    background-color: #e9ecef; /* Jasne tło przy najechaniu */
-    color: var(--navbar-link-active-color);
-    border-color: #ced4da;
+    background-color: var(--btn-outline-secondary-hover-bg);
+    color: var(--btn-outline-secondary-hover-text);
 }
 
-/* Poprawka dla navbar-toggler (ikona hamburgera) */
+
 .custom-navbar-style .navbar-toggler {
-    border-color: rgba(0,0,0,0.1);
+    border-color: var(--navbar-toggler-border-color);
 }
-/* Można dostosować kolor ikony togglera, jeśli domyślny nie pasuje */
-/* .custom-navbar-style .navbar-toggler-icon { ... } */
+.custom-navbar-style .navbar-toggler-icon {
+    background-image: var(--navbar-toggler-icon);
+}
 
 
 /* ===== KOLUMNY ===== */
-
-.left-column {
-  position: sticky;
-  top: 70px;
-  max-height: calc(100vh - 100px); 
-}
-
-.left-column .card {
-  max-height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.left-column .card-body {
-  overflow-y: auto;
-  flex: 1;
-}
-
+/* Styles for .left-column are mostly structural. The card within uses card variables. */
 
 /* ===== KARTY ===== */
-.card {
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    margin-bottom: 1.5rem;
-    border: 1px solid var(--card-border-color);
-    overflow: hidden;
-    transition: all 0.3s ease;
-}
+/* .card and .card-header styles are already updated to use variables. */
 
-/* Zagnieżdżone karty w formularzu firmy */
-.card .card {
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-}
-
-/* ===== PRZYCISKI - SPÓJNE STYLE ===== */
+/* ===== PRZYCISKI - SPÓJNE STYLE (Structural) ===== */
+/* These define structure/layout, general .btn-* rules below handle theming. */
 .card-header .btn,
 .mobile-filter-content .btn {
     height: 32px;
@@ -169,8 +380,13 @@ body {
     gap: 0.5rem;
     font-weight: 500;
     border-radius: 0.375rem;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease; /* Ensure all relevant props transition */
     padding: 0.375rem 0.75rem;
+}
+/* Specific button styling within .card-body */
+.card-body button[type="button"].add-entry,
+.card-body button[type="button"].remove-entry {
+    /* These will use general button styles like .btn-secondary, .btn-danger */
 }
 
 /* Przyciski w nagłówku prawej kolumny */
@@ -529,11 +745,25 @@ h6 {
 }
 
 /* Style dla standardowych tabel (widok desktopowy) */
-.responsive-table th, 
+    /* Standard Table Styles */
+    .responsive-table th,
 .responsive-table td {
     white-space: nowrap;
     padding: 0.5rem 0.75rem;
+        color: var(--table-text-color);
+        border: 1px solid var(--table-border-color);
+    }
+    .responsive-table th {
+        background-color: var(--table-head-bg);
+        color: var(--table-head-color);
 }
+    .responsive-table tr:hover td { /* Light theme hover */
+        background-color: var(--table-hover-bg);
+    }
+    body.dark-mode .responsive-table tr:hover td {
+        background-color: var(--table-hover-bg); /* Dark theme hover */
+    }
+
 
 /* Style dla kart mobilnych - zgodne z istniejącym wyglądem formularza */
 .mobile-cards-container {
@@ -541,14 +771,17 @@ h6 {
 }
 
 .mobile-card {
-    border: 1px solid #dee2e6;
+        border: 1px solid var(--card-border-color);
     border-radius: 8px;
-    background-color: #f9f9f9;
-    transition: all 0.2s ease;
+        background-color: var(--card-bg);
+        transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
-.mobile-card:hover {
-    background-color: #f5f5f5;
+    .mobile-card:hover { /* Light theme hover */
+        background-color: var(--card-header-bg);
+    }
+    body.dark-mode .mobile-card:hover { /* Dark theme hover */
+        background-color: #2c3035; /* Example: slightly lighter than card-bg-dark */
 }
 
 .mobile-card .card-body {
@@ -651,22 +884,46 @@ h6 {
 /* Domyślnie pokazuj wszystko */
 .table-responsive-stacking th,
 .table-responsive-stacking td {
-    padding: 8px; /* Dodaj wewnętrzny margines 8 pikseli */
-    text-align: left; /* Wyrównaj tekst do lewej */
-    vertical-align: top; /* Wyrównaj treść do góry komórki */
-    border: 1px solid #ddd; /* Dodaj delikatne obramowanie komórek */
-    box-sizing: border-box; /* Model pudełkowy */
-    /* Możesz też dodać inne style, np. */
-    /* color: #333; */ /* Ciemnoszary kolor tekstu */
-    /* background-color: #fff; */ /* Białe tło komórki (domyślne) */
+    padding: 8px;
+    text-align: left;
+    vertical-align: top;
+    border: 1px solid var(--table-border-color);
+    box-sizing: border-box;
+    color: var(--table-text-color);
 }
 
-/* Opcjonalnie, możesz nadać inny styl tylko nagłówkom (th) */
 .table-responsive-stacking th {
-    background-color: #aaaaaa; /* Jasnoszare tło dla nagłówków */
-    font-weight: bold; /* Pogrubiona czcionka (domyślne dla th, ale warto jawnie ustawić) */
-    text-align: center; /* Nagłówki wyśrodkowane */
+    background-color: var(--table-head-bg);
+    color: var(--table-head-color);
+    font-weight: bold;
+    text-align: center;
 }
+
+/* Striped and hover effects for stacked table */
+.table-responsive-stacking.table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: var(--table-striped-bg);
+}
+.table-responsive-stacking tr:hover {
+    background-color: var(--table-hover-bg) !important;
+}
+
+/* Dark mode specific for stacked rows if they behave like cards */
+body.dark-mode .table-responsive-stacking tr {
+    background-color: var(--card-bg); /* Use card bg for the row block */
+    border: 1px solid var(--card-border-color);
+}
+body.dark-mode .table-responsive-stacking.table-striped > tbody > tr:nth-of-type(odd) {
+    /* If rows are card-like, striping might be less relevant or need a different approach */
+    background-color: var(--card-bg); /* Or a slightly different dark shade like var(--table-striped-bg) */
+}
+body.dark-mode .table-responsive-stacking tr:hover {
+    background-color: #2c3035 !important; /* A specific dark hover for these card-like rows */
+}
+body.dark-mode .table-responsive-stacking td {
+    /* Ensure cells within a dark card-like row have transparent background */
+    background-color: transparent;
+}
+
 
 .table-responsive-stacking .action-btn .btn-text {
     display: inline; /* Domyślnie pokazuj tekst przycisku */
@@ -694,35 +951,38 @@ h6 {
     }
 
     /* Usuwamy paski z table-striped w widoku mobilnym */
-    .table-responsive-stacking.table-striped tbody tr:nth-of-type(odd) {
-        background-color: #fff;
+    /* Ensure correct background for striped rows in stacked view */
+    .table-responsive-stacking.table-striped > tbody > tr:nth-of-type(odd) {
+        background-color: var(--table-striped-bg);
     }
-    .table-responsive-stacking.table-striped > tbody > tr:nth-of-type(2n+1) > * {
-        --bs-table-accent-bg: transparent; /* Reset bootstrapowego stylu dla pasów */
+    body.dark-mode .table-responsive-stacking.table-striped > tbody > tr:nth-of-type(odd) {
+        background-color: var(--table-striped-bg); /* Use dark striped bg for stacked rows too */
     }
 
 
     .table-responsive-stacking td {
         position: relative;
-        padding-left: 45%; /* Zrób miejsce na etykietę */
+        padding-left: 45%;
         padding-top: 0.5rem;
         padding-bottom: 0.5rem;
-        text-align: left; /* Wyrównaj tekst do lewej w komórce */
-        border: none; /* Usuń domyślne ramki komórek */
-        min-height: 38px; /* Minimalna wysokość dla lepszego wyglądu */
-        display: flex; /* Użyj flexboxa dla lepszego wyrównania */
-        align-items: center; /* Wycentruj w pionie */
+        text-align: left;
+        border: none;
+        min-height: 38px;
+        display: flex;
+        align-items: center;
+        color: var(--table-text-color);
     }
 
     .table-responsive-stacking td::before {
-        content: attr(data-label); /* Pobierz tekst etykiety z atrybutu */
+        content: attr(data-label);
         position: absolute;
-        left: 0.75rem; /* Odstęp etykiety od lewej krawędzi */
-        width: 40%; /* Szerokość etykiety */
-        padding-right: 0.5rem; /* Odstęp między etykietą a wartością */
+        left: 0.75rem;
+        width: 40%;
+        padding-right: 0.5rem;
         font-weight: bold;
         text-align: left;
-        white-space: nowrap; /* Zapobiegaj łamaniu tekstu etykiety */
+        white-space: nowrap;
+        color: var(--table-text-color);
     }
 
     /* Specjalne style dla komórki Akcje */
@@ -760,20 +1020,190 @@ h6 {
    gdzie np. tylko ukryjesz tekst przycisków, ale tabela pozostanie standardowa */
 @media (min-width: 768px) and (max-width: 991.98px) {
      .table-responsive-stacking .action-btn .btn-text {
-        display: none; /* Odkomentuj, jeśli chcesz ukryć tekst też na tabletach */
+        /* display: none; */ 
      }
 }
 
+/* ===== General Form & Component Styling with Variables ===== */
+.form-control, .form-select {
+    background-color: var(--input-bg);
+    color: var(--input-text-color);
+    border: 1px solid var(--input-border-color);
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out, background-color .15s ease-in-out, color .15s ease-in-out;
+}
+.form-control::placeholder {
+    color: var(--input-placeholder-color);
+}
+.form-control:focus, .form-select:focus {
+    background-color: var(--input-bg); /* Ensure focus doesn't change bg if not intended */
+    color: var(--input-text-color); /* Ensure focus doesn't change text color if not intended */
+    border-color: var(--input-focus-border-color);
+    box-shadow: var(--input-focus-box-shadow);
+}
+.input-group-text {
+    background-color: var(--input-group-addon-bg);
+    border: 1px solid var(--input-border-color);
+    color: var(--input-group-addon-color);
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+.form-label { /* Ensure form labels also use text color variable */
+    color: var(--text-color);
+}
+h6 { /* And other general text elements if not inheriting properly */
+    color: var(--text-color);
+}
+
+/* General Button Styles */
+.btn {
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.btn-primary { background-color: var(--btn-primary-bg); border-color: var(--btn-primary-border); color: var(--btn-primary-text); }
+.btn-primary:hover { background-color: color-mix(in srgb, var(--btn-primary-bg) 85%, black); border-color: color-mix(in srgb, var(--btn-primary-border) 80%, black); }
+
+.btn-secondary { background-color: var(--btn-secondary-bg); border-color: var(--btn-secondary-border); color: var(--btn-secondary-text); }
+.btn-secondary:hover { background-color: color-mix(in srgb, var(--btn-secondary-bg) 85%, black); border-color: color-mix(in srgb, var(--btn-secondary-border) 80%, black); }
+
+.btn-success { background-color: var(--btn-success-bg); border-color: var(--btn-success-border); color: var(--btn-success-text); }
+.btn-success:hover { background-color: color-mix(in srgb, var(--btn-success-bg) 85%, black); border-color: color-mix(in srgb, var(--btn-success-border) 80%, black); }
+
+.btn-danger { background-color: var(--btn-danger-bg); border-color: var(--btn-danger-border); color: var(--btn-danger-text); }
+.btn-danger:hover { background-color: color-mix(in srgb, var(--btn-danger-bg) 85%, black); border-color: color-mix(in srgb, var(--btn-danger-border) 80%, black); }
+
+.btn-warning { background-color: var(--btn-warning-bg); border-color: var(--btn-warning-border); color: var(--btn-warning-text); }
+.btn-warning:hover { background-color: color-mix(in srgb, var(--btn-warning-bg) 85%, black); border-color: color-mix(in srgb, var(--btn-warning-border) 80%, black); }
+
+.btn-info { background-color: var(--btn-info-bg); border-color: var(--btn-info-border); color: var(--btn-info-text); }
+.btn-info:hover { background-color: color-mix(in srgb, var(--btn-info-bg) 85%, black); border-color: color-mix(in srgb, var(--btn-info-border) 80%, black); }
+
+.btn-light { background-color: var(--btn-light-bg); border-color: var(--btn-light-border); color: var(--btn-light-text); }
+.btn-light:hover { background-color: color-mix(in srgb, var(--btn-light-bg) 85%, black); border-color: color-mix(in srgb, var(--btn-light-border) 80%, black); }
+
+.btn-dark { background-color: var(--btn-dark-bg); border-color: var(--btn-dark-border); color: var(--btn-dark-text); }
+.btn-dark:hover { background-color: color-mix(in srgb, var(--btn-dark-bg) 85%, white); border-color: color-mix(in srgb, var(--btn-dark-border) 80%, white); }
+
+
+.btn-outline-secondary { color: var(--btn-outline-secondary-text); border-color: var(--btn-outline-secondary-border); }
+.btn-outline-secondary:hover { background-color: var(--btn-outline-secondary-hover-bg); color: var(--btn-outline-secondary-hover-text); }
+
+/* Alert Styles */
+.alert {
+    border: 1px solid transparent;
+    /* color: var(--text-color); /* Base text color is typically fine, specific alerts override */
+}
+.alert-success { background-color: var(--alert-success-bg); color: var(--alert-success-text); border-color: var(--alert-success-border); }
+.alert-danger { background-color: var(--alert-danger-bg); color: var(--alert-danger-text); border-color: var(--alert-danger-border); }
+.alert-warning { background-color: var(--alert-warning-bg); color: var(--alert-warning-text); border-color: var(--alert-warning-border); }
+.alert-info { background-color: var(--alert-info-bg); color: var(--alert-info-text); border-color: var(--alert-info-border); }
+.alert .btn-close { filter: var(--alert-close-btn-filter); }
+
+
+/* Select2 Styles */
+.select2-container--default .select2-selection--single,
+.select2-container--default .select2-selection--multiple {
+    background-color: var(--select2-bg);
+    border: 1px solid var(--select2-border-color) !important;
+    color: var(--select2-text-color);
+    border-radius: 0.375rem;
+    min-height: 38px; /* Ensure consistent height */
+    display: flex;
+    align-items: center;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: var(--select2-text-color);
+    line-height: 36px; /* Or adjusted to match height */
+    padding-left: 0.75rem;
+}
+.select2-container--default .select2-selection--single .select2-selection__placeholder,
+body.dark-mode .select2-container--default .select2-selection--single .select2-selection__placeholder {
+    color: var(--select2-placeholder-color);
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 36px; /* Match line-height/input height */
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+    border-color: var(--select2-placeholder-color) transparent transparent transparent;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__rendered {
+    padding-left: 0.75rem; /* Align choices with single select text */
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: var(--select2-choice-bg);
+    color: var(--select2-choice-text-color);
+    border: 1px solid var(--card-border-color); /* Or a specific choice border */
+    border-radius: 0.25rem;
+    padding: 0.15rem 0.5rem; /* Adjust padding for choices */
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: var(--select2-choice-remove-color);
+    margin-right: 0.25rem; /* Space before x */
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+    color: var(--danger-color);
+    opacity: 0.85;
+}
+
+.select2-dropdown {
+    background-color: var(--select2-dropdown-bg);
+    border: 1px solid var(--select2-border-color);
+    border-radius: 0.375rem;
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+}
+body.dark-mode .select2-dropdown {
+    box-shadow: 0 0.5rem 1rem rgba(255,255,255,0.05); /* Dark theme shadow for dropdown */
+}
+
+.select2-search--dropdown .select2-search__field { /* Search field within dropdown */
+    background-color: var(--input-bg) !important;
+    color: var(--input-text-color) !important;
+    border: 1px solid var(--input-border-color) !important;
+    border-radius: 0.25rem; /* Consistent rounding */
+    padding: 0.375rem 0.75rem;
+}
+.select2-results__option {
+    color: var(--select2-text-color);
+    padding: 0.375rem 0.75rem; /* Consistent padding */
+}
+.select2-results__option:hover,
+.select2-results__option--highlighted {
+    background-color: var(--select2-results-option-hover-bg);
+    color: var(--text-color);
+}
+.select2-results__option[aria-selected="true"] {
+    background-color: var(--select2-results-option-selected-bg);
+    color: var(--select2-results-option-selected-text);
+}
+
+/* Specific dark mode overrides for Select2 if general input styles are not enough */
+body.dark-mode .select2-container--default .select2-selection--single .select2-selection__arrow b {
+    border-color: var(--select2-placeholder-color) transparent transparent transparent; /* Ensure dark mode arrow is visible */
+}
+body.dark-mode .select2-selection__choice__remove:hover {
+    color: #ff8a80; /* Lighter red for dark mode remove hover */
+}
+
+/* Mobile filter specific styles */
+#mobile-filter-overlay {
+    background-color: rgba(0,0,0,0.5); /* Default, consider dark mode version */
+}
+body.dark-mode #mobile-filter-overlay {
+    background-color: rgba(var(--dark-color-rgb, 33, 37, 41), 0.75); /* Use dark color with opacity */
+}
+.mobile-filter-content {
+    background-color: var(--card-bg); /* Use card bg for filter content */
+    color: var(--text-color);
+}
 
 /* Dodatkowe style dla przycisków akcji, które już masz lub możesz dostosować */
 .action-btn {
-    padding: 0.15rem 0.5rem; /* Domyślny padding */
+    padding: 0.15rem 0.5rem;
     margin: 0.15rem;
     display: inline-flex;
     align-items: center;
     gap: 0.3rem;
     transition: all 0.2s;
-    vertical-align: middle; /* Lepsze wyrównanie przycisków w linii */
+    vertical-align: middle;
 }
 
 .action-btn i {

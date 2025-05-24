@@ -1,5 +1,6 @@
 # app/routes/emailtype_routes.py
 from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask_login import current_user
 from app import db
 from app.models import EmailTyp # Corrected model name
 from app.forms import EmailTypeForm # Form name
@@ -9,6 +10,19 @@ from sqlalchemy import func
 emailtype_bp = Blueprint('emailtype_bp', __name__,
                          template_folder='../templates',
                          url_prefix='/email_types')
+
+@emailtype_bp.before_request
+def require_login_for_emailtype_bp():
+    # Allow access to auth routes and static files without login
+    if request.endpoint and (
+        request.endpoint.startswith('auth.') or
+        request.endpoint == 'static'
+    ):
+        return
+
+    if not current_user.is_authenticated:
+        flash("Musisz się zalogować, aby uzyskać dostęp do tej strony.", "warning")
+        return redirect(url_for('auth.login', next=request.url))
 
 @emailtype_bp.route('/')
 def list_email_types():

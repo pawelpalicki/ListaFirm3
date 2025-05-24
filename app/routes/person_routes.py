@@ -1,5 +1,6 @@
 # app/routes/person_routes.py
 from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask_login import current_user
 from app import db
 from app.models import Osoby
 from app.forms import SimplePersonForm
@@ -8,6 +9,19 @@ from sqlalchemy.exc import SQLAlchemyError
 person_bp = Blueprint('person_bp', __name__,
                       template_folder='../templates',
                       url_prefix='/persons')
+
+@person_bp.before_request
+def require_login_for_person_bp():
+    # Allow access to auth routes and static files without login
+    if request.endpoint and (
+        request.endpoint.startswith('auth.') or
+        request.endpoint == 'static'
+    ):
+        return
+
+    if not current_user.is_authenticated:
+        flash("Musisz się zalogować, aby uzyskać dostęp do tej strony.", "warning")
+        return redirect(url_for('auth.login', next=request.url))
 
 @person_bp.route('/')
 def list_persons():

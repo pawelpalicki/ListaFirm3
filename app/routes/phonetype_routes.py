@@ -1,5 +1,6 @@
 # app/routes/phonetype_routes.py
 from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask_login import current_user
 from app import db
 from app.models import TelefonTyp # Corrected model name
 from app.forms import PhoneTypeForm # Form name
@@ -9,6 +10,19 @@ from sqlalchemy import func
 phonetype_bp = Blueprint('phonetype_bp', __name__,
                          template_folder='../templates',
                          url_prefix='/phone_types')
+
+@phonetype_bp.before_request
+def require_login_for_phonetype_bp():
+    # Allow access to auth routes and static files without login
+    if request.endpoint and (
+        request.endpoint.startswith('auth.') or
+        request.endpoint == 'static'
+    ):
+        return
+
+    if not current_user.is_authenticated:
+        flash("Musisz się zalogować, aby uzyskać dostęp do tej strony.", "warning")
+        return redirect(url_for('auth.login', next=request.url))
 
 @phonetype_bp.route('/')
 def list_phone_types():
