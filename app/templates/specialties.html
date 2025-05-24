@@ -6,7 +6,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title">{{ title }}</h5>
-                <a href="{{ url_for('main.new_specialty') }}" class="btn btn-success btn-sm">
+                <a href="{{ url_for('specialty_bp.new_specialty') }}" class="btn btn-success btn-sm">
                     <i class="bi bi-plus-circle"></i> Dodaj nową specjalność
                 </a>
             </div>
@@ -33,8 +33,8 @@
                             <td>{{ item.id_specjalnosci }}</td>
                             <td class="specialty-name">{{ item.specjalnosc }}</td>
                             <td>
-                                <a href="{{ url_for('main.edit_specialty', id=item.id_specjalnosci) }}" class="btn btn-sm btn-primary">Edytuj</a>
-                                <form action="{{ url_for('main.delete_specialty', id=item.id_specjalnosci) }}" method="POST" style="display: inline;">
+                                <a href="{{ url_for('specialty_bp.edit_specialty', id=item.id_specjalnosci) }}" class="btn btn-sm btn-primary">Edytuj</a>
+                                <form action="{{ url_for('specialty_bp.delete_specialty', id=item.id_specjalnosci) }}" method="POST" style="display: inline;">
                                     <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Czy na pewno chcesz usunąć tę specjalność?');">Usuń</button>
                                 </form>
                             </td>

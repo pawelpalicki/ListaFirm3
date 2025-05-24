@@ -31,12 +31,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('main.list_persons') }}">
+                            <a class="nav-link" href="{{ url_for('person_bp.list_persons') }}">
                                 <i class="bi bi-people me-1"></i>Osoby
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('main.list_ratings') }}">
+                            <a class="nav-link" href="{{ url_for('rating_bp.list_ratings') }}">
                                 <i class="bi bi-star me-1"></i>Oceny
                             </a>
                         </li>
@@ -45,11 +45,11 @@
                                 <i class="bi bi-list-ul me-1"></i>Inne formularze
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="{{ url_for('main.list_specialties') }}"><i class="bi bi-wrench-adjustable-circle me-2"></i>Specjalności</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('main.list_company_types') }}"><i class="bi bi-building me-2"></i>Typy firm</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('main.list_address_types') }}"><i class="bi bi-geo-alt me-2"></i>Typy adresów</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('main.list_phone_types') }}"><i class="bi bi-telephone me-2"></i>Typy telefonów</a></li>
-                                <li><a class="dropdown-item" href="{{ url_for('main.list_email_types') }}"><i class="bi bi-envelope me-2"></i>Typy e-maili</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('specialty_bp.list_specialties') }}"><i class="bi bi-wrench-adjustable-circle me-2"></i>Specjalności</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('companytype_bp.list_company_types') }}"><i class="bi bi-building me-2"></i>Typy firm</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('addresstype_bp.list_address_types') }}"><i class="bi bi-geo-alt me-2"></i>Typy adresów</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('phonetype_bp.list_phone_types') }}"><i class="bi bi-telephone me-2"></i>Typy telefonów</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('emailtype_bp.list_email_types') }}"><i class="bi bi-envelope me-2"></i>Typy e-maili</a></li>
                             </ul>
                         </li>
                         {% if current_user.is_authenticated %}

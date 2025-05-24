@@ -6,7 +6,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title">{{ title }}</h5>
-                 <a href="{{ url_for('main.new_email_type') }}" class="btn btn-success btn-sm">
+                 <a href="{{ url_for('emailtype_bp.new_email_type') }}" class="btn btn-success btn-sm">
                     <i class="bi bi-plus-circle"></i> Dodaj nowy typ e-maila
                 </a>
             </div>
@@ -25,8 +25,8 @@
                             <td>{{ item.id_email_typ }}</td>
                             <td>{{ item.typ_emaila }}</td>
                             <td>
-                                <a href="{{ url_for('main.edit_email_type', id=item.id_email_typ) }}" class="btn btn-sm btn-primary">Edytuj</a>
-                                <form action="{{ url_for('main.delete_email_type', id=item.id_email_typ) }}" method="POST" style="display: inline;">
+                                <a href="{{ url_for('emailtype_bp.edit_email_type', id=item.id_email_typ) }}" class="btn btn-sm btn-primary">Edytuj</a>
+                                <form action="{{ url_for('emailtype_bp.delete_email_type', id=item.id_email_typ) }}" method="POST" style="display: inline;">
                                     <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Czy na pewno chcesz usunąć ten typ e-maila?');">Usuń</button>
                                 </form>
                             </td>

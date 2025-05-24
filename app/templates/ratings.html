@@ -6,7 +6,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title">{{ title }}</h5>
-                <a href="{{ url_for('main.new_rating') }}" class="btn btn-success btn-sm">
+                <a href="{{ url_for('rating_bp.new_rating') }}" class="btn btn-success btn-sm">
                     <i class="bi bi-plus-circle"></i> Dodaj nową ocenę współpracy
                 </a>
             </div>
@@ -46,10 +46,10 @@
                                 <td data-label="Komentarz" class="rating-comment">{{ item.komentarz }}</td>
                                 <td data-label="Firma" class="rating-company">{% if item.firma %}{{ item.firma.nazwa_firmy }}{% else %}Brak firmy{% endif %}</td>
                                 <td data-label="Akcje"> 
-                                    <a href="{{ url_for('main.edit_rating', id=item.oceny_id) }}" class="btn btn-sm btn-primary action-btn">
+                                    <a href="{{ url_for('rating_bp.edit_rating', id=item.oceny_id) }}" class="btn btn-sm btn-primary action-btn">
                                         <i class="bi bi-pencil-square"></i> <span class="btn-text">Edytuj</span>
                                     </a>
-                                    <form action="{{ url_for('main.delete_rating', id=item.oceny_id) }}" method="POST" style="display: inline;">
+                                    <form action="{{ url_for('rating_bp.delete_rating', id=item.oceny_id) }}" method="POST" style="display: inline;">
                                         <button type="submit" class="btn btn-sm btn-danger action-btn" onclick="return confirm('Czy na pewno chcesz usunąć tę ocenę?');">
                                             <i class="bi bi-trash"></i> <span class="btn-text">Usuń</span>
                                         </button>

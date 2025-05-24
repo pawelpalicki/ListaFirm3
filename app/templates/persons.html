@@ -6,7 +6,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title">{{ title }}</h5>
-                <a href="{{ url_for('main.new_person') }}" class="btn btn-success btn-sm">
+                <a href="{{ url_for('person_bp.new_person') }}" class="btn btn-success btn-sm">
                     <i class="bi bi-plus-circle"></i> Dodaj nową osobę kontaktową
                 </a>
             </div>
@@ -46,10 +46,10 @@
                                 <td data-label="Telefon" class="person-phone">{{ item.telefon }}</td>
                                 <td data-label="Firma" class="person-company">{% if item.firma %}{{ item.firma.nazwa_firmy }}{% else %}Brak firmy{% endif %}</td>
                                 <td data-label="Akcje">
-                                    <a href="{{ url_for('main.edit_person', id=item.id_osoby) }}" class="btn btn-sm btn-primary action-btn">
+                                    <a href="{{ url_for('person_bp.edit_person', id=item.id_osoby) }}" class="btn btn-sm btn-primary action-btn">
                                         <i class="bi bi-pencil-square"></i> <span class="btn-text">Edytuj</span>
                                     </a>
-                                    <form action="{{ url_for('main.delete_person', id=item.id_osoby) }}" method="POST" style="display: inline;">
+                                    <form action="{{ url_for('person_bp.delete_person', id=item.id_osoby) }}" method="POST" style="display: inline;">
                                         <button type="submit" class="btn btn-sm btn-danger action-btn" onclick="return confirm('Czy na pewno chcesz usunąć tę osobę kontaktową?');">
                                              <i class="bi bi-trash"></i> <span class="btn-text">Usuń</span>
                                         </button>
