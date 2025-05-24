@@ -369,6 +369,38 @@ body.dark-mode .custom-navbar-style .dropdown-item:focus {
 /* ===== KARTY ===== */
 /* .card and .card-header styles are already updated to use variables. */
 
+/* === Dark Mode Fixes - May 2025 === */
+
+/* Fix for 'Zalogowany: user1' text color in dark mode */
+body.dark-mode .navbar-text {
+    color: var(--navbar-link-color); /* Używa zmiennej zdefiniowanej dla linków w navbar */
+}
+
+/* Card styling fixes for dark mode */
+body.dark-mode .card {
+    background-color: var(--card-bg);
+    border-color: var(--card-border-color);
+    color: var(--text-color); 
+}
+
+body.dark-mode .card-header {
+    background-color: var(--card-header-bg);
+    color: var(--card-header-color);
+    border-bottom: 1px solid var(--card-border-color);
+}
+
+body.dark-mode .card-body {
+    /* Tło .card-body zazwyczaj jest takie samo jak .card. */
+    /* Jeśli tekst wewnątrz .card-body nie dziedziczy koloru poprawnie, można dodać: */
+    /* color: var(--text-color); */
+}
+
+body.dark-mode .card-footer { /* Jeśli używasz stopek kart */
+    background-color: var(--card-header-bg); 
+    color: var(--card-header-color);
+    border-top: 1px solid var(--card-border-color);
+}
+
 /* ===== PRZYCISKI - SPÓJNE STYLE (Structural) ===== */
 /* These define structure/layout, general .btn-* rules below handle theming. */
 .card-header .btn,
