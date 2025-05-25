@@ -25,7 +25,7 @@ class User(UserMixin):
 
 # Predefiniowani użytkownicy testowi (hasła zostaną zahaszowane przy starcie aplikacji)
 USERS = {
-    "user1": User(1, "user1", generate_password_hash("password123")),
+    "ptbnickel": User(1, "ptbnickel", generate_password_hash("L@to2025$")),
     "admin": User(2, "admin", generate_password_hash("adminpassword"))
 }
 

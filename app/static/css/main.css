@@ -14,55 +14,537 @@
     --navbar-link-hover-color: #007bff; /* Główny kolor akcentu (Bootstrap primary) */
     --navbar-link-active-color: #0056b3; /* Ciemniejszy odcień primary dla aktywnego linku */
     --navbar-brand-color: #004085; /* Ciemnoniebieski dla brandu, np. wzięty z alert-info Bootstrapa */
+
+    /* ===== ZMIENNE TRYBU CIEMNEGO ===== */
+    --dark-body-bg: #1a1a1a;
+    --dark-surface-bg: #2c2c2c;
+    --dark-surface-light-bg: #383838;
+    --dark-text-primary: #e0e0e0;
+    --dark-text-secondary: #b3b3b3;
+    --dark-border-color: #444444;
+    --dark-input-bg: #333333;
+    --dark-input-border: #555555;
+    --dark-input-focus-border: #007bff; /* Można zachować primary lub dostosować */
+    --dark-input-placeholder: #888888;
+    --dark-primary-color: #4dabf7;
+    --dark-primary-hover-color: #74c0fc;
+    --dark-secondary-color: #868e96;
+    --dark-secondary-hover-color: #adb5bd;
+    --dark-success-color: #40c057;
+    --dark-danger-color: #fa5252;
+    --dark-warning-color: #fab005;
+    --dark-info-color: #3bc9db;
+    --dark-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    --dark-select2-bg: #333333;
+    --dark-select2-border: #555555;
+    --dark-select2-dropdown-bg: #2c2c2c;
+    --dark-select2-dropdown-border: #444444;
+    --dark-select2-choice-bg: #404040;
+    --dark-select2-highlight-bg: #007bff; /* Można użyć --dark-primary-color */
 }
 
 body {
-    background-color: #f8f9fa;
+    background-color: #f8f9fa; /* Domyślne tło dla trybu jasnego */
+    color: #212529; /* Domyślny kolor tekstu dla trybu jasnego */
     position: relative;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ===== STYLE TRYBU CIEMNEGO ===== */
+
+/* ----- GLOBALNE STYLE CIEMNE ----- */
+html[data-theme="dark"] body {
+    background-color: var(--dark-body-bg);
+    color: var(--dark-text-primary);
+}
+
+html[data-theme="dark"] a {
+    color: var(--dark-primary-color);
+}
+
+html[data-theme="dark"] a:hover {
+    color: var(--dark-primary-hover-color);
+}
+
+html[data-theme="dark"] .text-muted {
+    color: var(--dark-text-secondary) !important;
+}
+
+/* ----- PASEK NAWIGACYJNY CIEMNY ----- */
+html[data-theme="dark"] .custom-navbar-style {
+    background: linear-gradient(to bottom, var(--dark-surface-bg), #222222);
+    border-bottom: 1px solid var(--dark-border-color);
+    box-shadow: var(--dark-shadow);
+}
+
+html[data-theme="dark"] .custom-navbar-style .navbar-brand {
+    color: var(--dark-primary-color);
+}
+
+html[data-theme="dark"] .custom-navbar-style .navbar-brand .bi {
+    color: var(--dark-primary-color);
+}
+
+html[data-theme="dark"] .custom-navbar-style .nav-link {
+    color: var(--dark-text-secondary);
+}
+
+html[data-theme="dark"] .custom-navbar-style .nav-link:hover,
+html[data-theme="dark"] .custom-navbar-style .nav-link:focus {
+    color: var(--dark-primary-hover-color);
+    background-color: rgba(77, 171, 247, 0.1);
+}
+
+html[data-theme="dark"] .custom-navbar-style .nav-link.active {
+    color: var(--dark-primary-color);
+    background-color: rgba(77, 171, 247, 0.15);
+}
+
+html[data-theme="dark"] .custom-navbar-style .dropdown-menu {
+    background-color: var(--dark-surface-bg);
+    border: 1px solid var(--dark-border-color);
+    box-shadow: var(--dark-shadow);
+}
+
+html[data-theme="dark"] .custom-navbar-style .dropdown-item {
+    color: var(--dark-text-secondary);
+}
+
+html[data-theme="dark"] .custom-navbar-style .dropdown-item:hover,
+html[data-theme="dark"] .custom-navbar-style .dropdown-item:focus {
+    color: var(--dark-primary-hover-color);
+    background-color: var(--dark-surface-light-bg);
+}
+
+html[data-theme="dark"] .custom-navbar-style .dropdown-item:active {
+    background-color: var(--dark-primary-color);
+    color: var(--dark-surface-bg);
+}
+
+html[data-theme="dark"] .custom-navbar-style .btn-primary {
+    background-color: var(--dark-primary-color);
+    border-color: var(--dark-primary-color);
+    color: #000;
+}
+html[data-theme="dark"] .custom-navbar-style .btn-primary:hover {
+    background-color: var(--dark-primary-hover-color);
+    border-color: var(--dark-primary-hover-color);
+}
+
+html[data-theme="dark"] .custom-navbar-style .btn-outline-secondary {
+    color: var(--dark-text-secondary);
+    border-color: var(--dark-border-color);
+}
+html[data-theme="dark"] .custom-navbar-style .btn-outline-secondary:hover {
+    background-color: var(--dark-surface-light-bg);
+    color: var(--dark-primary-hover-color);
+    border-color: var(--dark-border-color);
+}
+
+html[data-theme="dark"] .custom-navbar-style .navbar-toggler {
+    border-color: var(--dark-border-color);
+}
+html[data-theme="dark"] .custom-navbar-style .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(224, 224, 224, 0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
 
-/* NOWE STYLE PASKA NAWIGACYJNEGO */
+/* ----- KARTY CIEMNE ----- */
+html[data-theme="dark"] .card {
+    background-color: var(--dark-surface-bg);
+    border: 1px solid var(--dark-border-color);
+    box-shadow: var(--dark-shadow);
+    color: var(--dark-text-primary);
+}
+
+html[data-theme="dark"] .card .card { /* Zagnieżdżone karty */
+    background-color: var(--dark-surface-light-bg);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+html[data-theme="dark"] .card-header {
+    background-color: #333333;
+    border-bottom: 1px solid var(--dark-border-color);
+    color: var(--dark-text-primary);
+}
+
+html[data-theme="dark"] .company-form-content .card-header.bg-dark {
+    background-color: #222222 !important;
+    color: var(--dark-text-primary) !important;
+}
+
+html[data-theme="dark"] .list-group-item {
+    background-color: var(--dark-surface-bg);
+    border-color: var(--dark-border-color);
+    color: var(--dark-text-primary);
+}
+
+html[data-theme="dark"] .accordion-button {
+    background-color: var(--dark-surface-light-bg);
+    color: var(--dark-text-primary);
+}
+html[data-theme="dark"] .accordion-button:not(.collapsed) {
+    background-color: var(--dark-primary-color);
+    color: var(--dark-surface-bg); /* Tekst na tle primary */
+}
+html[data-theme="dark"] .accordion-button::after {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23e0e0e0'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+}
+html[data-theme="dark"] .accordion-button:not(.collapsed)::after {
+   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%232c2c2c'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+}
+
+html[data-theme="dark"] .accordion-item {
+    border-color: var(--dark-border-color);
+    background-color: var(--dark-surface-bg); /* Dodane dla spójności */
+}
+html[data-theme="dark"] .accordion-body {
+    background-color: var(--dark-surface-bg);
+    color: var(--dark-text-primary);
+}
+
+/* ----- PRZYCISKI CIEMNE ----- */
+html[data-theme="dark"] .btn-primary {
+    background-color: var(--dark-primary-color);
+    border-color: var(--dark-primary-color);
+    color: #000;
+}
+html[data-theme="dark"] .btn-primary:hover {
+    background-color: var(--dark-primary-hover-color);
+    border-color: var(--dark-primary-hover-color);
+    color: #000;
+}
+
+html[data-theme="dark"] .btn-secondary {
+    background-color: var(--dark-secondary-color);
+    border-color: var(--dark-secondary-color);
+    color: #fff; /* Lub #000 jeśli --dark-secondary-color jest bardzo jasny */
+}
+html[data-theme="dark"] .btn-secondary:hover {
+    background-color: var(--dark-secondary-hover-color);
+    border-color: var(--dark-secondary-hover-color);
+}
+
+html[data-theme="dark"] .btn-success {
+    background-color: var(--dark-success-color);
+    border-color: var(--dark-success-color);
+    color: #000;
+}
+html[data-theme="dark"] .btn-danger {
+    background-color: var(--dark-danger-color);
+    border-color: var(--dark-danger-color);
+    color: #000;
+}
+html[data-theme="dark"] .btn-warning {
+    background-color: var(--dark-warning-color);
+    border-color: var(--dark-warning-color);
+    color: #000;
+}
+html[data-theme="dark"] .btn-info {
+    background-color: var(--dark-info-color);
+    border-color: var(--dark-info-color);
+    color: #000;
+}
+
+html[data-theme="dark"] .btn-outline-secondary {
+    color: var(--dark-text-secondary);
+    border-color: var(--dark-border-color);
+}
+html[data-theme="dark"] .btn-outline-secondary:hover {
+    color: var(--dark-text-primary);
+    background-color: var(--dark-secondary-color);
+    border-color: var(--dark-secondary-color);
+}
+
+html[data-theme="dark"] .badge.bg-primary { background-color: var(--dark-primary-color) !important; color: #000 !important; }
+html[data-theme="dark"] .badge.bg-secondary { background-color: var(--dark-secondary-color) !important; color: #fff !important; }
+html[data-theme="dark"] .badge.bg-success { background-color: var(--dark-success-color) !important; color: #000 !important; }
+html[data-theme="dark"] .badge.bg-danger { background-color: var(--dark-danger-color) !important; color: #000 !important; }
+html[data-theme="dark"] .badge.bg-warning { background-color: var(--dark-warning-color) !important; color: #000 !important; }
+html[data-theme="dark"] .badge.bg-info { background-color: var(--dark-info-color) !important; color: #000 !important; }
+
+
+/* ----- FORMULARZE I POLA CIEMNE ----- */
+html[data-theme="dark"] .form-control,
+html[data-theme="dark"] .form-select {
+    background-color: var(--dark-input-bg);
+    border-color: var(--dark-input-border);
+    color: var(--dark-text-primary);
+}
+html[data-theme="dark"] .form-control::placeholder {
+    color: var(--dark-input-placeholder);
+}
+html[data-theme="dark"] .form-control:focus,
+html[data-theme="dark"] .form-select:focus {
+    background-color: var(--dark-input-bg);
+    border-color: var(--dark-input-focus-border);
+    color: var(--dark-text-primary);
+    box-shadow: 0 0 0 0.25rem rgba(77, 171, 247, 0.25); /* Użyj koloru --dark-primary-color w formacie RGBA */
+}
+
+html[data-theme="dark"] .input-group-text {
+    background-color: var(--dark-surface-light-bg);
+    border-color: var(--dark-input-border);
+    color: var(--dark-text-secondary);
+}
+
+html[data-theme="dark"] .form-check-input {
+    background-color: var(--dark-input-bg);
+    border-color: var(--dark-input-border);
+}
+html[data-theme="dark"] .form-check-input:checked {
+    background-color: var(--dark-primary-color);
+    border-color: var(--dark-primary-color);
+}
+html[data-theme="dark"] .form-check-label {
+    color: var(--dark-text-primary);
+}
+html[data-theme="dark"] .form-check.border {
+    border-color: var(--dark-border-color) !important;
+}
+html[data-theme="dark"] .form-check:hover {
+    background-color: var(--dark-surface-light-bg);
+}
+
+/* Pola formularza w dodawaniu firmy */
+html[data-theme="dark"] .adres-form,
+html[data-theme="dark"] .telefon-form,
+html[data-theme="dark"] .email-form,
+html[data-theme="dark"] .osoba-form,
+html[data-theme="dark"] .ocena-form {
+    background-color: var(--dark-surface-light-bg);
+    border-color: var(--dark-border-color);
+}
+html[data-theme="dark"] .adres-form:hover,
+html[data-theme="dark"] .telefon-form:hover,
+html[data-theme="dark"] .email-form:hover,
+html[data-theme="dark"] .osoba-form:hover,
+html[data-theme="dark"] .ocena-form:hover {
+    background-color: #404040; /* Nieco jaśniejsze od --dark-surface-light-bg */
+}
+
+
+/* ----- SELECT2 CIEMNY ----- */
+html[data-theme="dark"] .select2-container--default .select2-selection--single,
+html[data-theme="dark"] .select2-container--default .select2-selection--multiple {
+    background-color: var(--dark-select2-bg);
+    border-color: var(--dark-select2-border) !important;
+    color: var(--dark-text-primary);
+}
+
+html[data-theme="dark"] .select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: var(--dark-text-primary);
+}
+html[data-theme="dark"] .select2-container--default .select2-selection--single .select2-selection__placeholder {
+    color: var(--dark-input-placeholder);
+}
+html[data-theme="dark"] .select2-container--default .select2-selection--single .select2-selection__arrow b {
+    border-color: var(--dark-text-secondary) transparent transparent transparent;
+}
+
+html[data-theme="dark"] .select2-dropdown {
+    background-color: var(--dark-select2-dropdown-bg);
+    border-color: var(--dark-select2-dropdown-border);
+}
+
+html[data-theme="dark"] .select2-dropdown .select2-search__field {
+    background-color: var(--dark-input-bg);
+    border-color: var(--dark-input-border);
+    color: var(--dark-text-primary);
+}
+html[data-theme="dark"] .select2-dropdown .select2-search__field:focus {
+    border-color: var(--dark-input-focus-border);
+}
+
+html[data-theme="dark"] .select2-results__option {
+    color: var(--dark-text-primary);
+}
+html[data-theme="dark"] .select2-results__option--highlighted[aria-selected],
+html[data-theme="dark"] .select2-results__option:hover { /* Zmienione dla lepszego kontrastu */
+    background-color: var(--dark-surface-light-bg);
+    color: var(--dark-text-primary);
+}
+html[data-theme="dark"] .select2-results__option[aria-selected="true"] {
+    background-color: var(--dark-select2-highlight-bg);
+    color: #fff;
+}
+
+html[data-theme="dark"] .select2-selection--multiple .select2-selection__choice {
+    background-color: var(--dark-select2-choice-bg);
+    border-color: var(--dark-border-color);
+    color: var(--dark-text-primary);
+}
+html[data-theme="dark"] .select2-selection--multiple .select2-selection__choice__remove {
+    color: var(--dark-text-secondary);
+}
+html[data-theme="dark"] .select2-selection--multiple .select2-selection__choice__remove:hover {
+    color: var(--dark-text-primary);
+}
+
+
+/* ----- TABELE CIEMNE ----- */
+html[data-theme="dark"] .table {
+    color: var(--dark-text-primary);
+    border-color: var(--dark-border-color);
+}
+html[data-theme="dark"] .table th,
+html[data-theme="dark"] .table td {
+    border-color: var(--dark-border-color);
+}
+html[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > * {
+    --bs-table-accent-bg: var(--dark-surface-light-bg);
+    color: var(--dark-text-primary);
+}
+html[data-theme="dark"] .table-hover > tbody > tr:hover > * {
+    --bs-table-accent-bg: #444444; /* Ciemniejszy hover */
+    color: var(--dark-text-primary);
+}
+html[data-theme="dark"] .company-row:hover {
+    background-color: var(--dark-surface-light-bg) !important;
+}
+html[data-theme="dark"] .company-details td {
+    background-color: var(--dark-surface-bg); /* Tło dla szczegółów firmy */
+}
+
+/* Responsywna tabela "stacking" ciemna */
+html[data-theme="dark"] .table-responsive-stacking th {
+    background-color: #3a3a3a; /* Ciemniejszy nagłówek */
+    border-color: var(--dark-border-color);
+}
+html[data-theme="dark"] .table-responsive-stacking td {
+    border-color: var(--dark-border-color); /* Upewnij się, że ramki są widoczne */
+}
+html[data-theme="dark"] .table-responsive-stacking tr {
+    background-color: var(--dark-surface-bg); /* Tło dla wiersza-karty mobilnej */
+    border-color: var(--dark-border-color);
+}
+html[data-theme="dark"] .table-responsive-stacking.table-striped tbody tr:nth-of-type(odd) {
+    background-color: var(--dark-surface-bg); /* Spójność dla pasów */
+}
+html[data-theme="dark"] .table-responsive-stacking.table-striped > tbody > tr:nth-of-type(2n+1) > * {
+    --bs-table-accent-bg: transparent; /* Reset pasów Bootstrapa */
+}
+html[data-theme="dark"] .table-responsive-stacking td::before {
+    color: var(--dark-text-secondary); /* Kolor etykiety */
+}
+
+
+/* ----- MODALE CIEMNE ----- */
+html[data-theme="dark"] .modal-content {
+    background-color: var(--dark-surface-bg);
+    color: var(--dark-text-primary);
+    border-color: var(--dark-border-color);
+}
+html[data-theme="dark"] .modal-header {
+    border-bottom-color: var(--dark-border-color);
+}
+html[data-theme="dark"] .modal-footer {
+    border-top-color: var(--dark-border-color);
+}
+html[data-theme="dark"] .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%); /* Biały X */
+}
+
+/* ----- ALERTY CIEMNE ----- */
+html[data-theme="dark"] .alert { /* Ogólne dla alertów, jeśli potrzebne */
+    border-width: 1px;
+}
+html[data-theme="dark"] .alert-success {
+    background-color: #102d1a; color: #a3cfbb; border-color: #1a4a2a;
+}
+html[data-theme="dark"] .alert-danger {
+    background-color: #3b0f14; color: #f1b8be; border-color: #58151c;
+}
+html[data-theme="dark"] .alert-warning {
+    background-color: #332701; color: #ffecb5; border-color: #664d03;
+}
+html[data-theme="dark"] .alert-info {
+    background-color: #021a20; color: #a1e9f7; border-color: #032830;
+}
+html[data-theme="dark"] .alert-secondary {
+    background-color: #25292d; color: #c8cbce; border-color: #41464b;
+}
+
+
+/* ----- FILTR MOBILNY CIEMNY ----- */
+html[data-theme="dark"] #mobile-filter-overlay {
+    background-color: rgba(0,0,0,0.8); /* Ciemniejsze tło */
+}
+html[data-theme="dark"] .mobile-filter-content {
+    background-color: var(--dark-surface-bg);
+    color: var(--dark-text-primary);
+}
+html[data-theme="dark"] .mobile-filter-header {
+    border-bottom-color: var(--dark-border-color);
+}
+
+
+/* ----- FORMULARZ OVERLAY (Dodaj nowy typ) CIEMNY ----- */
+html[data-theme="dark"] #overlay-form-container { /* Dodane dla tła overlay */
+    background-color: rgba(0,0,0,0.7);
+}
+html[data-theme="dark"] #overlay-form-container .card {
+    background-color: var(--dark-surface-bg);
+    border-color: var(--dark-border-color);
+}
+html[data-theme="dark"] #overlay-form-container .card-header {
+    background-color: var(--dark-surface-light-bg);
+    border-bottom-color: var(--dark-border-color);
+}
+html[data-theme="dark"] #overlay-form-container #overlay-input {
+    background-color: var(--dark-input-bg);
+    border-color: var(--dark-input-border);
+    color: var(--dark-text-primary);
+}
+html[data-theme="dark"] #overlay-form-container #overlay-input:focus {
+    border-color: var(--dark-input-focus-border);
+    box-shadow: 0 0 0 0.25rem rgba(77, 171, 247, 0.25); /* Użyj koloru --dark-primary-color w formacie RGBA */
+}
+
+
+/* ===== ISTNIEJĄCE STYLE (upewnij się, że nie ma konfliktów, przejrzyj w razie potrzeby) ===== */
+/* ... (wszystkie pozostałe istniejące style z main.css) ... */
+
+/* NOWE STYLE PASKA NAWIGACYJNEGO (istniejące, dostosowane w sekcji ciemnej) */
 .custom-navbar-style {
     background: linear-gradient(to bottom, var(--navbar-bg-start), var(--navbar-bg-end));
     border-bottom: 1px solid var(--navbar-border-color);
     box-shadow: var(--navbar-shadow);
-    padding-top: 0.75rem; /* Nieco więcej pionowego paddingu */
+    padding-top: 0.75rem;
     padding-bottom: 0.75rem;
 }
 
 .custom-navbar-style .navbar-brand {
     color: var(--navbar-brand-color);
-    font-size: 1.35rem; /* Nieco większa czcionka dla brandu */
-    font-weight: 600; /* Pogrubienie zgodne z fw-bold w HTML */
+    font-size: 1.35rem;
+    font-weight: 600;
 }
 
 .custom-navbar-style .navbar-brand .bi {
-    color: var(--navbar-brand-color); /* Ikona w kolorze brandu */
-    font-size: 1.5rem; /* Rozmiar ikony */
-    vertical-align: text-bottom; /* Lepsze wyrównanie ikony z tekstem */
-    margin-right: 0.3rem; /* Niewielki odstęp od tekstu */
+    color: var(--navbar-brand-color);
+    font-size: 1.5rem;
+    vertical-align: text-bottom;
+    margin-right: 0.3rem;
 }
 
 .custom-navbar-style .nav-link {
     color: var(--navbar-link-color);
     font-weight: 500;
-    padding: 0.5rem 0.85rem; /* Dopasowany padding */
-    margin: 0 0.2rem;      /* Niewielki odstęp między elementami */
-    border-radius: 0.375rem; /* Zaokrąglenie dla efektu hover */
+    padding: 0.5rem 0.85rem;
+    margin: 0 0.2rem;
+    border-radius: 0.375rem;
     transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
 }
 
 .custom-navbar-style .nav-link:hover,
-.custom-navbar-style .nav-link:focus { /* :focus dla dostępności */
+.custom-navbar-style .nav-link:focus {
     color: var(--navbar-link-hover-color);
-    background-color: rgba(0, 123, 255, 0.06); /* Bardzo subtelne tło przy hover */
+    background-color: rgba(0, 123, 255, 0.06);
 }
 
-/* Możesz dodać klasę 'active' do linku bieżącej strony w swoim backendzie/JS */
 .custom-navbar-style .nav-link.active {
     color: var(--navbar-link-active-color);
-    font-weight: 600; /* Lub 700 dla jeszcze większego wyróżnienia */
+    font-weight: 600;
     background-color: rgba(0, 123, 255, 0.08);
 }
 
@@ -70,12 +552,12 @@ body {
     border-radius: 0.375rem;
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
     border: 1px solid var(--navbar-border-color);
-    margin-top: 0.5rem; /* Odstęp od paska nawigacji */
+    margin-top: 0.5rem;
 }
 
 .custom-navbar-style .dropdown-item {
     color: var(--navbar-link-color);
-    padding: 0.6rem 1.2rem; /* Nieco większy padding w dropdownie */
+    padding: 0.6rem 1.2rem;
     transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
 }
 
@@ -85,13 +567,12 @@ body {
     background-color: rgba(0, 123, 255, 0.08);
 }
 
-.custom-navbar-style .dropdown-item:active { /* Gdy element jest kliknięty */
+.custom-navbar-style .dropdown-item:active {
     background-color: var(--navbar-link-hover-color);
     color: #fff;
 }
 
-/* Stylizacja przycisków Zaloguj/Wyloguj */
-.custom-navbar-style .btn-sm { /* Upewnij się, że przyciski mają odpowiedni rozmiar */
+.custom-navbar-style .btn-sm {
     padding: 0.3rem 0.75rem;
     font-size: 0.875rem;
 }
@@ -108,28 +589,23 @@ body {
 
 .custom-navbar-style .btn-outline-secondary {
     color: var(--navbar-link-color);
-    border-color: #ced4da; /* Neutralna ramka */
+    border-color: #ced4da;
 }
 .custom-navbar-style .btn-outline-secondary:hover {
-    background-color: #e9ecef; /* Jasne tło przy najechaniu */
+    background-color: #e9ecef;
     color: var(--navbar-link-active-color);
     border-color: #ced4da;
 }
 
-/* Poprawka dla navbar-toggler (ikona hamburgera) */
 .custom-navbar-style .navbar-toggler {
     border-color: rgba(0,0,0,0.1);
 }
-/* Można dostosować kolor ikony togglera, jeśli domyślny nie pasuje */
-/* .custom-navbar-style .navbar-toggler-icon { ... } */
-
 
 /* ===== KOLUMNY ===== */
-
 .left-column {
   position: sticky;
-  top: 70px;
-  max-height: calc(100vh - 100px); 
+  top: 70px; /* Dostosuj do wysokości paska nawigacyjnego */
+  max-height: calc(100vh - 100px); /* Dostosuj do wysokości paska nawigacyjnego i marginesów */
 }
 
 .left-column .card {
@@ -147,35 +623,35 @@ body {
 /* ===== KARTY ===== */
 .card {
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Zwiększony cień dla lepszego efektu */
     margin-bottom: 1.5rem;
-    border: 1px solid var(--card-border-color);
-    overflow: hidden;
-    transition: all 0.3s ease;
+    border: 1px solid var(--card-border-color); /* Użycie zmiennej */
+    overflow: hidden; /* Zapobiega wystawaniu zawartości poza zaokrąglone rogi */
+    transition: all 0.3s ease; /* Płynne przejścia dla hover itp. */
 }
 
 /* Zagnieżdżone karty w formularzu firmy */
 .card .card {
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2); /* Mniejszy cień dla zagnieżdżonych kart */
 }
 
 /* ===== PRZYCISKI - SPÓJNE STYLE ===== */
 .card-header .btn,
 .mobile-filter-content .btn {
-    height: 32px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    font-weight: 500;
-    border-radius: 0.375rem;
-    transition: all 0.2s ease;
-    padding: 0.375rem 0.75rem;
+    height: 32px; /* Ustalona wysokość dla spójności */
+    display: inline-flex; /* Umożliwia wyrównanie ikon i tekstu */
+    align-items: center; /* Wyrównanie w pionie */
+    justify-content: center; /* Wyrównanie w poziomie */
+    gap: 0.5rem; /* Odstęp między ikoną a tekstem */
+    font-weight: 500; /* Średnia grubość czcionki */
+    border-radius: 0.375rem; /* Zaokrąglenie Bootstrapa */
+    transition: all 0.2s ease; /* Płynne przejścia */
+    padding: 0.375rem 0.75rem; /* Standardowy padding Bootstrapa */
 }
 
 /* Przyciski w nagłówku prawej kolumny */
 .right-column .card-header .btn {
-    min-width: 120px;
+    min-width: 120px; /* Minimalna szerokość dla lepszego wyglądu */
 }
 
 /* Przyciski w formularzu filtrowania  mobile */
@@ -214,21 +690,16 @@ body {
     gap: 8px; /* Odstęp między przyciskami */
 }
 
-/* Grupa przycisków */
-/* .btn-group-vertical {
-    width: 100%;
-} */
-
 /* Ikony */
 .btn .bi {
     font-size: 1rem;
-    margin-right: 0.25rem;
+    margin-right: 0.25rem; /* Mniejszy odstęp jeśli ikona jest mała */
 }
 
 /* Przyciski zapisywania formularza */
 .d-flex.justify-content-between .btn {
-    min-width: 150px;
-    padding: 0.5rem 1rem;
+    min-width: 150px; /* Minimalna szerokość dla przycisków akcji */
+    padding: 0.5rem 1rem; /* Większy padding dla ważniejszych przycisków */
     font-weight: 500;
     display: inline-flex;
     align-items: center;
@@ -237,28 +708,28 @@ body {
 }
 
 /* Responsywność przycisków */
-@media (max-width: 575.98px) {
+@media (max-width: 575.98px) { /* Small devices (landscape phones, 576px and down) */
     .card-header .btn {
-        width: 100%;
+        width: 100%; /* Pełna szerokość na małych ekranach */
         max-width: none;
         margin-bottom: 0.5rem;
     }
 
     .right-column .card-header .d-flex {
-        flex-direction: column;
+        flex-direction: column; /* Przyciski jeden pod drugim */
         width: 100%;
         gap: 0.5rem;
     }
 
     .d-flex.justify-content-between {
-        flex-direction: column;
-        gap: 0.5rem;
-        
-        
+        flex-direction: column; /* Przyciski jeden pod drugim */
+        gap: 0.5rem; /* Odstęp między przyciskami */
+
+
     }
 
     .d-flex.justify-content-between .btn {
-        width: 100%;
+        width: 100%; /* Pełna szerokość na małych ekranach */
         margin-bottom: 1rem; /* Add margin below each button */
     }
 }
@@ -268,8 +739,8 @@ body {
 /* Style wspólne dla wszystkich Select2 (single i multiple) */
 .select2-container--default .select2-selection--single,
 .select2-container--default .select2-selection--multiple {
-    border-color: #e0e0e0 !important;
-    border-radius: 0.375rem;
+    border-color: #e0e0e0 !important; /* Jaśniejszy border dla lepszego wyglądu */
+    border-radius: 0.375rem; /* Standardowe zaokrąglenie Bootstrap */
     min-height: 38px; /* Zapewnia spójną wysokość dla obu typów select */
     display: flex;
     align-items: center; /* Wyśrodkowanie elementów w pionie */
@@ -277,8 +748,8 @@ body {
 
 /* Wspólny styl dla selektów z customem */
 .select2-selection--custom {
-    padding: 0.25rem 0.5rem;
-    font-size: 14px;
+    padding: 0.25rem 0.5rem; /* Mniejszy padding */
+    font-size: 14px; /* Mniejsza czcionka */
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     line-height: 1.5;
     width: 100%; /* Pełna szerokość */
@@ -291,9 +762,9 @@ body {
 .select2-container--open .select2-selection--custom,
 .select2-container--open .select2-selection--single,
 .select2-container--open .select2-selection--multiple {
-    border-color: #80bdff !important;
-    box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
-    outline: 0;
+    border-color: #80bdff !important; /* Kolor focus Bootstrapa */
+    box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25); /* Cień focus Bootstrapa */
+    outline: 0; /* Usunięcie domyślnego outline */
 }
 
 /* Style dla pojedynczego selecta */
@@ -306,13 +777,13 @@ body {
     color: #212529; /* Kolor tekstu zgodny z formularzem */
     line-height: 38px; /* Wyrównanie w pionie */
     padding-left: 0.75rem; /* Odstęp tekstu od lewej krawędzi */
-    font-size: 16px;
+    font-size: 16px; /* Standardowy rozmiar czcionki Bootstrapa */
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    font-weight: 400;
+    font-weight: 400; /* Standardowa waga czcionki */
 }
 
 .select2-container--default .select2-selection--single .select2-selection__placeholder {
-    color: #6c757d; /* Kolor placeholdera */
+    color: #6c757d; /* Kolor placeholdera Bootstrapa */
     font-size: 16px;
     font-weight: 400;
 }
@@ -341,66 +812,66 @@ body {
 }
 
 .select2-dropdown .select2-search__field:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+    border-color: #007bff; /* Kolor focus */
+    box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25); /* Cień focus */
     outline: 0;
 }
 
 /* Styl dla dropdowna (wspólny dla single i multiple) */
 .select2-dropdown--custom {
-    border: 1px solid rgba(0, 0, 0, 0.175);
-    border-radius: 0.5rem;
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
-    z-index: 100;
+    border: 1px solid rgba(0, 0, 0, 0.175); /* Standardowy border Bootstrapa */
+    border-radius: 0.5rem; /* Większe zaokrąglenie dla dropdownu */
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175); /* Standardowy cień Bootstrapa */
+    z-index: 100; /* Upewnij się, że dropdown jest na wierzchu */
 }
 
 /* Style dla opcji w dropdown */
 .select2-results__option {
-    padding: 0.375rem 0.75rem;
-    font-size: 1rem;
-    color: #212529;
+    padding: 0.375rem 0.75rem; /* Standardowy padding */
+    font-size: 1rem; /* Standardowy rozmiar czcionki */
+    color: #212529; /* Standardowy kolor tekstu */
 }
 
 .select2-results__option:hover,
 .select2-results__option--highlighted {
-    background-color: #e9ecef;
+    background-color: #e9ecef; /* Kolor tła hover Bootstrapa */
     color: #212529;
     cursor: pointer;
 }
 
 /* Wybrana opcja */
 .select2-results__option[aria-selected="true"] {
-    background-color: #007bff;
-    color: #fff;
+    background-color: #007bff; /* Kolor primary Bootstrapa */
+    color: #fff; /* Biały tekst na tle primary */
 }
 
 /* Style dla multiselect - zachowanie istniejących */
 .select2-selection--multiple {
-    border-color: #e0e0e0 !important;
+    border-color: #e0e0e0 !important; /* Jasny border */
 }
 
 .select2-selection__choice {
-    color: #212529;
-    border-radius: 0.5rem;
-    padding: 0.5rem 0.5rem;
+    color: #212529; /* Ciemny tekst */
+    border-radius: 0.5rem; /* Zaokrąglenie */
+    padding: 0.5rem 0.5rem; /* Padding */
     margin-right: 0.25rem;
-    margin-left: 2rem;
+    margin-left: 2rem; /* Odstęp od lewej krawędzi */
 }
 
 .select2-selection__choice__remove {
-    color: #fff;
+    color: #fff; /* Biały krzyżyk */
     cursor: pointer;
 }
 
 .select2-selection__choice__remove:hover {
     color: #fff;
-    opacity: 0.7;
+    opacity: 0.7; /* Lekkie przyciemnienie przy hover */
 }
 
 /* Poprawka dla container w input-group */
 .input-group .select2-container {
     flex-grow: 1;
-    width: auto !important;
+    width: auto !important; /* Pozwala Bootstrapowi zarządzać szerokością */
 }
 
 /* Ustalenie szerokości dla wszystkich containerów Select2 */
@@ -410,8 +881,8 @@ body {
 
 /* Styl dla placeholder w multiselect */
 .select2-selection__placeholder {
-    margin-top: 0;
-    color: #6c757d;
+    margin-top: 0; /* Usunięcie marginesu */
+    color: #6c757d; /* Kolor placeholdera Bootstrapa */
     font-size: 16px;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     font-weight: 400;
@@ -438,87 +909,87 @@ body {
 }
 
 .company-row:hover {
-    background-color: #f1f8ff;
+    background-color: #f1f8ff; /* Jaśniejszy niebieski dla hover */
 }
 
 .company-details td {
     padding: 1rem;
-    background-color: #f8f9fa;
+    background-color: #f8f9fa; /* Jasne tło dla szczegółów */
 }
 
 /* ===== FILTRY MOBILE ===== */
 #mobile-filter-overlay {
   display: none;
   position: fixed;
-  top: 10px;
+  top: 10px; /* Odstęp od góry */
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0,0,0,0.5); /* Półprzezroczyste tło */
   z-index: 2000; /* Wyższy niż navbar */
   padding: 20px;
-  overflow-y: auto;
+  overflow-y: auto; /* Scroll jeśli zawartość jest za długa */
 }
 
 .mobile-filter-content {
     background-color: white;
     padding: 20px;
     border-radius: 5px;
-    max-height: 90vh;
-    overflow-y: auto;
+    max-height: 90vh; /* Maksymalna wysokość */
+    overflow-y: auto; /* Scroll wewnątrz contentu */
 }
 
 .mobile-filter-header {
-    border-bottom: 1px solid #dee2e6;
+    border-bottom: 1px solid #dee2e6; /* Linia oddzielająca */
     padding-bottom: 10px;
     margin-bottom: 15px;
 }
 
 /* ===== IKONY ===== */
 .bi {
-    font-size: 1rem;
-    line-height: 1;
-    vertical-align: middle;
+    font-size: 1rem; /* Domyślny rozmiar ikon */
+    line-height: 1; /* Dla spójnego wyrównania */
+    vertical-align: middle; /* Lepsze wyrównanie z tekstem */
 }
 
 /* ===== STYLE FORMULARZA DODAWANIA FIRMY ===== */
 .company-form-content {
-    margin-bottom: 2rem;
+    margin-bottom: 2rem; /* Odstęp na dole formularza */
 }
 /* Sekcje formularza */
 .company-form-content .card-header {
-    padding: 0.75rem 1rem;
+    padding: 0.75rem 1rem; /* Padding w nagłówku karty */
 }
 .company-form-content .card-header h5 {
     margin: 0;
-    font-size: 1.1rem;
-    font-weight: 600;
+    font-size: 1.1rem; /* Rozmiar czcionki nagłówka sekcji */
+    font-weight: 600; /* Pogrubienie */
 }
 /* Style pól formularza */
 .form-label {
-    font-weight: 500;
-    font-size: 0.9rem;
-    margin-bottom: 0.25rem;
+    font-weight: 500; /* Średnia grubość czcionki dla etykiet */
+    font-size: 0.9rem; /* Nieco mniejsza czcionka etykiet */
+    margin-bottom: 0.25rem; /* Mniejszy odstęp pod etykietą */
 }
 /* Pola formularza - adresy, telefony, emaile, osoby */
 .adres-form, .telefon-form, .email-form, .osoba-form, .ocena-form {
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    transition: all 0.2s ease;
+    background-color: #f9f9f9; /* Jasne tło dla grup pól */
+    border-radius: 8px; /* Zaokrąglenie */
+    transition: all 0.2s ease; /* Płynne przejścia */
 }
 .adres-form:hover, .telefon-form:hover, .email-form:hover, .osoba-form:hover, .ocena-form:hover {
-    background-color: #f5f5f5;
+    background-color: #f5f5f5; /* Lekka zmiana tła przy hover */
 }
 /* Nagłówki sekcji */
 h6 {
     font-size: 1rem;
     font-weight: 600;
     margin-bottom: 1rem;
-    color: #333;
+    color: #333; /* Ciemniejszy kolor dla nagłówków h6 */
 }
 /* Przyciski dodawania elementów */
 #dodaj-adres, #dodaj-telefon, #dodaj-email, #dodaj-osobe, #dodaj-ocene {
-    margin-bottom: 1rem;
+    margin-bottom: 1rem; /* Odstęp pod przyciskami dodawania */
 }
 
 /* ===== STYLE RESPONSYWNYCH TABEL ===== */
@@ -531,8 +1002,8 @@ h6 {
 /* Style dla standardowych tabel (widok desktopowy) */
 .responsive-table th, 
 .responsive-table td {
-    white-space: nowrap;
-    padding: 0.5rem 0.75rem;
+    white-space: nowrap; /* Zapobiega łamaniu tekstu w komórkach */
+    padding: 0.5rem 0.75rem; /* Mniejszy padding dla tabel */
 }
 
 /* Style dla kart mobilnych - zgodne z istniejącym wyglądem formularza */
@@ -541,109 +1012,109 @@ h6 {
 }
 
 .mobile-card {
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    background-color: #f9f9f9;
+    border: 1px solid #dee2e6; /* Ramka dla karty mobilnej */
+    border-radius: 8px; /* Zaokrąglenie */
+    background-color: #f9f9f9; /* Jasne tło */
     transition: all 0.2s ease;
 }
 
 .mobile-card:hover {
-    background-color: #f5f5f5;
+    background-color: #f5f5f5; /* Lekka zmiana tła przy hover */
 }
 
 .mobile-card .card-body {
-    padding: 0.75rem 1rem;
+    padding: 0.75rem 1rem; /* Padding w ciele karty mobilnej */
 }
 
 .mobile-card strong {
     display: inline-block;
-    min-width: 110px;
+    min-width: 110px; /* Minimalna szerokość dla etykiet */
     font-weight: 500;
     font-size: 0.9rem;
 }
 
 /* Przyciski akcji */
 .action-btn {
-    padding: 0.25rem 0.5rem;
+    padding: 0.25rem 0.5rem; /* Mniejszy padding dla przycisków akcji */
     display: inline-flex;
     align-items: center;
-    gap: 0.3rem;
+    gap: 0.3rem; /* Mniejszy odstęp */
     transition: all 0.2s;
 }
 
 .action-btn i {
-    font-size: 0.9rem;
+    font-size: 0.9rem; /* Mniejsza ikona */
 }
 
 /* Responsywność formularza i tabel */
-@media (max-width: 992px) {
+@media (max-width: 992px) { /* Medium devices (tablets, 992px and down) */
     /* Ukrywamy tekst w przyciskach akcji, pokazujemy tylko ikony */
     .action-btn .btn-text {
         display: none;
     }
 
     .action-btn {
-        padding: 0.25rem 0.5rem;
+        padding: 0.25rem 0.5rem; /* Dostosowanie paddingu dla samych ikon */
     }
 
-    .radio-group-container {
-        flex-wrap: nowrap !important;
+    .radio-group-container { /* Poprawka dla grupy radio na tabletach */
+        flex-wrap: nowrap !important; /* Zapobiega zawijaniu */
     }
 }
 
-@media (max-width: 767.98px) {
+@media (max-width: 767.98px) { /* Small devices (landscape phones, less than 768px) */
     .company-form-content .card-body {
-        padding: 1rem;
+        padding: 1rem; /* Większy padding dla małych ekranów */
     }
     .form-label {
-        margin-top: 0.5rem;
+        margin-top: 0.5rem; /* Dodatkowy margines dla etykiet */
     }
 
     /* Alternatywne style dla tabeli w widoku mobilnym (jeśli nie używamy przełączania na karty) */
     .responsive-table td::before {
-        content: attr(data-label);
+        content: attr(data-label); /* Wyświetlanie etykiety z atrybutu data-label */
         font-weight: 500;
         font-size: 0.9rem;
         display: inline-block;
-        min-width: 110px;
+        min-width: 110px; /* Minimalna szerokość etykiety */
     }
 
     .responsive-table td {
-        display: flex;
-        align-items: center;
-        border: none;
-        padding: 0.4rem 0.5rem;
+        display: flex; /* Użycie flexbox dla lepszego wyrównania */
+        align-items: center; /* Wyrównanie w pionie */
+        border: none; /* Usunięcie ramek komórek */
+        padding: 0.4rem 0.5rem; /* Mniejszy padding */
     }
 
     .responsive-table th {
-        display: none;
+        display: none; /* Ukrycie nagłówków tabeli */
     }
 
     .responsive-table tr {
-        display: block;
-        border-bottom: 1px solid #dee2e6;
-        margin-bottom: 0.5rem;
-        background-color: #f9f9f9;
-        border-radius: 8px;
-        padding: 0.5rem 0;
+        display: block; /* Wiersze jako bloki */
+        border-bottom: 1px solid #dee2e6; /* Linia oddzielająca wiersze */
+        margin-bottom: 0.5rem; /* Odstęp między wierszami */
+        background-color: #f9f9f9; /* Jasne tło dla wiersza */
+        border-radius: 8px; /* Zaokrąglenie */
+        padding: 0.5rem 0; /* Wewnętrzny padding */
     }
 
     .responsive-table tbody {
-        display: block;
+        display: block; /* Ciało tabeli jako blok */
     }
 }
 
 /* Radio button */
 
 .form-check-input {
-    margin-top: 0.3rem;
+    margin-top: 0.3rem; /* Lepsze wyrównanie z tekstem */
 }
 .form-check {
     min-width: 150px; /* Minimalna szerokość opcji */
     transition: all 0.2s ease;
 }
 .form-check:hover {
-    background-color: #f8f9fa;
+    background-color: #f8f9fa; /* Lekkie tło przy hover */
 }
 
 /* ===== STYLE RESPONSYWNYCH TABEL (STACKING) ===== */
@@ -651,140 +1122,133 @@ h6 {
 /* Domyślnie pokazuj wszystko */
 .table-responsive-stacking th,
 .table-responsive-stacking td {
-    padding: 8px; /* Dodaj wewnętrzny margines 8 pikseli */
-    text-align: left; /* Wyrównaj tekst do lewej */
-    vertical-align: top; /* Wyrównaj treść do góry komórki */
-    border: 1px solid #ddd; /* Dodaj delikatne obramowanie komórek */
-    box-sizing: border-box; /* Model pudełkowy */
-    /* Możesz też dodać inne style, np. */
-    /* color: #333; */ /* Ciemnoszary kolor tekstu */
-    /* background-color: #fff; */ /* Białe tło komórki (domyślne) */
+    padding: 8px;
+    text-align: left;
+    vertical-align: top;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
 }
 
-/* Opcjonalnie, możesz nadać inny styl tylko nagłówkom (th) */
 .table-responsive-stacking th {
-    background-color: #aaaaaa; /* Jasnoszare tło dla nagłówków */
-    font-weight: bold; /* Pogrubiona czcionka (domyślne dla th, ale warto jawnie ustawić) */
+    background-color: #aaaaaa; /* Jaśniejszy szary dla nagłówków */
+    font-weight: bold;
     text-align: center; /* Nagłówki wyśrodkowane */
 }
 
 .table-responsive-stacking .action-btn .btn-text {
-    display: inline; /* Domyślnie pokazuj tekst przycisku */
+    display: inline;
 }
 
 /* Style dla widoku mobilnego (np. poniżej 768px) */
 @media (max-width: 767.98px) {
     .table-responsive-stacking thead {
-        display: none; /* Ukryj nagłówki tabeli */
+        display: none;
     }
 
     .table-responsive-stacking tbody,
     .table-responsive-stacking tr,
     .table-responsive-stacking td {
-        display: block; /* Zmień wyświetlanie na blokowe */
+        display: block;
         width: 100%;
     }
 
     .table-responsive-stacking tr {
-        margin-bottom: 1rem; /* Dodaj odstęp między "zwiniętymi" wierszami */
-        border: 1px solid #dee2e6; /* Opcjonalna ramka dla każdego bloku */
-        border-radius: 0.375rem; /* Opcjonalne zaokrąglenie */
-        padding: 0.5rem 0; /* Wewnętrzny padding dla bloku wiersza */
+        margin-bottom: 1rem;
+        border: 1px solid #dee2e6;
+        border-radius: 0.375rem;
+        padding: 0.5rem 0;
         background-color: #fff; /* Tło dla wiersza-karty */
     }
 
-    /* Usuwamy paski z table-striped w widoku mobilnym */
     .table-responsive-stacking.table-striped tbody tr:nth-of-type(odd) {
-        background-color: #fff;
+        background-color: #fff; /* Usunięcie pasów w trybie mobilnym */
     }
     .table-responsive-stacking.table-striped > tbody > tr:nth-of-type(2n+1) > * {
-        --bs-table-accent-bg: transparent; /* Reset bootstrapowego stylu dla pasów */
+        --bs-table-accent-bg: transparent;
     }
 
 
     .table-responsive-stacking td {
         position: relative;
-        padding-left: 45%; /* Zrób miejsce na etykietę */
+        padding-left: 45%; /* Miejsce na etykietę */
         padding-top: 0.5rem;
         padding-bottom: 0.5rem;
-        text-align: left; /* Wyrównaj tekst do lewej w komórce */
-        border: none; /* Usuń domyślne ramki komórek */
-        min-height: 38px; /* Minimalna wysokość dla lepszego wyglądu */
-        display: flex; /* Użyj flexboxa dla lepszego wyrównania */
-        align-items: center; /* Wycentruj w pionie */
+        text-align: left;
+        border: none;
+        min-height: 38px;
+        display: flex;
+        align-items: center;
     }
 
     .table-responsive-stacking td::before {
-        content: attr(data-label); /* Pobierz tekst etykiety z atrybutu */
+        content: attr(data-label);
         position: absolute;
-        left: 0.75rem; /* Odstęp etykiety od lewej krawędzi */
-        width: 40%; /* Szerokość etykiety */
-        padding-right: 0.5rem; /* Odstęp między etykietą a wartością */
+        left: 0.75rem;
+        width: 40%;
+        padding-right: 0.5rem;
         font-weight: bold;
         text-align: left;
-        white-space: nowrap; /* Zapobiegaj łamaniu tekstu etykiety */
+        white-space: nowrap;
     }
 
-    /* Specjalne style dla komórki Akcje */
     .table-responsive-stacking td[data-label="Akcje"] {
-        padding-left: 0.75rem; /* Brak potrzeby wcięcia dla akcji */
+        padding-left: 0.75rem;
         padding-top: 0.75rem;
-        /* Można dodać justowanie przycisków itp. jeśli jest więcej niż jeden */
-        display: block; /* Zmień z powrotem na block, aby przyciski były jeden pod drugim */
-        text-align: right; /* Wyrównaj przyciski do prawej (lub left/center) */
+        display: block;
+        text-align: right; /* Wyrównanie przycisków do prawej */
     }
 
      .table-responsive-stacking td[data-label="Akcje"]::before {
-       display: none; /* Nie pokazuj etykiety "Akcje:" */
+       display: none;
      }
 
     .table-responsive-stacking td[data-label="Akcje"] form {
-        display: inline-block; /* Ustawienie formularzy obok siebie */
-        margin-left: 5px; /* Dodaj mały odstęp między przyciskami */
+        display: inline-block;
+        margin-left: 5px;
     }
      .table-responsive-stacking td[data-label="Akcje"] .action-btn {
-        margin-bottom: 5px; /* Dodaj odstęp pod przyciskami, jeśli są jeden pod drugim */
+        margin-bottom: 5px;
      }
 
-    /* Ukryj tekst w przyciskach Akcji na mobile, zostaw tylko ikony */
     .table-responsive-stacking .action-btn .btn-text {
         display: none;
     }
      .table-responsive-stacking .action-btn {
-        padding: 0.375rem 0.5rem; /* Zmniejsz padding dla ikon */
+        padding: 0.375rem 0.5rem;
     }
 
 }
 
-/* Opcjonalnie: Możesz dodać breakpoint dla tabletów (np. 992px),
-   gdzie np. tylko ukryjesz tekst przycisków, ale tabela pozostanie standardowa */
 @media (min-width: 768px) and (max-width: 991.98px) {
      .table-responsive-stacking .action-btn .btn-text {
-        display: none; /* Odkomentuj, jeśli chcesz ukryć tekst też na tabletach */
+        /* display: none; */ /* Odkomentuj, jeśli chcesz ukryć tekst też na tabletach */
      }
 }
 
 
-/* Dodatkowe style dla przycisków akcji, które już masz lub możesz dostosować */
 .action-btn {
-    padding: 0.15rem 0.5rem; /* Domyślny padding */
+    padding: 0.15rem 0.5rem;
     margin: 0.15rem;
     display: inline-flex;
     align-items: center;
     gap: 0.3rem;
     transition: all 0.2s;
-    vertical-align: middle; /* Lepsze wyrównanie przycisków w linii */
+    vertical-align: middle;
 }
 
 .action-btn i {
-    font-size: 1rem; /* Rozmiar ikony */
-    line-height: 1; /* Zapobiega dodatkowej przestrzeni wokół ikony */
+    font-size: 1rem;
+    line-height: 1;
 }
 
-/* Poprawka dla formularza w linii */
 td[data-label="Akcje"] form {
-    margin: 0 0 0 0.25rem; /* Mały odstęp między przyciskami edytuj/usuń */
+    margin: 0 0 0 0.25rem;
 }
 td[data-label="Akcje"] form:first-of-type {
     margin-left: 0;
+}
+
+/* Overlay form (Add new type) - tło */
+#overlay-form-container {
+    background-color: rgba(0,0,0,0.5); /* Domyślne tło dla trybu jasnego */
 }
