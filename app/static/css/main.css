@@ -512,6 +512,46 @@ html[data-theme="dark"] #overlay-form-container #overlay-input:focus {
     box-shadow: 0 0 0 0.25rem rgba(77, 171, 247, 0.25); /* Użyj koloru --dark-primary-color w formacie RGBA */
 }
 
+/* ===== POPRAWKA DLA AUTOFILL W TRYBIE CIEMNYM ===== */
+
+/* Resetowanie stylów autofill dla trybu ciemnego */
+html[data-theme="dark"] .form-control:-webkit-autofill,
+html[data-theme="dark"] .form-control:-webkit-autofill:hover,
+html[data-theme="dark"] .form-control:-webkit-autofill:focus,
+html[data-theme="dark"] .form-control:-webkit-autofill:active,
+html[data-theme="dark"] .form-select:-webkit-autofill,
+html[data-theme="dark"] .form-select:-webkit-autofill:hover,
+html[data-theme="dark"] .form-select:-webkit-autofill:focus,
+html[data-theme="dark"] .form-select:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px var(--dark-input-bg) inset !important;
+    -webkit-text-fill-color: var(--dark-text-primary) !important;
+    background-color: var(--dark-input-bg) !important;
+    border-color: var(--dark-input-border) !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Dodatkowa reguła dla focus state z autofill */
+html[data-theme="dark"] .form-control:-webkit-autofill:focus,
+html[data-theme="dark"] .form-select:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px var(--dark-input-bg) inset !important;
+    border-color: var(--dark-input-focus-border) !important;
+    box-shadow: 0 0 0 0.25rem rgba(77, 171, 247, 0.25), 0 0 0 1000px var(--dark-input-bg) inset !important;
+}
+
+/* Alternatywne podejście dla przeglądarek nie obsługujących -webkit-autofill */
+html[data-theme="dark"] input:-internal-autofill-selected,
+html[data-theme="dark"] input:-internal-autofill-previewed {
+    background-color: var(--dark-input-bg) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* Dodatkowa reguła dla Select2 z autofill (jeśli używane) */
+html[data-theme="dark"] .select2-container--default .select2-selection--single:-webkit-autofill,
+html[data-theme="dark"] .select2-container--default .select2-selection--multiple:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px var(--dark-select2-bg) inset !important;
+    -webkit-text-fill-color: var(--dark-text-primary) !important;
+    background-color: var(--dark-select2-bg) !important;
+}
 
 /* ===== ISTNIEJĄCE STYLE (upewnij się, że nie ma konfliktów, przejrzyj w razie potrzeby) ===== */
 /* ... (wszystkie pozostałe istniejące style z main.css) ... */
