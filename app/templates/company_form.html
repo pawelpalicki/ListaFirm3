@@ -18,11 +18,26 @@
                 <form method="POST" action="" id="companyForm">
                     {{ form.hidden_tag() }}
 
-                    <div class="card mb-4">
-                        <div class="card-header bg-dark text-white">
-                            <h5 class="mb-0">Podstawowe informacje</h5>
-                        </div>
-                        <div class="card-body">
+                    <ul class="nav nav-tabs nav-fill mb-4" id="companyFormTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="basic-info-tab" data-bs-toggle="tab" data-bs-target="#basic-info" type="button" role="tab" aria-controls="basic-info" aria-selected="true">Podstawowe informacje</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="contact-data-tab" data-bs-toggle="tab" data-bs-target="#contact-data" type="button" role="tab" aria-controls="contact-data" aria-selected="false">Dane kontaktowe</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="specialties-area-tab" data-bs-toggle="tab" data-bs-target="#specialties-area" type="button" role="tab" aria-controls="specialties-area" aria-selected="false">Specjalności i obszar</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="persons-tab" data-bs-toggle="tab" data-bs-target="#persons" type="button" role="tab" aria-controls="persons" aria-selected="false">Osoby kontaktowe</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="ratings-tab" data-bs-toggle="tab" data-bs-target="#ratings" type="button" role="tab" aria-controls="ratings" aria-selected="false">Oceny</button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="companyFormTabsContent">
+                        <div class="tab-pane fade show active" id="basic-info" role="tabpanel" aria-labelledby="basic-info-tab">
                             <div class="row">
                                 <div class="col-md-12 mb-3">
                                     {{ form.nazwa_firmy.label(class="form-label") }}
@@ -75,13 +90,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="card mb-4">
-                        <div class="card-header bg-dark text-white">
-                            <h5 class="mb-0">Dane kontaktowe</h5>
-                        </div>
-                        <div class="card-body">
+                        <div class="tab-pane fade" id="contact-data" role="tabpanel" aria-labelledby="contact-data-tab">
                             <h6>Adresy</h6>
                             <div id="adresy-container">
                                 {% for adres_form in form.adresy %}
@@ -238,13 +248,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="card mb-4">
-                        <div class="card-header bg-dark text-white">
-                            <h5 class="mb-0">Specjalności i obszar działania</h5>
-                        </div>
-                        <div class="card-body">
+                        <div class="tab-pane fade" id="specialties-area" role="tabpanel" aria-labelledby="specialties-area-tab">
                             <!-- Sekcja specjalności -->
                             <div class="mb-3">
                                 <label for="specjalnosci" class="form-label">{{ form.specjalnosci.label }}</label>
@@ -318,13 +323,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="card mb-4">
-                        <div class="card-header bg-dark text-white">
-                            <h5 class="mb-0">Osoby kontaktowe</h5>
-                        </div>
-                        <div class="card-body">
+                        <div class="tab-pane fade" id="persons" role="tabpanel" aria-labelledby="persons-tab">
                             <div id="osoby-container">
                                 {% for osoba_form in form.osoby %}
                                 <div class="entry-form osoba-form mb-4 p-3 border rounded">
@@ -398,13 +398,8 @@
                                 <i class="bi bi-plus-circle"></i> Dodaj osobę
                             </button>
                         </div>
-                    </div>
 
-                    <div class="card mb-4">
-                        <div class="card-header bg-dark text-white">
-                            <h5 class="mb-0">Oceny</h5>
-                        </div>
-                        <div class="card-body">
+                        <div class="tab-pane fade" id="ratings" role="tabpanel" aria-labelledby="ratings-tab">
                             <div id="oceny-container">
                                 {% for ocena_form in form.oceny %}
                                 <div class="entry-form ocena-form mb-4 p-3 border rounded">
@@ -477,7 +472,7 @@
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between mt-4">
                         <button type="submit" class="btn btn-success">
                             <i class="bi bi-save"></i> Zapisz firmę
                         </button>

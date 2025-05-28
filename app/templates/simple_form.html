@@ -1,21 +1,34 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-8 offset-md-2">
+<div class="row justify-content-center"> {# Wyśrodkowanie kolumny #}
+    <div class="col-12 col-md-8 col-lg-6"> {# Dostosowanie szerokości kolumny dla różnych rozmiarów ekranu #}
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title">{{ title }}</h5>
+                <h5 class="card-title mb-0">{{ title }}</h5> {# Usunięto mb-0 jeśli niepotrzebne, lub można dostosować marginesy #}
             </div>
             <div class="card-body">
                 <form method="POST">
                     {{ form.hidden_tag() }}
                     <div class="mb-3">
                         {{ form.name.label(class="form-label") }}
-                        {{ form.name(class="form-control") }}
+                        {{ form.name(class="form-control", placeholder="Wprowadź nazwę...") }} {# Dodano placeholder dla przykładu #}
+                        {% if form.name.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.name.errors %}
+                                    <span>{{ error }}</span><br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
-                    <button type="submit" class="btn btn-primary">{{ form.submit.label }}</button>
-                    <a href="{{ back_url }}" class="btn btn-secondary">Anuluj</a>
+                    <div class="d-flex justify-content-end gap-2 mt-4"> {# Kontener dla przycisków z wyrównaniem do prawej i odstępem #}
+                        <a href="{{ back_url }}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Anuluj
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> {{ form.submit.label.text if form.submit else 'Zapisz' }}
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>

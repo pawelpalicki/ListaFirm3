@@ -1,9 +1,16 @@
 /* ===== GLOBALNE STYLE (aktualizacja zmiennych i body) ===== */
 :root {
-    --btn-primary-color: #0d6efd;
-    --btn-secondary-color: #6c757d;
+    --btn-primary-color: #0056b3; /* Zaktualizowano */
+    --btn-secondary-color: #5A6268; /* Zaktualizowano */
     --btn-success-color: #198754;
     --card-border-color: rgba(0, 0, 0, 0.1);
+    --card-box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* Dodano */
+    --ui-border-radius: 0.5rem; /* Dodano */
+
+    /* Stos fontów */
+    --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* Dodano */
+    --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* Dodano */
+    --bs-body-font-family: var(--font-family-sans-serif); /* Dodano */
 
     /* Nowe zmienne dla paska nawigacyjnego */
     --navbar-bg-start: #ffffff;
@@ -11,41 +18,47 @@
     --navbar-border-color: #dee2e6; /* Bootstrap 'border-color' */
     --navbar-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     --navbar-link-color: #343a40; /* Ciemniejszy dla lepszego kontrastu na jasnym tle */
-    --navbar-link-hover-color: #007bff; /* Główny kolor akcentu (Bootstrap primary) */
-    --navbar-link-active-color: #0056b3; /* Ciemniejszy odcień primary dla aktywnego linku */
-    --navbar-brand-color: #004085; /* Ciemnoniebieski dla brandu, np. wzięty z alert-info Bootstrapa */
+    --navbar-link-hover-color: #0056b3; /* Zaktualizowano */
+    --navbar-link-active-color: #004085; /* Zaktualizowano */
+    --navbar-brand-color: #0056b3; /* Zaktualizowano */
 
-    /* ===== ZMIENNE TRYBU CIEMNEGO ===== */
-    --dark-body-bg: #1a1a1a;
-    --dark-surface-bg: #2c2c2c;
-    --dark-surface-light-bg: #383838;
+    /* ===== ZMIENNE TRYBU CIEMNEGO (przeniesione do html[data-theme="dark"]) ===== */
+    /* Poniższe zmienne zostaną zdefiniowane w bloku html[data-theme="dark"] */
+}
+
+html[data-theme="dark"] {
+    --dark-body-bg: #121212; /* Zaktualizowano */
+    --dark-surface-bg: #1E1E1E; /* Zaktualizowano */
+    --dark-surface-light-bg: #383838; /* Można dostosować, jeśli trzeba */
     --dark-text-primary: #e0e0e0;
     --dark-text-secondary: #b3b3b3;
-    --dark-border-color: #444444;
+    --dark-border-color: #3A3A3A; /* Zaktualizowano */
     --dark-input-bg: #333333;
     --dark-input-border: #555555;
-    --dark-input-focus-border: #007bff; /* Można zachować primary lub dostosować */
+    --dark-input-focus-border: #3A86FF; /* Dostosowano do nowego primary */
     --dark-input-placeholder: #888888;
-    --dark-primary-color: #4dabf7;
-    --dark-primary-hover-color: #74c0fc;
+    --dark-primary-color: #3A86FF; /* Zaktualizowano */
+    --dark-primary-hover-color: #5E9EFF; /* Zaktualizowano */
     --dark-secondary-color: #868e96;
     --dark-secondary-hover-color: #adb5bd;
     --dark-success-color: #40c057;
     --dark-danger-color: #fa5252;
     --dark-warning-color: #fab005;
     --dark-info-color: #3bc9db;
-    --dark-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    --dark-shadow: 0 4px 12px rgba(0,0,0,0.25); /* Zaktualizowano */
     --dark-select2-bg: #333333;
     --dark-select2-border: #555555;
-    --dark-select2-dropdown-bg: #2c2c2c;
-    --dark-select2-dropdown-border: #444444;
+    --dark-select2-dropdown-bg: #1E1E1E; /* Dostosowano do --dark-surface-bg */
+    --dark-select2-dropdown-border: #3A3A3A; /* Dostosowano do --dark-border-color */
     --dark-select2-choice-bg: #404040;
-    --dark-select2-highlight-bg: #007bff; /* Można użyć --dark-primary-color */
+    --dark-select2-highlight-bg: #3A86FF; /* Dostosowano do --dark-primary-color */
+    --bs-body-font-family: var(--font-family-sans-serif); /* Dodano dla trybu ciemnego */
 }
 
 body {
     background-color: #f8f9fa; /* Domyślne tło dla trybu jasnego */
     color: #212529; /* Domyślny kolor tekstu dla trybu jasnego */
+    font-family: var(--font-family-sans-serif); /* Dodano */
     position: relative;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -53,9 +66,10 @@ body {
 /* ===== STYLE TRYBU CIEMNEGO ===== */
 
 /* ----- GLOBALNE STYLE CIEMNE ----- */
-html[data-theme="dark"] body {
+html[data-theme="dark"] body { /* Już zdefiniowane w html[data-theme="dark"], można usunąć jeśli nie ma specyficznych właściwości tylko dla body */
     background-color: var(--dark-body-bg);
     color: var(--dark-text-primary);
+    /* font-family: var(--font-family-sans-serif); Już ustawione globalnie w html[data-theme="dark"] */
 }
 
 html[data-theme="dark"] a {
@@ -72,9 +86,9 @@ html[data-theme="dark"] .text-muted {
 
 /* ----- PASEK NAWIGACYJNY CIEMNY ----- */
 html[data-theme="dark"] .custom-navbar-style {
-    background: linear-gradient(to bottom, var(--dark-surface-bg), #222222);
-    border-bottom: 1px solid var(--dark-border-color);
-    box-shadow: var(--dark-shadow);
+    background-color: var(--dark-surface-bg); /* Zmieniono z gradientu na stałe tło */
+    border-bottom: 1px solid var(--dark-border-color); /* Zachowano border dla ciemnego motywu */
+    box-shadow: var(--dark-shadow); /* Zaktualizowano cień */
 }
 
 html[data-theme="dark"] .custom-navbar-style .navbar-brand {
@@ -92,18 +106,19 @@ html[data-theme="dark"] .custom-navbar-style .nav-link {
 html[data-theme="dark"] .custom-navbar-style .nav-link:hover,
 html[data-theme="dark"] .custom-navbar-style .nav-link:focus {
     color: var(--dark-primary-hover-color);
-    background-color: rgba(77, 171, 247, 0.1);
+    background-color: rgba(58, 134, 255, 0.1); /* Dostosowano RGBA do nowego --dark-primary-color */
 }
 
 html[data-theme="dark"] .custom-navbar-style .nav-link.active {
     color: var(--dark-primary-color);
-    background-color: rgba(77, 171, 247, 0.15);
+    background-color: rgba(58, 134, 255, 0.15); /* Dostosowano RGBA do nowego --dark-primary-color */
 }
 
 html[data-theme="dark"] .custom-navbar-style .dropdown-menu {
     background-color: var(--dark-surface-bg);
     border: 1px solid var(--dark-border-color);
     box-shadow: var(--dark-shadow);
+    border-radius: var(--ui-border-radius); /* Dodano */
 }
 
 html[data-theme="dark"] .custom-navbar-style .dropdown-item {
@@ -124,21 +139,22 @@ html[data-theme="dark"] .custom-navbar-style .dropdown-item:active {
 html[data-theme="dark"] .custom-navbar-style .btn-primary {
     background-color: var(--dark-primary-color);
     border-color: var(--dark-primary-color);
-    color: #000;
+    color: var(--dark-surface-bg); /* Lepszy kontrast na nowym primary */
 }
 html[data-theme="dark"] .custom-navbar-style .btn-primary:hover {
     background-color: var(--dark-primary-hover-color);
     border-color: var(--dark-primary-hover-color);
+    color: var(--dark-surface-bg); /* Lepszy kontrast na nowym primary hover */
 }
 
 html[data-theme="dark"] .custom-navbar-style .btn-outline-secondary {
     color: var(--dark-text-secondary);
-    border-color: var(--dark-border-color);
+    border-color: var(--dark-text-secondary); /* Dostosowano border color */
 }
 html[data-theme="dark"] .custom-navbar-style .btn-outline-secondary:hover {
-    background-color: var(--dark-surface-light-bg);
-    color: var(--dark-primary-hover-color);
-    border-color: var(--dark-border-color);
+    background-color: var(--dark-secondary-color); /* Użycie --dark-secondary-color dla tła */
+    color: var(--dark-text-primary); /* Tekst primary na tle secondary */
+    border-color: var(--dark-secondary-color); /* Border secondary */
 }
 
 html[data-theme="dark"] .custom-navbar-style .navbar-toggler {
@@ -155,15 +171,16 @@ html[data-theme="dark"] .card {
     border: 1px solid var(--dark-border-color);
     box-shadow: var(--dark-shadow);
     color: var(--dark-text-primary); /* Główny kolor tekstu dla karty */
+    border-radius: var(--ui-border-radius); /* Dodano */
 }
 
 html[data-theme="dark"] .card .card { /* Zagnieżdżone karty */
     background-color: var(--dark-surface-light-bg);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3); /* Można dostosować, jeśli potrzeba ciemniejszego cienia */
 }
 
 html[data-theme="dark"] .card-header {
-    background-color: #333333;
+    background-color: var(--dark-surface-light-bg); /* Użycie zmiennej dla spójności */
     border-bottom: 1px solid var(--dark-border-color);
     color: var(--dark-text-primary); /* Kolor tekstu dla nagłówka karty */
 }
@@ -218,12 +235,12 @@ html[data-theme="dark"] .accordion-body {
 html[data-theme="dark"] .btn-primary {
     background-color: var(--dark-primary-color);
     border-color: var(--dark-primary-color);
-    color: #000;
+    color: var(--dark-surface-bg); /* Zmieniono na kolor tła dla lepszego kontrastu */
 }
 html[data-theme="dark"] .btn-primary:hover {
     background-color: var(--dark-primary-hover-color);
     border-color: var(--dark-primary-hover-color);
-    color: #000;
+    color: var(--dark-surface-bg); /* Zmieniono na kolor tła dla lepszego kontrastu */
 }
 
 html[data-theme="dark"] .btn-secondary {
@@ -290,7 +307,7 @@ html[data-theme="dark"] .form-select:focus {
     background-color: var(--dark-input-bg);
     border-color: var(--dark-input-focus-border);
     color: var(--dark-text-primary);
-    box-shadow: 0 0 0 0.25rem rgba(77, 171, 247, 0.25); /* Użyj koloru --dark-primary-color w formacie RGBA */
+    box-shadow: 0 0 0 0.25rem rgba(58, 134, 255, 0.25); /* Dostosowano RGBA do nowego --dark-primary-color */
 }
 
 html[data-theme="dark"] .input-group-text {
@@ -341,6 +358,7 @@ html[data-theme="dark"] .select2-container--default .select2-selection--multiple
     background-color: var(--dark-select2-bg);
     border-color: var(--dark-select2-border) !important;
     color: var(--dark-text-primary);
+    border-radius: var(--ui-border-radius); /* Dodano */
 }
 
 html[data-theme="dark"] .select2-container--default .select2-selection--single .select2-selection__rendered {
@@ -356,6 +374,7 @@ html[data-theme="dark"] .select2-container--default .select2-selection--single .
 html[data-theme="dark"] .select2-dropdown {
     background-color: var(--dark-select2-dropdown-bg);
     border-color: var(--dark-select2-dropdown-border);
+    border-radius: var(--ui-border-radius); /* Dodano */
 }
 
 html[data-theme="dark"] .select2-dropdown .select2-search__field {
@@ -371,19 +390,20 @@ html[data-theme="dark"] .select2-results__option {
     color: var(--dark-text-primary);
 }
 html[data-theme="dark"] .select2-results__option--highlighted[aria-selected],
-html[data-theme="dark"] .select2-results__option:hover { /* Zmienione dla lepszego kontrastu */
-    background-color: var(--dark-surface-light-bg);
+html[data-theme="dark"] .select2-results__option:hover {
+    background-color: var(--dark-surface-light-bg); /* Zachowano dla spójności */
     color: var(--dark-text-primary);
 }
 html[data-theme="dark"] .select2-results__option[aria-selected="true"] {
-    background-color: var(--dark-select2-highlight-bg);
-    color: #fff;
+    background-color: var(--dark-select2-highlight-bg); /* Używa --dark-primary-color */
+    color: var(--dark-surface-bg); /* Lepszy kontrast na nowym primary */
 }
 
 html[data-theme="dark"] .select2-selection--multiple .select2-selection__choice {
     background-color: var(--dark-select2-choice-bg);
     border-color: var(--dark-border-color);
     color: var(--dark-text-primary);
+    border-radius: var(--ui-border-radius); /* Dodano */
 }
 html[data-theme="dark"] .select2-selection--multiple .select2-selection__choice__remove {
     color: var(--dark-text-secondary);
@@ -456,24 +476,86 @@ html[data-theme="dark"] .btn-close {
     filter: invert(1) grayscale(100%) brightness(200%); /* Biały X */
 }
 
-/* ----- ALERTY CIEMNE ----- */
-html[data-theme="dark"] .alert { /* Ogólne dla alertów, jeśli potrzebne */
-    border-width: 1px;
+/* ===== STYLE ALERTÓW ===== */
+.alert {
+    border-radius: var(--ui-border-radius);
+    border-width: 1px; /* Upewnienie się, że border jest widoczny */
+    padding: 1rem 1.25rem; /* Zwiększony padding dla lepszego wyglądu */
+    box-shadow: 0 0.25rem 0.75rem rgba(0,0,0,0.05); /* Subtelny cień */
+    font-size: 0.95rem; /* Lekko większa czcionka */
 }
-html[data-theme="dark"] .alert-success {
-    background-color: #102d1a; color: #a3cfbb; border-color: #1a4a2a;
+
+/* Alerty w trybie jasnym - definicje kolorów */
+.alert-primary {
+    color: #004085; background-color: #cce5ff; border-color: #b8daff;
 }
-html[data-theme="dark"] .alert-danger {
-    background-color: #3b0f14; color: #f1b8be; border-color: #58151c;
+.alert-secondary {
+    color: #383d41; background-color: #e2e3e5; border-color: #d6d8db;
 }
-html[data-theme="dark"] .alert-warning {
-    background-color: #332701; color: #ffecb5; border-color: #664d03;
+.alert-success {
+    color: #0f5132; background-color: #d1e7dd; border-color: #badbcc;
 }
-html[data-theme="dark"] .alert-info {
-    background-color: #021a20; color: #a1e9f7; border-color: #032830;
+.alert-danger {
+    color: #842029; background-color: #f8d7da; border-color: #f5c2c7;
+}
+.alert-warning {
+    color: #664d03; background-color: #fff3cd; border-color: #ffecb5;
+}
+.alert-info {
+    color: #055160; background-color: #cff4fc; border-color: #b6effb;
+}
+.alert-light { /* Rzadko używany, ale dla spójności */
+    color: #636464; background-color: #fdfdfe; border-color: #fbfcfc;
+}
+.alert-dark { /* Rzadko używany, ale dla spójności */
+    color: #141619; background-color: #d3d3d4; border-color: #c6c7c8;
+}
+
+
+/* Alerty w trybie ciemnym */
+html[data-theme="dark"] .alert {
+    box-shadow: var(--dark-shadow); /* Użycie ciemnego cienia */
+}
+
+html[data-theme="dark"] .alert-primary {
+    color: #a6d4ff; background-color: #003366; border-color: #004085;
 }
 html[data-theme="dark"] .alert-secondary {
-    background-color: #25292d; color: #c8cbce; border-color: #41464b;
+    color: #d6d8db; background-color: #383d41; border-color: #495057;
+}
+html[data-theme="dark"] .alert-success {
+    color: #a3cfbb; background-color: #0f5132; border-color: #146c43;
+}
+html[data-theme="dark"] .alert-danger {
+    color: #f1b8be; background-color: #842029; border-color: #a9323e;
+}
+html[data-theme="dark"] .alert-warning {
+    color: #ffecb5; background-color: #664d03; border-color: #806604;
+}
+html[data-theme="dark"] .alert-info {
+    color: #a1e9f7; background-color: #055160; border-color: #066a7f;
+}
+html[data-theme="dark"] .alert-light {
+    color: #bababa; background-color: #3a3a3a; border-color: #4a4a4a;
+}
+html[data-theme="dark"] .alert-dark {
+    color: #e0e0e0; background-color: #1e1e1e; border-color: #2c2c2c;
+}
+
+/* Poprawka dla przycisku zamknięcia alertu w obu motywach */
+.alert .btn-close {
+    filter: none; /* Usunięcie filtra dla trybu jasnego */
+    opacity: 0.7; /* Lekka przezroczystość dla subtelniejszego wyglądu */
+}
+.alert .btn-close:hover {
+    opacity: 1;
+}
+html[data-theme="dark"] .alert .btn-close {
+    filter: invert(1) grayscale(100%) brightness(150%); /* Dostosowanie filtra dla ciemnego motywu */
+    opacity: 0.8;
+}
+html[data-theme="dark"] .alert .btn-close:hover {
+    opacity: 1;
 }
 
 
@@ -509,7 +591,7 @@ html[data-theme="dark"] #overlay-form-container #overlay-input {
 }
 html[data-theme="dark"] #overlay-form-container #overlay-input:focus {
     border-color: var(--dark-input-focus-border);
-    box-shadow: 0 0 0 0.25rem rgba(77, 171, 247, 0.25); /* Użyj koloru --dark-primary-color w formacie RGBA */
+    box-shadow: 0 0 0 0.25rem rgba(58, 134, 255, 0.25); /* Dostosowano RGBA do nowego --dark-primary-color */
 }
 
 /* ===== POPRAWKA DLA AUTOFILL W TRYBIE CIEMNYM ===== */
@@ -535,7 +617,7 @@ html[data-theme="dark"] .form-control:-webkit-autofill:focus,
 html[data-theme="dark"] .form-select:-webkit-autofill:focus {
     -webkit-box-shadow: 0 0 0 1000px var(--dark-input-bg) inset !important;
     border-color: var(--dark-input-focus-border) !important;
-    box-shadow: 0 0 0 0.25rem rgba(77, 171, 247, 0.25), 0 0 0 1000px var(--dark-input-bg) inset !important;
+    box-shadow: 0 0 0 0.25rem rgba(58, 134, 255, 0.25), 0 0 0 1000px var(--dark-input-bg) inset !important; /* Dostosowano RGBA */
 }
 
 /* Alternatywne podejście dla przeglądarek nie obsługujących -webkit-autofill */
@@ -558,49 +640,49 @@ html[data-theme="dark"] .select2-container--default .select2-selection--multiple
 
 /* NOWE STYLE PASKA NAWIGACYJNEGO (istniejące, dostosowane w sekcji ciemnej) */
 .custom-navbar-style {
-    background: linear-gradient(to bottom, var(--navbar-bg-start), var(--navbar-bg-end));
-    border-bottom: 1px solid var(--navbar-border-color);
-    box-shadow: var(--navbar-shadow);
+    background-color: #FFFFFF; /* Zmieniono z gradientu na stałe tło */
+    border-bottom: 1px solid var(--bs-border-color-translucent); /* Zaktualizowano border */
+    box-shadow: var(--card-box-shadow); /* Zaktualizowano cień */
     padding-top: 0.75rem;
     padding-bottom: 0.75rem;
 }
 
 .custom-navbar-style .navbar-brand {
-    color: var(--navbar-brand-color);
+    color: var(--navbar-brand-color); /* Używa #0056b3 */
     font-size: 1.35rem;
     font-weight: 600;
 }
 
 .custom-navbar-style .navbar-brand .bi {
-    color: var(--navbar-brand-color);
+    color: var(--navbar-brand-color); /* Używa #0056b3 */
     font-size: 1.5rem;
     vertical-align: text-bottom;
     margin-right: 0.3rem;
 }
 
 .custom-navbar-style .nav-link {
-    color: var(--navbar-link-color);
+    color: var(--bs-nav-link-color, #5A6268); /* Używa --btn-secondary-color jako fallback */
     font-weight: 500;
     padding: 0.5rem 0.85rem;
     margin: 0 0.2rem;
-    border-radius: 0.375rem;
+    border-radius: var(--ui-border-radius);
     transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
 }
 
 .custom-navbar-style .nav-link:hover,
 .custom-navbar-style .nav-link:focus {
-    color: var(--navbar-link-hover-color);
-    background-color: rgba(0, 123, 255, 0.06);
+    color: var(--navbar-link-hover-color); /* Używa #0056b3 */
+    background-color: rgba(0, 86, 179, 0.1); /* Zaktualizowano RGBA */
 }
 
 .custom-navbar-style .nav-link.active {
-    color: var(--navbar-link-active-color);
-    font-weight: 600;
-    background-color: rgba(0, 123, 255, 0.08);
+    color: var(--navbar-link-active-color); /* Używa #004085 */
+    font-weight: 600; /* Zachowano */
+    background-color: rgba(0, 86, 179, 0.1); /* Ujednolicono tło dla active i hover/focus */
 }
 
 .custom-navbar-style .dropdown-menu {
-    border-radius: 0.375rem;
+    border-radius: var(--ui-border-radius); /* Zaktualizowano */
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
     border: 1px solid var(--navbar-border-color);
     margin-top: 0.5rem;
@@ -615,7 +697,7 @@ html[data-theme="dark"] .select2-container--default .select2-selection--multiple
 .custom-navbar-style .dropdown-item:hover,
 .custom-navbar-style .dropdown-item:focus {
     color: var(--navbar-link-hover-color);
-    background-color: rgba(0, 123, 255, 0.08);
+    background-color: rgba(0, 86, 179, 0.08); /* Dostosowano RGBA */
 }
 
 .custom-navbar-style .dropdown-item:active {
@@ -626,78 +708,69 @@ html[data-theme="dark"] .select2-container--default .select2-selection--multiple
 .custom-navbar-style .btn-sm {
     padding: 0.3rem 0.75rem;
     font-size: 0.875rem;
+    border-radius: var(--ui-border-radius);
 }
 
 .custom-navbar-style .btn-primary {
-    background-color: var(--navbar-link-hover-color);
-    border-color: var(--navbar-link-hover-color);
-    color: #fff;
+    background-color: var(--btn-primary-color); /* Używa #0056b3 */
+    border-color: var(--btn-primary-color); /* Używa #0056b3 */
+    color: #FFFFFF;
+    border-radius: var(--ui-border-radius);
 }
 .custom-navbar-style .btn-primary:hover {
-    background-color: var(--navbar-link-active-color);
-    border-color: var(--navbar-link-active-color);
+    background-color: var(--navbar-link-active-color); /* Używa #004085 */
+    border-color: var(--navbar-link-active-color); /* Używa #004085 */
+    color: #FFFFFF; /* Dodano dla pewności */
 }
 
 .custom-navbar-style .btn-outline-secondary {
-    color: var(--navbar-link-color);
-    border-color: #ced4da;
+    color: var(--btn-secondary-color); /* Używa #5A6268 */
+    border-color: var(--btn-secondary-color); /* Używa #5A6268 */
+    border-radius: var(--ui-border-radius); /* Dodano dla spójności */
 }
 .custom-navbar-style .btn-outline-secondary:hover {
-    background-color: #e9ecef;
-    color: var(--navbar-link-active-color);
-    border-color: #ced4da;
+    background-color: var(--btn-secondary-color); /* Używa #5A6268 */
+    color: #FFFFFF;
+    border-color: var(--btn-secondary-color); /* Używa #5A6268 */
 }
 
 .custom-navbar-style .navbar-toggler {
     border-color: rgba(0,0,0,0.1);
 }
 
-/* ===== KOLUMNY ===== */
-.left-column {
-  position: sticky;
-  top: 70px; /* Dostosuj do wysokości paska nawigacyjnego */
-  max-height: calc(100vh - 100px); /* Dostosuj do wysokości paska nawigacyjnego i marginesów */
-}
-
-.left-column .card {
-  max-height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.left-column .card-body {
-  overflow-y: auto;
-  flex: 1;
-}
-
+/* ===== KOLUMNY (usunięto .left-column) ===== */
 
 /* ===== KARTY ===== */
 .card {
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Zwiększony cień dla lepszego efektu */
+    border-radius: var(--ui-border-radius); /* Zaktualizowano */
+    box-shadow: var(--card-box-shadow); /* Zaktualizowano */
     margin-bottom: 1.5rem;
-    border: 1px solid var(--card-border-color); /* Użycie zmiennej */
-    overflow: hidden; /* Zapobiega wystawaniu zawartości poza zaokrąglone rogi */
-    transition: all 0.3s ease; /* Płynne przejścia dla hover itp. */
+    border: 1px solid var(--card-border-color);
+    overflow: hidden;
+    transition: all 0.3s ease;
 }
 
 /* Zagnieżdżone karty w formularzu firmy */
 .card .card {
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2); /* Mniejszy cień dla zagnieżdżonych kart */
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); /* Mniejszy, subtelniejszy cień */
 }
 
 /* ===== PRZYCISKI - SPÓJNE STYLE ===== */
+.btn { /* Globalny styl dla .btn */
+    border-radius: var(--ui-border-radius); /* Dodano */
+}
+
 .card-header .btn,
 .mobile-filter-content .btn {
-    height: 32px; /* Ustalona wysokość dla spójności */
-    display: inline-flex; /* Umożliwia wyrównanie ikon i tekstu */
-    align-items: center; /* Wyrównanie w pionie */
-    justify-content: center; /* Wyrównanie w poziomie */
-    gap: 0.5rem; /* Odstęp między ikoną a tekstem */
-    font-weight: 500; /* Średnia grubość czcionki */
-    border-radius: 0.375rem; /* Zaokrąglenie Bootstrapa */
-    transition: all 0.2s ease; /* Płynne przejścia */
-    padding: 0.375rem 0.75rem; /* Standardowy padding Bootstrapa */
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    /* border-radius: var(--ui-border-radius); Usunięto, bo jest globalnie w .btn */
+    transition: all 0.2s ease;
+    padding: 0.375rem 0.75rem;
 }
 
 /* Przyciski w nagłówku prawej kolumny */
@@ -712,13 +785,12 @@ html[data-theme="dark"] .select2-container--default .select2-selection--multiple
     justify-content: center;
 }
 
-/* Przyciski w formularzu filtrowania (lewa kolumna) */
-.left-column .card-body .btn {
-    width: 48%; /* Zmniejszono szerokość, żeby zmieściły się obok siebie */
-    margin-bottom: 0.5rem;
-    justify-content: center;
-    display: inline-block; /* Sprawiają, że elementy ustawiają się inline */
+/* Przyciski w formularzu filtrowania (lewa kolumna) - usunięto, teraz filtry są w .col-12 */
+/* Nowe style dla przycisków w formularzu filtrów desktopowych, jeśli potrzebne */
+#desktopFilters .card-body .btn { /* Dostosowanie, jeśli przyciski są wewnątrz .card-body */
+    min-width: 120px; /* Przykładowa minimalna szerokość */
 }
+
 
 /* Przyciski w formularzu dodawania firmy */
 .card-body button[type="button"] {
@@ -727,7 +799,7 @@ html[data-theme="dark"] .select2-container--default .select2-selection--multiple
     justify-content: center;
     gap: 0.5rem;
     font-weight: 500;
-    border-radius: 0.375rem;
+    /* border-radius: var(--ui-border-radius); Usunięto, bo jest globalnie w .btn */
     transition: all 0.2s ease;
     padding: 0.375rem 0.75rem;
 }
@@ -790,20 +862,21 @@ html[data-theme="dark"] .select2-container--default .select2-selection--multiple
 /* Style wspólne dla wszystkich Select2 (single i multiple) */
 .select2-container--default .select2-selection--single,
 .select2-container--default .select2-selection--multiple {
-    border-color: #e0e0e0 !important; /* Jaśniejszy border dla lepszego wyglądu */
-    border-radius: 0.375rem; /* Standardowe zaokrąglenie Bootstrap */
-    min-height: 38px; /* Zapewnia spójną wysokość dla obu typów select */
+    border-color: #e0e0e0 !important;
+    border-radius: var(--ui-border-radius) !important; /* Zaktualizowano */
+    min-height: 38px;
     display: flex;
-    align-items: center; /* Wyśrodkowanie elementów w pionie */
+    align-items: center;
 }
 
 /* Wspólny styl dla selektów z customem */
 .select2-selection--custom {
-    padding: 0.25rem 0.5rem; /* Mniejszy padding */
-    font-size: 14px; /* Mniejsza czcionka */
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    padding: 0.25rem 0.5rem;
+    font-size: 14px;
+    font-family: var(--font-family-sans-serif); /* Zaktualizowano */
     line-height: 1.5;
-    width: 100%; /* Pełna szerokość */
+    width: 100%;
+    border-radius: var(--ui-border-radius); /* Dodano */
 }
 
 /* Jednolity stan focus dla wszystkich typów Select2 */
@@ -813,144 +886,169 @@ html[data-theme="dark"] .select2-container--default .select2-selection--multiple
 .select2-container--open .select2-selection--custom,
 .select2-container--open .select2-selection--single,
 .select2-container--open .select2-selection--multiple {
-    border-color: #80bdff !important; /* Kolor focus Bootstrapa */
-    box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25); /* Cień focus Bootstrapa */
-    outline: 0; /* Usunięcie domyślnego outline */
+    border-color: #80bdff !important; /* Kolor focus Bootstrapa - można dostosować do nowych kolorów primary */
+    box-shadow: 0 0 0 0.25rem rgba(0, 86, 179, 0.25); /* Dostosowano RGBA */
+    outline: 0;
 }
 
 /* Style dla pojedynczego selecta */
 .select2-container--default .select2-selection--single {
     background-color: #fff;
-    height: 38px; /* Standardowa wysokość pola formularza */
+    height: 38px;
+    border-radius: var(--ui-border-radius); /* Zaktualizowano */
 }
 
 .select2-container--default .select2-selection--single .select2-selection__rendered {
-    color: #212529; /* Kolor tekstu zgodny z formularzem */
-    line-height: 38px; /* Wyrównanie w pionie */
-    padding-left: 0.75rem; /* Odstęp tekstu od lewej krawędzi */
-    font-size: 16px; /* Standardowy rozmiar czcionki Bootstrapa */
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    font-weight: 400; /* Standardowa waga czcionki */
+    color: #212529;
+    line-height: 38px;
+    padding-left: 0.75rem;
+    font-size: 1rem; /* Użycie rem dla spójności */
+    font-family: var(--font-family-sans-serif); /* Zaktualizowano */
+    font-weight: 400;
 }
 
 .select2-container--default .select2-selection--single .select2-selection__placeholder {
-    color: #6c757d; /* Kolor placeholdera Bootstrapa */
-    font-size: 16px;
+    color: #6c757d;
+    font-size: 1rem; /* Użycie rem */
+    font-family: var(--font-family-sans-serif); /* Zaktualizowano */
     font-weight: 400;
 }
 
 /* Strzałka w pojedynczym selekcie */
 .select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 36px; /* Wysokość strzałki */
-    width: 30px; /* Szerokość strzałki */
-    right: 1px; /* Pozycja od prawej */
-    top: 1px; /* Pozycja od góry */
+    height: 36px;
+    width: 30px;
+    right: 1px;
+    top: 1px;
 }
 
 .select2-container--default .select2-selection--single .select2-selection__arrow b {
-    border-color: #6c757d transparent transparent transparent; /* Kolor strzałki */
-    border-width: 5px 5px 0 5px; /* Rozmiar strzałki */
+    border-color: #6c757d transparent transparent transparent;
+    border-width: 5px 5px 0 5px;
 }
 
 /* Styl dla pola wyszukiwania w dropdownie */
 .select2-dropdown .select2-search__field {
-    border-radius: 0.375rem; /* Zaokrąglone rogi */
-    border: 1px solid #80bdff; /* Kolor obramowania */
-    padding: 0.375rem 0.75rem; /* Wewnętrzny odstęp */
+    border-radius: var(--ui-border-radius); /* Zaktualizowano */
+    border: 1px solid #80bdff; /* Można dostosować */
+    padding: 0.375rem 0.75rem;
     margin-top: 5px;
     margin-bottom: 5px;
-    width: 100%; /* Pełna szerokość */
+    width: calc(100% - 10px); /* Poprawka szerokości */
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 .select2-dropdown .select2-search__field:focus {
-    border-color: #007bff; /* Kolor focus */
-    box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25); /* Cień focus */
+    border-color: var(--btn-primary-color); /* Użycie zmiennej */
+    box-shadow: 0 0 0 0.25rem rgba(0, 86, 179, 0.25); /* Dostosowano RGBA */
     outline: 0;
 }
 
 /* Styl dla dropdowna (wspólny dla single i multiple) */
-.select2-dropdown--custom {
-    border: 1px solid rgba(0, 0, 0, 0.175); /* Standardowy border Bootstrapa */
-    border-radius: 0.5rem; /* Większe zaokrąglenie dla dropdownu */
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175); /* Standardowy cień Bootstrapa */
-    z-index: 100; /* Upewnij się, że dropdown jest na wierzchu */
+.select2-dropdown { /* .select2-dropdown--custom było zbyt specyficzne, zmieniono na ogólne .select2-dropdown */
+    border: 1px solid rgba(0, 0, 0, 0.175);
+    border-radius: var(--ui-border-radius); /* Zaktualizowano */
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
+    z-index: 1050; /* Zwiększono z-index dla pewności */
 }
 
 /* Style dla opcji w dropdown */
 .select2-results__option {
-    padding: 0.375rem 0.75rem; /* Standardowy padding */
-    font-size: 1rem; /* Standardowy rozmiar czcionki */
-    color: #212529; /* Standardowy kolor tekstu */
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    color: #212529;
+    font-family: var(--font-family-sans-serif); /* Zaktualizowano */
 }
 
 .select2-results__option:hover,
 .select2-results__option--highlighted {
-    background-color: #e9ecef; /* Kolor tła hover Bootstrapa */
+    background-color: #e9ecef;
     color: #212529;
     cursor: pointer;
 }
 
 /* Wybrana opcja */
 .select2-results__option[aria-selected="true"] {
-    background-color: #007bff; /* Kolor primary Bootstrapa */
-    color: #fff; /* Biały tekst na tle primary */
+    background-color: var(--btn-primary-color); /* Użycie zmiennej */
+    color: #fff;
 }
 
 /* Style dla multiselect - zachowanie istniejących */
 .select2-selection--multiple {
-    border-color: #e0e0e0 !important; /* Jasny border */
+    border-color: #e0e0e0 !important;
+    border-radius: var(--ui-border-radius); /* Zaktualizowano */
 }
 
 .select2-selection__choice {
-    color: #212529; /* Ciemny tekst */
-    border-radius: 0.5rem; /* Zaokrąglenie */
-    padding: 0.5rem 0.5rem; /* Padding */
-    margin-right: 0.25rem;
-    margin-left: 2rem; /* Odstęp od lewej krawędzi */
+    color: #fff; /* Zmieniono na biały dla lepszego kontrastu z ciemnym tłem */
+    background-color: var(--btn-primary-color); /* Użycie zmiennej */
+    border: 1px solid var(--btn-primary-color); /* Dodano border dla spójności */
+    border-radius: var(--ui-border-radius); /* Zaktualizowano */
+    padding: 0.25rem 0.5rem; /* Dostosowano padding */
+    margin-right: 0.375rem;
+    margin-top: 0.25rem; /* Dodano margines górny dla lepszego ułożenia */
+    /* margin-left: 2rem; Usunięto, aby pozwolić na naturalne ułożenie */
 }
 
 .select2-selection__choice__remove {
-    color: #fff; /* Biały krzyżyk */
+    color: #fff; /* Biały krzyżyk na tle primary */
     cursor: pointer;
+    float: right;
+    margin-left: 0.5rem;
 }
 
 .select2-selection__choice__remove:hover {
-    color: #fff;
-    opacity: 0.7; /* Lekkie przyciemnienie przy hover */
+    color: #e0e0e0; /* Jaśniejszy przy hover */
 }
 
 /* Poprawka dla container w input-group */
-.input-group .select2-container {
-    flex-grow: 1;
-    width: auto !important; /* Pozwala Bootstrapowi zarządzać szerokością */
+.input-group .select2-container--default .select2-selection--single,
+.input-group .select2-container--default .select2-selection--multiple {
+    border-top-left-radius: 0 !important;    /* Reset dla input-group */
+    border-bottom-left-radius: 0 !important; /* Reset dla input-group */
 }
+.input-group > .select2-container--bootstrap5:not(:last-child) .select2-selection {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
 
 /* Ustalenie szerokości dla wszystkich containerów Select2 */
 .select2-container {
-    width: 100% !important; /* Wymuszenie pełnej szerokości */
+    width: 100% !important;
 }
 
 /* Styl dla placeholder w multiselect */
 .select2-selection__placeholder {
-    margin-top: 0; /* Usunięcie marginesu */
-    color: #6c757d; /* Kolor placeholdera Bootstrapa */
-    font-size: 16px;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    margin-top: 0;
+    color: #6c757d;
+    font-size: 1rem; /* Użycie rem */
+    font-family: var(--font-family-sans-serif); /* Zaktualizowano */
     font-weight: 400;
+    line-height: calc(1.5 + 0.75rem + 2px); /* Dopasowanie do wysokości pola Bootstrap */
+    padding-left: 0.75rem; /* Dodano padding dla spójności */
 }
 
+
 /* Pole wyszukiwania w multiselect */
+.select2-container--default .select2-search--inline .select2-search__field {
+    font-family: var(--font-family-sans-serif); /* Zaktualizowano */
+    font-size: 1rem; /* Użycie rem */
+    line-height: 1.5;
+    margin-top: 0.5rem; /* Dostosowanie marginesu */
+}
 .select2-container--default .select2-search--inline .select2-search__field::placeholder {
-    font-size: 16px;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-size: 1rem; /* Użycie rem */
+    font-family: var(--font-family-sans-serif); /* Zaktualizowano */
     font-weight: 400;
+    color: #6c757d;
 }
 
 /* Styl dla Select2 wewnątrz Bootstrapowego input-group */
 .input-group .select2-container {
-    flex-grow: 1; /* Pozwala Select2 zająć pozostałą przestrzeń */
+    flex-grow: 1;
     width: auto !important;
-    /* flex-basis: 0  */
 }
 
 /* ===== ELEMENTY FIRM ===== */
@@ -960,41 +1058,71 @@ html[data-theme="dark"] .select2-container--default .select2-selection--multiple
 }
 
 .company-row:hover {
-    background-color: #f1f8ff; /* Jaśniejszy niebieski dla hover */
+    background-color: rgba(var(--bs-primary-rgb), 0.05); /* Lekko przezroczysty kolor akcentu */
+}
+
+html[data-theme="dark"] .company-row:hover {
+    background-color: rgba(var(--dark-primary-rgb), 0.1); /* Ciemniejszy, lekko przezroczysty kolor akcentu */
 }
 
 .company-details td {
     padding: 1rem;
-    background-color: #f8f9fa; /* Jasne tło dla szczegółów */
+    background-color: var(--bs-gray-100); /* Jasne tło dla szczegółów */
 }
+
+html[data-theme="dark"] .company-details td {
+    background-color: var(--dark-surface-light-bg); /* Ciemne tło dla szczegółów */
+}
+
 
 /* ===== FILTRY MOBILE ===== */
 #mobile-filter-overlay {
   display: none;
   position: fixed;
-  top: 10px; /* Odstęp od góry */
+  top: 0; /* Usunięto odstęp */
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0,0,0,0.5); /* Półprzezroczyste tło */
-  z-index: 2000; /* Wyższy niż navbar */
-  padding: 20px;
-  overflow-y: auto; /* Scroll jeśli zawartość jest za długa */
+  background-color: rgba(0,0,0,0.6); /* Przyciemnione tło */
+  z-index: 2050; /* Wyższy niż navbar i inne elementy */
+  padding: 1rem; /* Zmniejszony padding */
+  overflow-y: auto;
 }
 
 .mobile-filter-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 5px;
-    max-height: 90vh; /* Maksymalna wysokość */
-    overflow-y: auto; /* Scroll wewnątrz contentu */
+    background-color: #FFFFFF; /* Zaktualizowano */
+    padding: 1.5rem; /* Zwiększony padding */
+    border-radius: var(--ui-border-radius);
+    max-height: calc(100vh - 2rem); /* Maksymalna wysokość z uwzględnieniem paddingu overlay */
+    overflow-y: auto;
+    box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,0.2); /* Dodano cień */
+    font-family: var(--font-family-sans-serif); /* Zastosowanie fontu */
+}
+
+html[data-theme="dark"] .mobile-filter-content {
+    background-color: var(--dark-surface-bg); /* Zaktualizowano */
 }
 
 .mobile-filter-header {
-    border-bottom: 1px solid #dee2e6; /* Linia oddzielająca */
-    padding-bottom: 10px;
-    margin-bottom: 15px;
+    border-bottom: 1px solid var(--bs-border-color-translucent); /* Zaktualizowano */
+    padding-bottom: 1rem; /* Zwiększony padding */
+    margin-bottom: 1rem; /* Zwiększony margines */
 }
+
+html[data-theme="dark"] .mobile-filter-header {
+    border-bottom-color: var(--dark-border-color); /* Zaktualizowano */
+}
+
+/* Przyciski w mobilnych filtrach */
+.mobile-filter-content .btn {
+    width: 100%; /* Pełna szerokość */
+    margin-bottom: 0.75rem; /* Zwiększony margines */
+    /* Style dziedziczone z globalnego .btn, w tym border-radius */
+}
+.mobile-filter-content .btn:last-child {
+    margin-bottom: 0;
+}
+
 
 /* ===== IKONY ===== */
 .bi {
@@ -1003,45 +1131,118 @@ html[data-theme="dark"] .select2-container--default .select2-selection--multiple
     vertical-align: middle; /* Lepsze wyrównanie z tekstem */
 }
 
-/* ===== STYLE FORMULARZA DODAWANIA FIRMY ===== */
-.company-form-content {
-    margin-bottom: 2rem; /* Odstęp na dole formularza */
+/* ===== STYLE FORMULARZA DODAWANIA FIRMY (Z ZAKŁADKAMI) ===== */
+.company-form-content { /* Usunięte, bo formularz nie jest już pojedynczym blokiem contentu */
+    /* margin-bottom: 2rem; */
 }
-/* Sekcje formularza */
-.company-form-content .card-header {
-    padding: 0.75rem 1rem; /* Padding w nagłówku karty */
+
+/* Style dla zakładek */
+.nav-tabs {
+    border-bottom: 1px solid var(--bs-border-color);
 }
-.company-form-content .card-header h5 {
-    margin: 0;
-    font-size: 1.1rem; /* Rozmiar czcionki nagłówka sekcji */
-    font-weight: 600; /* Pogrubienie */
+
+.nav-tabs .nav-link {
+    border-top-left-radius: var(--ui-border-radius);
+    border-top-right-radius: var(--ui-border-radius);
+    color: var(--bs-gray-600);
+    border-color: transparent;
+    margin-bottom: -1px; /* Aby aktywna zakładka nachodziła na border-bottom */
+    padding: 0.75rem 1.25rem; /* Dopasowanie paddingu */
+    font-weight: 500; /* Lekkie pogrubienie dla czytelności */
 }
-/* Style pól formularza */
-.form-label {
-    font-weight: 500; /* Średnia grubość czcionki dla etykiet */
-    font-size: 0.9rem; /* Nieco mniejsza czcionka etykiet */
-    margin-bottom: 0.25rem; /* Mniejszy odstęp pod etykietą */
+
+.nav-tabs .nav-link:hover,
+.nav-tabs .nav-link:focus {
+    border-color: var(--bs-border-color-translucent); /* Subtelny border przy hover */
+    isolation: isolate; /* Poprawia renderowanie borderów */
 }
-/* Pola formularza - adresy, telefony, emaile, osoby */
-.adres-form, .telefon-form, .email-form, .osoba-form, .ocena-form {
-    background-color: #f9f9f9; /* Jasne tło dla grup pól */
-    border-radius: 8px; /* Zaokrąglenie */
-    transition: all 0.2s ease; /* Płynne przejścia */
-}
-.adres-form:hover, .telefon-form:hover, .email-form:hover, .osoba-form:hover, .ocena-form:hover {
-    background-color: #f5f5f5; /* Lekka zmiana tła przy hover */
-}
-/* Nagłówki sekcji */
-h6 { /* Globalny styl dla h6, który powodował problem */
-    font-size: 1rem;
+
+.nav-tabs .nav-link.active {
+    color: var(--btn-primary-color);
+    background-color: var(--bs-body-bg);
+    border-color: var(--bs-border-color) var(--bs-border-color) var(--bs-body-bg);
     font-weight: 600;
-    margin-bottom: 1rem;
-    color: #333; /* Ten kolor był problemem w dark mode wewnątrz kart */
 }
-/* Przyciski dodawania elementów */
-#dodaj-adres, #dodaj-telefon, #dodaj-email, #dodaj-osobe, #dodaj-ocene {
-    margin-bottom: 1rem; /* Odstęp pod przyciskami dodawania */
+
+html[data-theme="dark"] .nav-tabs {
+    border-bottom-color: var(--dark-border-color);
 }
+
+html[data-theme="dark"] .nav-tabs .nav-link {
+    color: var(--dark-text-secondary);
+    border-color: transparent;
+}
+html[data-theme="dark"] .nav-tabs .nav-link:hover,
+html[data-theme="dark"] .nav-tabs .nav-link:focus {
+    border-color: rgba(255,255,255,0.1); /* Subtelny border w trybie ciemnym */
+}
+
+html[data-theme="dark"] .nav-tabs .nav-link.active {
+    color: var(--dark-primary-color);
+    background-color: var(--dark-body-bg);
+    border-color: var(--dark-border-color) var(--dark-border-color) var(--dark-body-bg);
+}
+
+/* Zawartość zakładek */
+.tab-content {
+    padding-top: 1.5rem; /* Większy odstęp od zakładek */
+    padding-bottom: 1rem; /* Dodatkowy padding na dole */
+}
+
+/* Style pól formularza (wewnątrz zakładek) */
+.tab-pane .form-label { /* Dostosowanie, jeśli etykiety są bezpośrednio w tab-pane */
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+
+/* Pola formularza - adresy, telefony, emaile, osoby, oceny */
+.entry-form { /* Zamiast indywidualnych .adres-form, .telefon-form itd. */
+    background-color: var(--bs-gray-100);
+    border: 1px solid var(--bs-border-color-translucent);
+    border-radius: var(--ui-border-radius);
+    padding: 1rem; /* Ujednolicony padding */
+    margin-bottom: 1rem; /* Ujednolicony margines */
+    transition: background-color 0.2s ease;
+}
+.entry-form:hover {
+    background-color: var(--bs-gray-200);
+}
+
+html[data-theme="dark"] .entry-form {
+    background-color: var(--dark-surface-light-bg); /* Jaśniejszy od tła zakładki */
+    border-color: var(--dark-border-color);
+}
+html[data-theme="dark"] .entry-form:hover {
+    background-color: #404040; /* Nieco jaśniejsze od --dark-surface-light-bg */
+}
+
+/* Nagłówki wewnątrz sekcji (np. "Adresy", "Telefony") */
+.tab-pane h6 {
+    font-size: 1.1rem; /* Zwiększenie dla lepszej hierarchii */
+    font-weight: 600;
+    margin-top: 1rem; /* Dodatkowy margines górny */
+    margin-bottom: 0.75rem;
+    color: var(--bs-gray-700);
+}
+html[data-theme="dark"] .tab-pane h6 {
+    color: var(--dark-text-secondary);
+}
+
+
+/* Przyciski dodawania i usuwania wpisów */
+.add-entry, .remove-entry {
+    /* Style dziedziczone z globalnych .btn, .btn-secondary, .btn-danger */
+    /* Można dodać specyficzne marginesy lub wyrównanie jeśli potrzeba */
+    padding: 0.375rem 0.75rem; /* Upewnienie się, że padding jest spójny */
+}
+.add-entry {
+    margin-top: 0.5rem; /* Odstęp dla przycisku "Dodaj" */
+}
+.remove-entry {
+    margin-top: 0.5rem; /* Odstęp dla przycisku "Usuń" */
+}
+
 
 /* ===== STYLE RESPONSYWNYCH TABEL ===== */
 /* Kontener tabeli - używamy już istniejącej klasy table-responsive */
@@ -1064,7 +1265,7 @@ h6 { /* Globalny styl dla h6, który powodował problem */
 
 .mobile-card {
     border: 1px solid #dee2e6; /* Ramka dla karty mobilnej */
-    border-radius: 8px; /* Zaokrąglenie */
+    border-radius: var(--ui-border-radius); /* Zaktualizowano */
     background-color: #f9f9f9; /* Jasne tło */
     transition: all 0.2s ease;
 }
@@ -1146,7 +1347,7 @@ h6 { /* Globalny styl dla h6, który powodował problem */
         border-bottom: 1px solid #dee2e6; /* Linia oddzielająca wiersze */
         margin-bottom: 0.5rem; /* Odstęp między wierszami */
         background-color: #f9f9f9; /* Jasne tło dla wiersza */
-        border-radius: 8px; /* Zaokrąglenie */
+        border-radius: var(--ui-border-radius); /* Zaktualizowano */
         padding: 0.5rem 0; /* Wewnętrzny padding */
     }
 
@@ -1181,10 +1382,17 @@ h6 { /* Globalny styl dla h6, który powodował problem */
 }
 
 .table-responsive-stacking th {
-    background-color: #aaaaaa; /* Jaśniejszy szary dla nagłówków */
+    background-color: var(--bs-gray-100); /* Zaktualizowano */
     font-weight: bold;
-    text-align: center; /* Nagłówki wyśrodkowane */
+    text-align: center;
+    border-bottom: 2px solid var(--bs-gray-300); /* Dodano dolne obramowanie */
 }
+
+html[data-theme="dark"] .table-responsive-stacking th {
+    background-color: var(--dark-surface-light-bg); /* Zaktualizowano dla trybu ciemnego */
+    border-bottom: 2px solid var(--dark-border-color); /* Dodano dolne obramowanie dla trybu ciemnego */
+}
+
 
 .table-responsive-stacking .action-btn .btn-text {
     display: inline;
@@ -1206,7 +1414,7 @@ h6 { /* Globalny styl dla h6, który powodował problem */
     .table-responsive-stacking tr {
         margin-bottom: 1rem;
         border: 1px solid #dee2e6;
-        border-radius: 0.375rem;
+        border-radius: var(--ui-border-radius); /* Zaktualizowano */
         padding: 0.5rem 0;
         background-color: #fff; /* Tło dla wiersza-karty */
     }
@@ -1278,28 +1486,131 @@ h6 { /* Globalny styl dla h6, który powodował problem */
 
 
 .action-btn {
-    padding: 0.15rem 0.5rem;
+    padding: 0.375rem 0.75rem; /* Zwiększony padding dla lepszego kliknięcia */
     margin: 0.15rem;
     display: inline-flex;
     align-items: center;
-    gap: 0.3rem;
+    gap: 0.4rem; /* Lekko zwiększony odstęp */
     transition: all 0.2s;
     vertical-align: middle;
+    border-radius: var(--ui-border-radius); /* Użycie globalnego promienia */
+    font-size: 0.875rem; /* Spójny rozmiar czcionki */
+    line-height: 1.5; /* Spójna wysokość linii */
 }
 
 .action-btn i {
-    font-size: 1rem;
+    font-size: 1rem; /* Zachowano */
     line-height: 1;
 }
 
-td[data-label="Akcje"] form {
-    margin: 0 0 0 0.25rem;
+/* Poprawki dla przycisków akcji w tabelach responsywnych */
+.table-responsive-stacking td[data-label="Akcje"] {
+    text-align: left; /* Domyślne wyrównanie dla komórki */
 }
-td[data-label="Akcje"] form:first-of-type {
-    margin-left: 0;
+
+.table-responsive-stacking td[data-label="Akcje"] form,
+.table-responsive-stacking td[data-label="Akcje"] .action-btn {
+    margin-right: 0.5rem; /* Dodanie marginesu po prawej stronie dla odstępu */
+    margin-bottom: 0.5rem; /* Dodanie marginesu dolnego dla lepszego układu w mobilnych */
 }
+.table-responsive-stacking td[data-label="Akcje"] form:last-child,
+.table-responsive-stacking td[data-label="Akcje"] .action-btn:last-child {
+    margin-right: 0;
+}
+
+
+@media (max-width: 767.98px) {
+    .table-responsive-stacking td[data-label="Akcje"] {
+        text-align: left; /* Zapewnienie, że przyciski zaczynają się od lewej */
+        padding-top: 0.75rem;
+        padding-bottom: 0.25rem; /* Zmniejszenie dolnego paddingu, bo przyciski mają własny margines */
+    }
+    .table-responsive-stacking td[data-label="Akcje"] .action-btn {
+        width: auto; /* Pozwól przyciskom zająć potrzebną szerokość */
+        min-width: 0; /* Reset min-width */
+        display: inline-flex; /* Upewnij się, że są inline-flex */
+    }
+    .table-responsive-stacking td[data-label="Akcje"] form {
+        display: inline-block; /* Formularze jako inline-block dla przycisków submit */
+        margin-left: 0; /* Usunięcie marginesu po lewej dla formularzy */
+    }
+}
+
 
 /* Overlay form (Add new type) - tło */
 #overlay-form-container {
-    background-color: rgba(0,0,0,0.5); /* Domyślne tło dla trybu jasnego */
+    background-color: rgba(0,0,0,0.6); /* Lekko ciemniejsze tło dla lepszego kontrastu */
+    z-index: 1055; /* Wyższy z-index, aby był nad innymi elementami, np. modalem */
+}
+
+#overlay-form-container .card {
+    border-radius: var(--ui-border-radius);
+    box-shadow: var(--card-box-shadow); /* Użycie globalnego cienia */
+    border: 1px solid var(--card-border-color);
+    background-color: #FFFFFF; /* Tło dla trybu jasnego */
+}
+
+#overlay-form-container .card-header {
+    background-color: var(--bs-gray-100); /* Jasnoszare tło nagłówka w trybie jasnym */
+    border-bottom: 1px solid var(--card-border-color);
+}
+#overlay-form-container .card-header h5 {
+    font-weight: 600; /* Pogrubienie tytułu */
+}
+
+
+/* ===== STYLE STRONY LOGOWANIA ===== */
+.login-page-body { /* Specyficzne style dla body strony logowania */
+    background-color: var(--bs-gray-100); /* Jasnoszare tło */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: var(--font-family-sans-serif);
+    padding: 1rem;
+}
+
+html[data-theme="dark"] .login-page-body {
+    background-color: var(--dark-body-bg); /* Ciemne tło dla trybu ciemnego */
+}
+
+.login-container {
+    width: 100%;
+    max-width: 420px; /* Maksymalna szerokość kontenera logowania */
+}
+
+.login-card {
+    border-radius: var(--ui-border-radius);
+    box-shadow: var(--card-box-shadow);
+    border: 1px solid var(--card-border-color);
+    background-color: #FFFFFF; /* Tło karty w trybie jasnym */
+}
+
+html[data-theme="dark"] .login-card {
+    background-color: var(--dark-surface-bg); /* Tło karty w trybie ciemnym */
+    border-color: var(--dark-border-color);
+}
+
+.login-card .card-title {
+    font-weight: 600; /* Pogrubiony tytuł */
+}
+
+.login-card .form-control {
+    border-radius: var(--ui-border-radius); /* Zaokrąglenie dla pól formularza */
+}
+.login-card .form-control:focus {
+    border-color: var(--btn-primary-color); /* Kolor obramowania przy focusie */
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25); /* Użycie --bs-primary-rgb dla spójności z Bootstrap */
+}
+
+html[data-theme="dark"] .login-card .form-control:focus {
+    border-color: var(--dark-primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25); /* Użycie --bs-primary-rgb również tutaj, dostosowane do ciemnego motywu */
+}
+
+
+.login-card .btn-primary {
+    /* Style dziedziczone z globalnych .btn i .btn-primary */
+    padding: 0.5rem 1rem; /* Większy padding dla przycisku logowania */
+    font-weight: 500;
 }

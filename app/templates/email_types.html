@@ -11,26 +11,31 @@
                 </a>
             </div>
             <div class="card-body">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nazwa</th>
-                            <th>Akcje</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in items %}
-                        <tr>
-                            <td>{{ item.id_email_typ }}</td>
-                            <td>{{ item.typ_emaila }}</td>
-                            <td>
-                                <a href="{{ url_for('main.edit_email_type', id=item.id_email_typ) }}" class="btn btn-sm btn-primary">Edytuj</a>
-                                <form action="{{ url_for('main.delete_email_type', id=item.id_email_typ) }}" method="POST" style="display: inline;">
-                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Czy na pewno chcesz usunąć ten typ e-maila?');">Usuń</button>
-                                </form>
-                            </td>
-                        </tr>
+                <div class="table-responsive">
+                    <table class="table table-striped table-responsive-stacking">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nazwa</th>
+                                <th>Akcje</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items %}
+                            <tr>
+                                <td data-label="ID">{{ item.id_email_typ }}</td>
+                                <td data-label="Nazwa">{{ item.typ_emaila }}</td>
+                                <td data-label="Akcje">
+                                    <a href="{{ url_for('main.edit_email_type', id=item.id_email_typ) }}" class="btn btn-sm btn-primary action-btn">
+                                        <i class="bi bi-pencil-square"></i> <span class="btn-text">Edytuj</span>
+                                    </a>
+                                    <form action="{{ url_for('main.delete_email_type', id=item.id_email_typ) }}" method="POST" style="display: inline;">
+                                        <button type="submit" class="btn btn-sm btn-danger action-btn" onclick="return confirm('Czy na pewno chcesz usunąć ten typ e-maila?');">
+                                            <i class="bi bi-trash"></i> <span class="btn-text">Usuń</span>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
                         {% endfor %}
                     </tbody>
                 </table>
