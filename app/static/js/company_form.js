@@ -284,6 +284,102 @@ $(document).ready(function() {
                     $targetSelect.trigger('change');
                 }
 
+                // --- BEGIN NEW LOGIC TO UPDATE TEMPLATES ---
+                let templateIdToUpdate;
+                let selectInTemplateSelector;
+
+                switch(type) {
+                    case 'adres_typ':
+                        templateIdToUpdate = '#adres-template';
+                        selectInTemplateSelector = 'select[name="adresy-__prefix__-typ_adresu"]';
+                        break;
+                    case 'email_typ':
+                        templateIdToUpdate = '#email-template';
+                        selectInTemplateSelector = 'select[name="emaile-__prefix__-typ_emaila"]';
+                        break;
+                    case 'telefon_typ':
+                        templateIdToUpdate = '#telefon-template';
+                        selectInTemplateSelector = 'select[name="telefony-__prefix__-typ_telefonu"]';
+                        break;
+                    case 'firma_typ':
+                        // This case handles the main company type select if it was the target.
+                        // No specific template update for FieldList, as 'typ_firmy' is usually singular.
+                        if (targetSelectId === 'typ_firmy') {
+                             const $typFirmySelect = $('#typ_firmy');
+                             if ($typFirmySelect.find("option[value='" + newOptionValue + "']").length === 0) {
+                                const newTypFirmyOption = new Option(newOptionText, newOptionValue, false, false);
+                                $typFirmySelect.append(newTypFirmyOption); // .trigger('change') is handled by commonSelectClass logic later or by $targetSelect
+                             }
+                        }
+                        break;
+                    case 'specjalnosc':
+                        // This case handles the main 'specjalnosci' multi-select if it was the target.
+                        // No specific template update for FieldList, as 'specjalnosci' is usually singular.
+                        if (targetSelectId === 'specjalnosci') {
+                             const $specjalnosciSelect = $('#specjalnosci');
+                             if ($specjalnosciSelect.find("option[value='" + newOptionValue + "']").length === 0) {
+                                const newSpecOption = new Option(newOptionText, newOptionValue, false, false);
+                                $specjalnosciSelect.append(newSpecOption); // .trigger('change') is handled by commonSelectClass logic or $targetSelect
+                             }
+                        }
+                        break;
+                }
+
+                if (templateIdToUpdate && selectInTemplateSelector) {
+                    const $template = $(templateIdToUpdate);
+                    if ($template.length) {
+                        const $selectInTemplate = $template.find(selectInTemplateSelector);
+                        if ($selectInTemplate.length) {
+                            if ($selectInTemplate.find("option[value='" + newOptionValue + "']").length === 0) {
+                                const newOptionForTemplate = new Option(newOptionText, newOptionValue, false, false);
+                                $selectInTemplate.append(newOptionForTemplate);
+                            }
+                        } else {
+                            console.warn("Select element not found in template: " + selectInTemplateSelector + " within " + templateIdToUpdate);
+                        }
+                    } else {
+                        console.warn("Template not found: " + templateIdToUpdate);
+                    }
+                }
+                // --- END NEW LOGIC TO UPDATE TEMPLATES ---
+
+                // Update ALL existing select fields of the same type on the page
+                let commonSelectSelector;
+                switch(type) {
+                    case 'adres_typ': commonSelectSelector = 'select[id^="adresy-"][id$="-typ_adresu"]'; break;
+                    case 'email_typ': commonSelectSelector = 'select[id^="emaile-"][id$="-typ_emaila"]'; break;
+                    case 'telefon_typ': commonSelectSelector = 'select[id^="telefony-"][id$="-typ_telefonu"]'; break;
+                    case 'firma_typ': commonSelectSelector = '#typ_firmy'; break; // Specific ID for main company type
+                    case 'specjalnosc': commonSelectSelector = '#specjalnosci'; break; // Specific ID for main specialties
+                }
+
+                if (commonSelectSelector) {
+                    $(commonSelectSelector).each(function() {
+                        const $selectToUpdate = $(this);
+                        // Avoid re-processing the $targetSelect if it's the same, as it's already updated.
+                        if ($selectToUpdate.attr('id') === targetSelectId && $targetSelect.find("option[value='" + newOptionValue + "']").length > 0) {
+                            // If it is the target select, it's already handled, ensure its Select2 is updated if applicable
+                            if ($selectToUpdate.hasClass('select2-hidden-accessible')) {
+                                $selectToUpdate.trigger('change.select2');
+                            } else {
+                                 $selectToUpdate.trigger('change');
+                            }
+                            return; // Skip to next iteration
+                        }
+
+                        if ($selectToUpdate.find("option[value='" + newOptionValue + "']").length === 0) {
+                            const newOptionGlobal = new Option(newOptionText, newOptionValue, false, false);
+                            $selectToUpdate.append(newOptionGlobal);
+                        }
+                        // If this select is a Select2 instance and was modified, trigger change
+                        // Check if it was actually modified to avoid redundant triggers if the option already existed.
+                         if ($selectToUpdate.hasClass('select2-hidden-accessible')) {
+                            $selectToUpdate.trigger('change.select2');
+                        } else {
+                             $selectToUpdate.trigger('change');
+                        }
+                    });
+                }
                 // *** Komunikat o sukcesie ***
                 alert(`Pomyślnie dodano: "${newOptionText}"`);
             },
