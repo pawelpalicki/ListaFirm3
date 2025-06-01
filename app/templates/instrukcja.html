@@ -89,19 +89,27 @@
 
     <section id="dodawanie-firmy" class="mb-4">
         <h2>Dodawanie Nowej Firmy</h2>
-        <p>Aby dodać nową firmę, kliknij przycisk "Dodaj firmę" w menu nawigacyjnym. Pojawi się formularz, w którym należy wypełnić następujące sekcje:</p>
+        <p>Aby dodać nową firmę, kliknij przycisk "Dodaj firmę" w menu nawigacyjnym. Pojawi się formularz podzielony na zakładki, ułatwiające wprowadzanie danych. Należy przejść przez poszczególne zakładki i wypełnić odpowiednie pola:</p>
         <ul>
-            <li><strong>Podstawowe informacje:</strong> Nazwa firmy (wymagane), typ firmy, strona WWW, uwagi.</li>
-            <li><strong>Obszar działania:</strong> Należy wybrać, czy firma działa na terenie całego kraju, wybranych województw czy wybranych powiatów, a następnie wskazać odpowiednie jednostki.</li>
-            <li><strong>Specjalności:</strong> Można wybrać wiele specjalności z dostępnej listy. Nowe specjalności można dodawać poprzez "Inne formularze" -> "Specjalności".</li>
-            <li><strong>Adresy:</strong> Można dodać wiele adresów, określając ich typ (np. główny, korespondencyjny), kod pocztowy, miejscowość i ulicę. Nowe typy adresów można dodawać poprzez "Inne formularze" -> "Typy adresów".</li>
-            <li><strong>E-maile:</strong> Można dodać wiele adresów e-mail, określając ich typ. Nowe typy e-maili można dodawać poprzez "Inne formularze" -> "Typy e-maili".</li>
-            <li><strong>Telefony:</strong> Można dodać wiele numerów telefonów, określając ich typ. Nowe typy telefonów można dodawać poprzez "Inne formularze" -> "Typy telefonów".</li>
-            <li><strong>Osoby kontaktowe:</strong> Można dodać wiele osób kontaktowych, podając ich imię, nazwisko, stanowisko, e-mail i telefon.</li>
-            <li><strong>Oceny współpracy:</strong> Można dodać wiele ocen, określając osobę oceniającą, budowę/dział, rok współpracy, ocenę (1-5) i komentarz.</li>
+            <li><strong>Zakładka "Dane podstawowe":</strong> Zawiera pola takie jak nazwa firmy (wymagane), typ firmy, strona WWW oraz uwagi.</li>
+            <li><strong>Zakładka "Kontakt":</strong> Umożliwia zarządzanie danymi kontaktowymi:
+                <ul>
+                    <li><strong>Adresy:</strong> Można dodać wiele adresów, określając ich typ (np. główny, korespondencyjny), kod pocztowy, miejscowość i ulicę. Nowe typy adresów można definiować w sekcji "Inne formularze" -> "Typy adresów" lub szybko dodawać bezpośrednio w formularzu firmy za pomocą przycisku "Dodaj" obok pola wyboru typu.</li>
+                    <li><strong>Telefony:</strong> Można dodać wiele numerów telefonów, określając ich typ. Nowe typy telefonów można definiować w "Inne formularze" -> "Typy telefonów" lub dodawać bezpośrednio przyciskiem "Dodaj" obok pola typu.</li>
+                    <li><strong>E-maile:</strong> Można dodać wiele adresów e-mail, określając ich typ. Nowe typy e-maili są zarządzane w "Inne formularze" -> "Typy e-maili" lub dodawane bezpośrednio przyciskiem "Dodaj" obok pola typu.</li>
+                </ul>
+            </li>
+            <li><strong>Zakładka "Specjalizacje i Rynek":</strong> Tutaj można:
+                <ul>
+                    <li>Wybrać wiele specjalności firmy z dostępnej listy. Nowe specjalności można definiować w "Inne formularze" -> "Specjalności" lub szybko dodawać bezpośrednio za pomocą przycisku "Dodaj" obok pola wyboru.</li>
+                    <li>Określić obszar działania firmy (cały kraj, wybrane województwa, wybrane powiaty) i wskazać odpowiednie jednostki.</li>
+                </ul>
+            </li>
+            <li><strong>Zakładka "Osoby kontaktowe":</strong> Pozwala na dodanie wielu osób kontaktowych, podając ich imię, nazwisko, stanowisko, e-mail i telefon.</li>
+            <li><strong>Zakładka "Oceny":</strong> Umożliwia dodanie wielu ocen współpracy, określając osobę oceniającą, budowę/dział, rok współpracy, ocenę (1-5) i komentarz.</li>
         </ul>
-        <p>Pola oznaczone jako wymagane muszą zostać wypełnione. Po wypełnieniu formularza kliknij "Zapisz", aby dodać firmę do bazy.</p>
-        <p>Podczas dodawania adresów, e-maili, telefonów, osób i ocen, można dynamicznie dodawać nowe pola za pomocą przycisków "Dodaj kolejny adres", "Dodaj kolejny email" itp.</p>
+        <p>Pola oznaczone jako wymagane muszą zostać wypełnione. Po wypełnieniu wszystkich niezbędnych danych na poszczególnych zakładkach, kliknij przycisk "Zapisz firmę" znajdujący się na dole formularza, aby dodać firmę do bazy.</p>
+        <p>W zakładkach "Kontakt", "Osoby kontaktowe" oraz "Oceny", można dynamicznie dodawać kolejne pozycje (np. adresy, osoby, oceny) za pomocą odpowiednich przycisków "Dodaj kolejny adres", "Dodaj osobę" itp., znajdujących się w danej sekcji.</p>
         <p>Przy wyborze specjalności, województw i powiatów można korzystać z pola wyszukiwania wewnątrz listy rozwijanej.</p>
     </section>
 
@@ -109,7 +117,9 @@
 
     <section id="szczegoly-firmy" class="mb-4">
         <h2>Wyświetlanie Szczegółów Firmy</h2>
-        <p>Aby zobaczyć szczegółowe informacje o firmie, kliknij przycisk "Szczegóły" przy wybranej firmie na liście lub kliknij nazwę firmy. Zostanie wyświetlona strona ze wszystkimi danymi firmy, w tym:</p>
+        <p>Aby zobaczyć szczegółowe informacje o firmie, kliknij jej nazwę na liście. Spowoduje to rozwinięcie fragmentu z dodatkowymi danymi bezpośrednio na liście.</p>
+        <p>W tym widoku rozwiniętych szczegółów dostępny jest przycisk "Edytuj", który przenosi do pełnego formularza edycji firmy.</p>
+        <p>W rozwiniętym widoku prezentowane są kluczowe informacje o firmie, takie jak:</p>
         <ul>
             <li>Nazwa, typ, strona WWW, uwagi.</li>
             <li>Średnia ocena.</li>
@@ -121,21 +131,20 @@
             <li>Osoby kontaktowe.</li>
             <li>Oceny współpracy.</li>
         </ul>
-        <p>Z poziomu widoku szczegółów można przejść do edycji firmy lub ją usunąć.</p>
     </section>
 
     <hr>
 
     <section id="edycja-firmy" class="mb-4">
         <h2>Edycja Firmy</h2>
-        <p>Aby edytować istniejącą firmę, kliknij przycisk "Edytuj" przy wybranej firmie na liście lub na stronie szczegółów firmy. Formularz edycji jest identyczny z formularzem dodawania nowej firmy, ale jest już wypełniony istniejącymi danymi. Po dokonaniu zmian kliknij "Zapisz".</p>
+        <p>Aby edytować istniejącą firmę, kliknij przycisk "Edytuj" dostępny przy firmie (np. w widoku rozwiniętych szczegółów na liście firm). Zostanie wyświetlony ten sam formularz co przy dodawaniu nowej firmy, ale z interfejsem zakładek i wypełniony istniejącymi danymi. Należy dokonać odpowiednich zmian w poszczególnych zakładkach, a następnie kliknąć przycisk "Zapisz firmę" na dole formularza.</p>
     </section>
 
     <hr>
 
     <section id="usuwanie-firmy" class="mb-4">
         <h2>Usuwanie Firmy</h2>
-        <p>Aby usunąć firmę, kliknij przycisk "Usuń" przy wybranej firmie na liście lub na stronie szczegółów firmy. Pojawi się prośba o potwierdzenie operacji. Usunięcie firmy jest nieodwracalne i kasuje wszystkie powiązane z nią dane (adresy, e-maile, telefony, osoby, oceny, specjalizacje, obszary działania).</p>
+        <p>Możliwość usunięcia firmy dostępna jest na stronie edycji danej firmy. Po przejściu do edycji, znajdź i kliknij przycisk "Usuń firmę". Pojawi się prośba o potwierdzenie operacji. Usunięcie firmy jest nieodwracalne i kasuje wszystkie powiązane z nią dane (adresy, e-maile, telefony, osoby, oceny, specjalizacje, obszary działania).</p>
     </section>
 
     <hr>
@@ -151,6 +160,7 @@
             <li><strong>Typy e-maili:</strong> Dodawanie, edycja i usuwanie typów e-maili.</li>
         </ul>
         <p>Każda z tych sekcji pozwala na wyświetlenie listy istniejących pozycji, dodanie nowej, edycję nazwy istniejącej oraz jej usunięcie (jeśli nie jest używana).</p>
+         <p>Dodatkowo, podczas edycji lub dodawania firmy, przy polach wyboru typów (np. typ adresu, typ emaila) może być dostępny przycisk umożliwiający szybkie dodanie nowego typu bez opuszczania formularza firmy. Nowo dodany typ będzie od razu dostępny na liście wyboru.</p>
     </section>
 
     <hr>
