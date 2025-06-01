@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+
+{% block title %}Instrukcja Obsługi{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Instrukcja Obsługi Aplikacji</h1>
+    <p>Niniejsza instrukcja opisuje podstawowe funkcje i sposób korzystania z aplikacji Baza Firm.</p>
+
+    <h2>Spis Treści</h2>
+    <ul>
+        <li><a href="#logowanie">Logowanie i Wylogowywanie</a></li>
+        <li><a href="#strona-glowna">Strona Główna i Nawigacja</a></li>
+        <li><a href="#przegladanie-firm">Przeglądanie Listy Firm</a></li>
+        <li><a href="#wyszukiwanie-filtrowanie">Wyszukiwanie i Filtrowanie Firm</a></li>
+        <li><a href="#dodawanie-firmy">Dodawanie Nowej Firmy</a></li>
+        <li><a href="#szczegoly-firmy">Wyświetlanie Szczegółów Firmy</a></li>
+        <li><a href="#edycja-firmy">Edycja Firmy</a></li>
+        <li><a href="#usuwanie-firmy">Usuwanie Firmy</a></li>
+        <li><a href="#zarzadzanie-kategoriami">Zarządzanie Kategoriami Słownikowymi</a></li>
+        <li><a href="#zarzadzanie-osobami">Zarządzanie Osobami Kontaktowymi</a></li>
+        <li><a href="#zarzadzanie-ocenami">Zarządzanie Ocenami Współpracy</a></li>
+        <li><a href="#eksport">Eksport Danych Firm</a></li>
+        <li><a href="#zmiana-motywu">Zmiana Motywu Graficznego</a></li>
+    </ul>
+
+    <hr>
+
+    <section id="logowanie" class="mb-4">
+        <h2>Logowanie i Wylogowywanie</h2>
+        <p><strong>Logowanie:</strong> Aby uzyskać dostęp do funkcji aplikacji, użytkownik musi się zalogować. Formularz logowania dostępny jest pod przyciskiem "Zaloguj" w prawym górnym rogu ekranu. Należy podać nazwę użytkownika i hasło. Jeśli dane są poprawne, użytkownik zostanie przekierowany na stronę główną aplikacji.</p>
+        <p><strong>Wylogowywanie:</strong> Aby się wylogować, należy kliknąć przycisk "Wyloguj (nazwa użytkownika)" znajdujący się w prawym górnym rogu ekranu. Spowoduje to powrót do strony logowania.</p>
+    </section>
+
+    <hr>
+
+    <section id="strona-glowna" class="mb-4">
+        <h2>Strona Główna i Nawigacja</h2>
+        <p>Po zalogowaniu użytkownik widzi stronę główną, która domyślnie wyświetla listę wszystkich firm w bazie.</p>
+        <p><strong>Główne Menu Nawigacyjne (na górze strony):</strong></p>
+        <ul>
+            <li><strong>Baza Firm (logo):</strong> Kliknięcie logo przenosi do strony głównej (listy firm).</li>
+            <li><strong>Eksportuj Firmy:</strong> Umożliwia wygenerowanie strony HTML z aktualnie przefiltrowaną listą firm, gotowej do wydruku lub zapisu.</li>
+            <li><strong>Dodaj firmę:</strong> Przenosi do formularza dodawania nowej firmy.</li>
+            <li><strong>Osoby:</strong> Przenosi do listy osób kontaktowych.</li>
+            <li><strong>Oceny:</strong> Przenosi do listy ocen współpracy z firmami.</li>
+            <li><strong>Instrukcja:</strong> Wyświetla tę stronę instrukcji.</li>
+            <li><strong>Inne formularze (rozwijane menu):</strong> Dostępne dla uprawnionych użytkowników, zawiera linki do zarządzania kategoriami słownikowymi, takimi jak:
+                <ul>
+                    <li>Specjalności</li>
+                    <li>Typy firm</li>
+                    <li>Typy adresów</li>
+                    <li>Typy telefonów</li>
+                    <li>Typy e-maili</li>
+                </ul>
+            </li>
+            <li><strong>Przycisk zmiany motywu (ikona słońca/księżyca):</strong> Pozwala przełączyć interfejs między jasnym a ciemnym motywem.</li>
+            <li><strong>Wyloguj:</strong> Kończy sesję użytkownika.</li>
+        </ul>
+    </section>
+
+    <hr>
+
+    <section id="przegladanie-firm" class="mb-4">
+        <h2>Przeglądanie Listy Firm</h2>
+        <p>Na stronie głównej wyświetlana jest tabela z firmami. Dla każdej firmy widoczne są podstawowe informacje, takie jak nazwa, typ, średnia ocena, uwagi oraz przyciski akcji ("Szczegóły", "Edytuj", "Usuń").</p>
+        <p>Sortowanie listy firm nie jest obecnie zaimplementowane.</p>
+    </section>
+
+    <hr>
+
+    <section id="wyszukiwanie-filtrowanie" class="mb-4">
+        <h2>Wyszukiwanie i Filtrowanie Firm</h2>
+        <p>Nad listą firm znajdują się opcje wyszukiwania i filtrowania:</p>
+        <ul>
+            <li><strong>Pole wyszukiwania tekstowego:</strong> Umożliwia wyszukiwanie firm po fragmencie nazwy, strony WWW, uwag, danych adresowych, e-mailach, telefonach, danych osób kontaktowych, treści ocen, specjalnościach, typach firm oraz obszarach działania (województwa, powiaty, kraj). Wyszukiwanie jest nieczułe na wielkość liter i znaki diakrytyczne.</li>
+            <li><strong>Filtry (przyciski i listy rozwijane):</strong>
+                <ul>
+                    <li><strong>Specjalności:</strong> Pozwala wybrać jedną lub więcej specjalności, aby wyświetlić firmy je posiadające.</li>
+                    <li><strong>Obszar działania:</strong> Można filtrować po województwie i powiecie. Wybranie województwa pokaże firmy działające na jego terenie (oraz te o zasięgu ogólnokrajowym). Wybranie powiatu zawęzi wyniki do firm działających w danym powiecie (oraz tych o zasięgu wojewódzkim i ogólnokrajowym).</li>
+                    <li><strong>Typ firmy:</strong> Pozwala wybrać jeden lub więcej typów firm.</li>
+                </ul>
+            </li>
+            <li><strong>Przyciski "Filtruj" i "Wyczyść filtry":</strong> Po ustawieniu kryteriów należy kliknąć "Filtruj". "Wyczyść filtry" resetuje wszystkie aktywne filtry i wyszukiwanie.</li>
+        </ul>
+    </section>
+
+    <hr>
+
+    <section id="dodawanie-firmy" class="mb-4">
+        <h2>Dodawanie Nowej Firmy</h2>
+        <p>Aby dodać nową firmę, kliknij przycisk "Dodaj firmę" w menu nawigacyjnym. Pojawi się formularz, w którym należy wypełnić następujące sekcje:</p>
+        <ul>
+            <li><strong>Podstawowe informacje:</strong> Nazwa firmy (wymagane), typ firmy, strona WWW, uwagi.</li>
+            <li><strong>Obszar działania:</strong> Należy wybrać, czy firma działa na terenie całego kraju, wybranych województw czy wybranych powiatów, a następnie wskazać odpowiednie jednostki.</li>
+            <li><strong>Specjalności:</strong> Można wybrać wiele specjalności z dostępnej listy. Nowe specjalności można dodawać poprzez "Inne formularze" -> "Specjalności".</li>
+            <li><strong>Adresy:</strong> Można dodać wiele adresów, określając ich typ (np. główny, korespondencyjny), kod pocztowy, miejscowość i ulicę. Nowe typy adresów można dodawać poprzez "Inne formularze" -> "Typy adresów".</li>
+            <li><strong>E-maile:</strong> Można dodać wiele adresów e-mail, określając ich typ. Nowe typy e-maili można dodawać poprzez "Inne formularze" -> "Typy e-maili".</li>
+            <li><strong>Telefony:</strong> Można dodać wiele numerów telefonów, określając ich typ. Nowe typy telefonów można dodawać poprzez "Inne formularze" -> "Typy telefonów".</li>
+            <li><strong>Osoby kontaktowe:</strong> Można dodać wiele osób kontaktowych, podając ich imię, nazwisko, stanowisko, e-mail i telefon.</li>
+            <li><strong>Oceny współpracy:</strong> Można dodać wiele ocen, określając osobę oceniającą, budowę/dział, rok współpracy, ocenę (1-5) i komentarz.</li>
+        </ul>
+        <p>Pola oznaczone jako wymagane muszą zostać wypełnione. Po wypełnieniu formularza kliknij "Zapisz", aby dodać firmę do bazy.</p>
+        <p>Podczas dodawania adresów, e-maili, telefonów, osób i ocen, można dynamicznie dodawać nowe pola za pomocą przycisków "Dodaj kolejny adres", "Dodaj kolejny email" itp.</p>
+        <p>Przy wyborze specjalności, województw i powiatów można korzystać z pola wyszukiwania wewnątrz listy rozwijanej.</p>
+    </section>
+
+    <hr>
+
+    <section id="szczegoly-firmy" class="mb-4">
+        <h2>Wyświetlanie Szczegółów Firmy</h2>
+        <p>Aby zobaczyć szczegółowe informacje o firmie, kliknij przycisk "Szczegóły" przy wybranej firmie na liście lub kliknij nazwę firmy. Zostanie wyświetlona strona ze wszystkimi danymi firmy, w tym:</p>
+        <ul>
+            <li>Nazwa, typ, strona WWW, uwagi.</li>
+            <li>Średnia ocena.</li>
+            <li>Obszar działania (kraj, województwa, powiaty).</li>
+            <li>Specjalności.</li>
+            <li>Adresy.</li>
+            <li>E-maile.</li>
+            <li>Telefony.</li>
+            <li>Osoby kontaktowe.</li>
+            <li>Oceny współpracy.</li>
+        </ul>
+        <p>Z poziomu widoku szczegółów można przejść do edycji firmy lub ją usunąć.</p>
+    </section>
+
+    <hr>
+
+    <section id="edycja-firmy" class="mb-4">
+        <h2>Edycja Firmy</h2>
+        <p>Aby edytować istniejącą firmę, kliknij przycisk "Edytuj" przy wybranej firmie na liście lub na stronie szczegółów firmy. Formularz edycji jest identyczny z formularzem dodawania nowej firmy, ale jest już wypełniony istniejącymi danymi. Po dokonaniu zmian kliknij "Zapisz".</p>
+    </section>
+
+    <hr>
+
+    <section id="usuwanie-firmy" class="mb-4">
+        <h2>Usuwanie Firmy</h2>
+        <p>Aby usunąć firmę, kliknij przycisk "Usuń" przy wybranej firmie na liście lub na stronie szczegółów firmy. Pojawi się prośba o potwierdzenie operacji. Usunięcie firmy jest nieodwracalne i kasuje wszystkie powiązane z nią dane (adresy, e-maile, telefony, osoby, oceny, specjalizacje, obszary działania).</p>
+    </section>
+
+    <hr>
+
+    <section id="zarzadzanie-kategoriami" class="mb-4">
+        <h2>Zarządzanie Kategoriami Słownikowymi</h2>
+        <p>Dla uprawnionych użytkowników dostępne jest menu "Inne formularze", które pozwala zarządzać wartościami słownikowymi używanymi w aplikacji. Obejmuje to:</p>
+        <ul>
+            <li><strong>Specjalności:</strong> Dodawanie, edycja i usuwanie specjalności firm.</li>
+            <li><strong>Typy firm:</strong> Dodawanie, edycja i usuwanie typów firm.</li>
+            <li><strong>Typy adresów:</strong> Dodawanie, edycja i usuwanie typów adresów.</li>
+            <li><strong>Typy telefonów:</strong> Dodawanie, edycja i usuwanie typów telefonów.</li>
+            <li><strong>Typy e-maili:</strong> Dodawanie, edycja i usuwanie typów e-maili.</li>
+        </ul>
+        <p>Każda z tych sekcji pozwala na wyświetlenie listy istniejących pozycji, dodanie nowej, edycję nazwy istniejącej oraz jej usunięcie (jeśli nie jest używana).</p>
+    </section>
+
+    <hr>
+
+    <section id="zarzadzanie-osobami" class="mb-4">
+        <h2>Zarządzanie Osobami Kontaktowymi</h2>
+        <p>Kliknięcie "Osoby" w menu głównym przenosi do listy wszystkich osób kontaktowych zapisanych w bazie. Dla każdej osoby widoczne jest imię, nazwisko, stanowisko, e-mail, telefon oraz firma, do której jest przypisana.</p>
+        <p>Możliwe akcje:</p>
+        <ul>
+            <li><strong>Dodaj osobę:</strong> Otwiera formularz dodawania nowej osoby, gdzie należy podać jej dane oraz wybrać firmę z listy.</li>
+            <li><strong>Edytuj:</strong> Otwiera formularz edycji danych wybranej osoby.</li>
+            <li><strong>Usuń:</strong> Usuwa osobę z bazy (po potwierdzeniu).</li>
+        </ul>
+        <p>Osoby kontaktowe można również dodawać i edytować bezpośrednio w formularzu firmy.</p>
+    </section>
+
+    <hr>
+
+    <section id="zarzadzanie-ocenami" class="mb-4">
+        <h2>Zarządzanie Ocenami Współpracy</h2>
+        <p>Kliknięcie "Oceny" w menu głównym przenosi do listy wszystkich ocen współpracy. Dla każdej oceny widoczna jest osoba oceniająca, budowa/dział, rok współpracy, ocena, komentarz oraz firma, której ocena dotyczy.</p>
+        <p>Możliwe akcje:</p>
+        <ul>
+            <li><strong>Dodaj ocenę:</strong> Otwiera formularz dodawania nowej oceny, gdzie należy podać jej szczegóły oraz wybrać firmę z listy.</li>
+            <li><strong>Edytuj:</strong> Otwiera formularz edycji wybranej oceny.</li>
+            <li><strong>Usuń:</strong> Usuwa ocenę z bazy (po potwierdzeniu).</li>
+        </ul>
+        <p>Oceny można również dodawać i edytować bezpośrednio w formularzu firmy.</p>
+    </section>
+
+    <hr>
+
+    <section id="eksport" class="mb-4">
+        <h2>Eksport Danych Firm</h2>
+        <p>Przycisk "Eksportuj Firmy" w menu nawigacyjnym generuje stronę HTML zawierającą tabelę z danymi firm. Strona ta uwzględnia aktualnie zastosowane filtry i kryteria wyszukiwania z listy głównej.</p>
+        <p>Wygenerowana strona jest przygotowana do wydruku (poprzez funkcję drukowania przeglądarki) lub zapisu jako plik HTML/PDF. Zawiera szczegółowe informacje o firmach, w tym dane kontaktowe, adresy, specjalizacje, obszary działania, osoby kontaktowe i oceny.</p>
+    </section>
+
+    <hr>
+
+    <section id="zmiana-motywu" class="mb-4">
+        <h2>Zmiana Motywu Graficznego</h2>
+        <p>W prawym górnym rogu interfejsu znajduje się przycisk z ikoną słońca lub księżyca. Pozwala on na przełączanie wyglądu aplikacji między jasnym a ciemnym motywem graficznym. Wybór jest zapamiętywany w przeglądarce użytkownika.</p>
+    </section>
+
+</div>
+{% endblock %}

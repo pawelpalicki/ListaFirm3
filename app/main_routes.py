@@ -247,6 +247,10 @@ def index():
                            all_powiaty=all_powiaty,
                            all_company_types=all_company_types)
 
+@main.route('/instrukcja')
+def instrukcja():
+    return render_template('instrukcja.html')
+
 @main.route('/company/<int:company_id>')
 def company_details(company_id):
     company = Firmy.query.get_or_404(company_id)
