@@ -1,9 +1,17 @@
 /* ===== GLOBALNE STYLE (aktualizacja zmiennych i body) ===== */
 :root {
-    --btn-primary-color: #0d6efd;
+    --btn-primary-color: var(--primary-red);
     --btn-secondary-color: #6c757d;
     --btn-success-color: #198754;
     --card-border-color: rgba(0, 0, 0, 0.1);
+
+    /* Primary Red Variables */
+    --primary-red: #E42313;
+    --primary-red-hover: #F02817;
+    --primary-red-active: #C81F10;
+    --dark-primary-red: #FF5C5C;
+    --dark-primary-red-hover: #FF7B7B;
+    --dark-primary-red-focus: #FF5C5C;
 
     /* Nowe zmienne dla paska nawigacyjnego */
     --navbar-bg-start: #ffffff;
@@ -11,9 +19,9 @@
     --navbar-border-color: #dee2e6; /* Bootstrap 'border-color' */
     --navbar-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     --navbar-link-color: #343a40; /* Ciemniejszy dla lepszego kontrastu na jasnym tle */
-    --navbar-link-hover-color: #007bff; /* Główny kolor akcentu (Bootstrap primary) */
-    --navbar-link-active-color: #0056b3; /* Ciemniejszy odcień primary dla aktywnego linku */
-    --navbar-brand-color: #004085; /* Ciemnoniebieski dla brandu, np. wzięty z alert-info Bootstrapa */
+    --navbar-link-hover-color: var(--primary-red-hover); /* Główny kolor akcentu (Bootstrap primary) */
+    --navbar-link-active-color: var(--primary-red-active); /* Ciemniejszy odcień primary dla aktywnego linku */
+    --navbar-brand-color: var(--primary-red); /* Ciemnoniebieski dla brandu, np. wzięty z alert-info Bootstrapa */
 
     /* ===== ZMIENNE TRYBU CIEMNEGO ===== */
     --dark-body-bg: #1a1a1a;
@@ -24,10 +32,10 @@
     --dark-border-color: #444444;
     --dark-input-bg: #333333;
     --dark-input-border: #555555;
-    --dark-input-focus-border: #007bff; /* Można zachować primary lub dostosować */
+    --dark-input-focus-border: var(--dark-primary-red-focus); /* Można zachować primary lub dostosować */
     --dark-input-placeholder: #888888;
-    --dark-primary-color: #4dabf7;
-    --dark-primary-hover-color: #74c0fc;
+    --dark-primary-color: var(--dark-primary-red);
+    --dark-primary-hover-color: var(--dark-primary-red-hover);
     --dark-secondary-color: #868e96;
     --dark-secondary-hover-color: #adb5bd;
     --dark-success-color: #40c057;
@@ -40,7 +48,7 @@
     --dark-select2-dropdown-bg: #2c2c2c;
     --dark-select2-dropdown-border: #444444;
     --dark-select2-choice-bg: #404040;
-    --dark-select2-highlight-bg: #007bff; /* Można użyć --dark-primary-color */
+    --dark-select2-highlight-bg: var(--dark-primary-red); /* Można użyć --dark-primary-color */
 }
 
 body {
@@ -92,12 +100,12 @@ html[data-theme="dark"] .custom-navbar-style .nav-link {
 html[data-theme="dark"] .custom-navbar-style .nav-link:hover,
 html[data-theme="dark"] .custom-navbar-style .nav-link:focus {
     color: var(--dark-primary-hover-color);
-    background-color: rgba(77, 171, 247, 0.1);
+    background-color: rgba(255, 92, 92, 0.1);
 }
 
 html[data-theme="dark"] .custom-navbar-style .nav-link.active {
     color: var(--dark-primary-color);
-    background-color: rgba(77, 171, 247, 0.15);
+    background-color: rgba(255, 92, 92, 0.15);
 }
 
 html[data-theme="dark"] .custom-navbar-style .dropdown-menu {
@@ -290,7 +298,7 @@ html[data-theme="dark"] .form-select:focus {
     background-color: var(--dark-input-bg);
     border-color: var(--dark-input-focus-border);
     color: var(--dark-text-primary);
-    box-shadow: 0 0 0 0.25rem rgba(77, 171, 247, 0.25); /* Użyj koloru --dark-primary-color w formacie RGBA */
+    box-shadow: 0 0 0 0.25rem rgba(255, 92, 92, 0.25); /* Użyj koloru --dark-primary-color w formacie RGBA */
 }
 
 html[data-theme="dark"] .input-group-text {
@@ -509,7 +517,7 @@ html[data-theme="dark"] #overlay-form-container #overlay-input {
 }
 html[data-theme="dark"] #overlay-form-container #overlay-input:focus {
     border-color: var(--dark-input-focus-border);
-    box-shadow: 0 0 0 0.25rem rgba(77, 171, 247, 0.25); /* Użyj koloru --dark-primary-color w formacie RGBA */
+    box-shadow: 0 0 0 0.25rem rgba(255, 92, 92, 0.25); /* Użyj koloru --dark-primary-color w formacie RGBA */
 }
 
 /* ===== POPRAWKA DLA AUTOFILL W TRYBIE CIEMNYM ===== */
@@ -535,7 +543,7 @@ html[data-theme="dark"] .form-control:-webkit-autofill:focus,
 html[data-theme="dark"] .form-select:-webkit-autofill:focus {
     -webkit-box-shadow: 0 0 0 1000px var(--dark-input-bg) inset !important;
     border-color: var(--dark-input-focus-border) !important;
-    box-shadow: 0 0 0 0.25rem rgba(77, 171, 247, 0.25), 0 0 0 1000px var(--dark-input-bg) inset !important;
+    box-shadow: 0 0 0 0.25rem rgba(255, 92, 92, 0.25), 0 0 0 1000px var(--dark-input-bg) inset !important;
 }
 
 /* Alternatywne podejście dla przeglądarek nie obsługujących -webkit-autofill */
@@ -590,13 +598,13 @@ html[data-theme="dark"] .select2-container--default .select2-selection--multiple
 .custom-navbar-style .nav-link:hover,
 .custom-navbar-style .nav-link:focus {
     color: var(--navbar-link-hover-color);
-    background-color: rgba(0, 123, 255, 0.06);
+    background-color: rgba(228, 35, 19, 0.06);
 }
 
 .custom-navbar-style .nav-link.active {
     color: var(--navbar-link-active-color);
     font-weight: 600;
-    background-color: rgba(0, 123, 255, 0.08);
+    background-color: rgba(228, 35, 19, 0.08);
 }
 
 .custom-navbar-style .dropdown-menu {
@@ -615,7 +623,7 @@ html[data-theme="dark"] .select2-container--default .select2-selection--multiple
 .custom-navbar-style .dropdown-item:hover,
 .custom-navbar-style .dropdown-item:focus {
     color: var(--navbar-link-hover-color);
-    background-color: rgba(0, 123, 255, 0.08);
+    background-color: rgba(228, 35, 19, 0.08);
 }
 
 .custom-navbar-style .dropdown-item:active {
@@ -813,8 +821,8 @@ html[data-theme="dark"] .select2-container--default .select2-selection--multiple
 .select2-container--open .select2-selection--custom,
 .select2-container--open .select2-selection--single,
 .select2-container--open .select2-selection--multiple {
-    border-color: #80bdff !important; /* Kolor focus Bootstrapa */
-    box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25); /* Cień focus Bootstrapa */
+    border-color: var(--primary-red-hover) !important; /* Kolor focus Bootstrapa */
+    box-shadow: 0 0 0 0.25rem rgba(228, 35, 19, 0.25); /* Cień focus Bootstrapa */
     outline: 0; /* Usunięcie domyślnego outline */
 }
 
@@ -863,8 +871,8 @@ html[data-theme="dark"] .select2-container--default .select2-selection--multiple
 }
 
 .select2-dropdown .select2-search__field:focus {
-    border-color: #007bff; /* Kolor focus */
-    box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25); /* Cień focus */
+    border-color: var(--primary-red); /* Kolor focus */
+    box-shadow: 0 0 0 0.25rem rgba(228, 35, 19, 0.25); /* Cień focus */
     outline: 0;
 }
 
@@ -892,7 +900,7 @@ html[data-theme="dark"] .select2-container--default .select2-selection--multiple
 
 /* Wybrana opcja */
 .select2-results__option[aria-selected="true"] {
-    background-color: #007bff; /* Kolor primary Bootstrapa */
+    background-color: var(--primary-red); /* Kolor primary Bootstrapa */
     color: #fff; /* Biały tekst na tle primary */
 }
 
